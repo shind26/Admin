@@ -1931,8 +1931,12 @@ export async function getIssues(
   const conditions: string[] = [];
 
   if (filters.status && filters.status !== "All") {
-    query.params.push(filters.status);
-    conditions.push(`sc.trang_thai = $${query.params.length}`);
+    if (filters.status === "Đã hoàn thành") {
+      conditions.push(`(sc.trang_thai = 'Đã hoàn thành' OR sc.trang_thai = 'Đã xử lý')`);
+    } else {
+      query.params.push(filters.status);
+      conditions.push(`sc.trang_thai = $${query.params.length}`);
+    }
   }
   if (filters.keyword?.trim()) {
     query.params.push(`%${filters.keyword.trim()}%`);
@@ -1954,7 +1958,7 @@ export async function getIssues(
        sc.noi_dung,
        sc.muc_do_uu_tien,
        sc.chi_phi_sua_chua::text AS chi_phi_sua_chua,
-       sc.trang_thai,
+       CASE WHEN sc.trang_thai = 'Đã xử lý' THEN 'Đã hoàn thành' ELSE sc.trang_thai END AS trang_thai,
        sc.ngay_bao_cao::text AS ngay_bao_cao
      FROM public.su_co_bao_tri sc
      LEFT JOIN public.phong p ON p.ma_phong = sc.ma_phong

@@ -1,7 +1,6 @@
 export const ISSUE_STATUSES = [
   "Chờ xử lý",
   "Đang xử lý",
-  "Đã xử lý",
   "Đã hoàn thành",
   "Đã hủy",
 ] as const;
@@ -15,8 +14,8 @@ export const ISSUE_PRIORITIES = ["Thấp", "Trung bình", "Cao", "Khẩn cấp"]
  * Chặn hoàn toàn việc chuyển ngược về trạng thái trước.
  */
 export const ALLOWED_NEXT_STATUSES: Record<string, string[]> = {
-  "Chờ xử lý": ["Đang xử lý", "Đã xử lý", "Đã hoàn thành", "Đã hủy"],
-  "Đang xử lý": ["Đã xử lý", "Đã hoàn thành", "Đã hủy"],
+  "Chờ xử lý": ["Đang xử lý", "Đã hoàn thành", "Đã hủy"],
+  "Đang xử lý": ["Đã hoàn thành", "Đã hủy"],
   "Đã xử lý": ["Đã hoàn thành"],
   "Đã hoàn thành": [],
   "Đã hủy": [],

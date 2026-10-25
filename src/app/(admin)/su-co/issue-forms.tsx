@@ -1,14 +1,11 @@
 "use client";
 
-import { useActionState, useState, useEffect, useRef, useTransition } from "react";
+import { useActionState, useState, useTransition } from "react";
 import {
   LoaderCircle,
   ChevronDown,
   Check,
   Lock,
-  Image as ImageIcon,
-  X,
-  ZoomIn,
 } from "lucide-react";
 import {
   createIssue,
@@ -21,7 +18,7 @@ import { ALLOWED_NEXT_STATUSES } from "@/lib/issue-constants";
 import type { IssueRow } from "@/lib/queries";
 import styles from "@/components/business.module.css";
 
-const ISSUE_STATUSES = ["Chờ xử lý", "Đang xử lý", "Đã xử lý", "Đã hoàn thành"];
+const ISSUE_STATUSES = ["Chờ xử lý", "Đang xử lý", "Đã hoàn thành", "Đã hủy"];
 const PRIORITIES = ["Thấp", "Trung bình", "Cao", "Khẩn cấp"];
 const initialState: IssueFormState = { error: null, success: null };
 
@@ -250,7 +247,7 @@ export function IssueForm({
                   lineHeight: 1.4,
                 }}
               >
-                * Ràng buộc quy trình: Chỉ được chuyển tiến (Chờ xử lý ➔ Đang xử lý ➔ Đã xử lý ➔ Đã hoàn thành), không thể chuyển ngược lại trạng thái trước.
+                * Ràng buộc quy trình: Chỉ được chuyển tiến (Chờ xử lý ➔ Đang xử lý ➔ Đã hoàn thành), không thể chuyển ngược lại trạng thái trước.
               </div>
             </div>
           )}
@@ -497,13 +494,7 @@ export function DeleteIssueButton({ maSuCo }: { maSuCo: string }) {
   );
 }
 
-const STATUS_WORKFLOW: Record<string, string[]> = {
-  "Chờ xử lý": ["Đang xử lý", "Đã xử lý", "Đã hoàn thành", "Đã hủy"],
-  "Đang xử lý": ["Đã xử lý", "Đã hoàn thành", "Đã hủy"],
-  "Đã xử lý": ["Đã hoàn thành"],
-  "Đã hoàn thành": [],
-  "Đã hủy": [],
-};
+const STATUS_WORKFLOW: Record<string, string[]> = ALLOWED_NEXT_STATUSES;
 
 /**
  * Chọn trạng thái trực tiếp trên bảng:
@@ -520,11 +511,13 @@ export function IssueStatusSelect({
 }) {
   const normalizedStatus = (currentStatus || "").trim() || "Chờ xử lý";
   const [status, setStatus] = useState(normalizedStatus);
+  const [prevCurrentStatus, setPrevCurrentStatus] = useState(currentStatus);
   const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    setStatus((currentStatus || "").trim() || "Chờ xử lý");
-  }, [currentStatus]);
+  if (currentStatus !== prevCurrentStatus) {
+    setPrevCurrentStatus(currentStatus);
+    setStatus(normalizedStatus);
+  }
 
   const isTerminal = status === "Đã hoàn thành" || status === "Đã hủy";
   const nextOptions = STATUS_WORKFLOW[status] ?? [];

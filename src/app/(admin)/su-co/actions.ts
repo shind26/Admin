@@ -8,7 +8,7 @@ import { ALLOWED_NEXT_STATUSES } from "@/lib/issue-constants";
 
 export type IssueFormState = { error: string | null; success: string | null };
 
-const ISSUE_STATUSES = ["Chờ xử lý", "Đang xử lý", "Đã xử lý", "Đã hoàn thành"];
+const ISSUE_STATUSES = ["Chờ xử lý", "Đang xử lý", "Đã hoàn thành", "Đã hủy"];
 const PRIORITIES = ["Thấp", "Trung bình", "Cao", "Khẩn cấp"];
 
 function text(formData: FormData, key: string) {

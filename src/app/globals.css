@@ -78,9 +78,18 @@ a {
 
 /* Quy tắc in ấn toàn cục */
 @media print {
+  body {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  aside,
+  header,
+  nav,
   .noPrint,
   [data-no-print="true"],
-  aside {
+  .admin-skeleton {
     display: none !important;
   }
 }

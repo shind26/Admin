@@ -242,9 +242,7 @@
 /* Ẩn Sidebar khi in ấn */
 @media print {
   .sidebar,
-  .navSkeleton,
-  :global(.noPrint),
-  :global([data-no-print="true"]) {
+  .navSkeleton {
     display: none !important;
   }
 

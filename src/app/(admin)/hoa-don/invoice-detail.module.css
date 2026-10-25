@@ -410,29 +410,8 @@
     margin: 12mm;
   }
 
-  body {
-    background: #ffffff !important;
-  }
-
-  :global(aside),
-  :global(header),
-  :global(nav),
-  :global(.admin-skeleton),
-  :global(.noPrint),
-  :global([data-no-print="true"]),
-  :global([class*="topBanner"]),
-  :global([class*="sidebar"]),
   .noPrint {
     display: none !important;
-  }
-
-  body * {
-    visibility: hidden;
-  }
-
-  .billPaper,
-  .billPaper * {
-    visibility: visible;
   }
 
   .billPaper {
@@ -443,6 +422,8 @@
     border: none !important;
     padding: 0 !important;
     box-shadow: none !important;
+    background: #ffffff !important;
+  }
     background: #ffffff !important;
   }
 

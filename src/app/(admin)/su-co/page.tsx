@@ -19,8 +19,8 @@ const STATUS_OPTIONS = [
   "All",
   "Chờ xử lý",
   "Đang xử lý",
-  "Đã xử lý",
   "Đã hoàn thành",
+  "Đã hủy",
 ];
 
 function formatDate(value: string | null) {
@@ -31,13 +31,6 @@ function formatDate(value: string | null) {
 function formatMoney(value: string | null) {
   if (value === null) return "-";
   return `${Number(value).toLocaleString("vi-VN")} đ`;
-}
-
-function statusClass(status: string | null) {
-  if (status === "Đã xử lý" || status === "Đã hoàn thành")
-    return styles.badgeOk;
-  if (status === "Đang xử lý") return styles.badgeInfo;
-  return styles.badgeWarn;
 }
 
 function priorityClass(priority: string | null) {
@@ -60,7 +53,9 @@ async function IssuesContent({ searchParams }: { searchParams: SearchParams }) {
 
   const open = issues.filter(
     (issue) =>
-      issue.trang_thai !== "Đã xử lý" && issue.trang_thai !== "Đã hoàn thành",
+      issue.trang_thai !== "Đã hoàn thành" &&
+      issue.trang_thai !== "Đã xử lý" &&
+      issue.trang_thai !== "Đã hủy",
   ).length;
   const totalCost = issues.reduce(
     (sum, issue) => sum + Number(issue.chi_phi_sua_chua ?? 0),

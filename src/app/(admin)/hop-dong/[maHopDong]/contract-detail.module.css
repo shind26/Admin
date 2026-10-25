@@ -405,22 +405,7 @@
 }
 
 @media print {
-  /* Nền trang in hoàn toàn sạch sẽ */
-  :global(body) {
-    background: #ffffff !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
   /* Ẩn toàn bộ giao diện quản trị khỏi luồng in ấn */
-  :global(aside),
-  :global(header),
-  :global(nav),
-  :global(.admin-skeleton),
-  :global(.noPrint),
-  :global([data-no-print="true"]),
-  :global([class*="topBanner"]),
-  :global([class*="sidebar"]),
   .screenOnlyContent,
   .noPrint,
   .printBar,
