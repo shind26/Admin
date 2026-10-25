@@ -15,7 +15,7 @@ export const metadata = {
 async function ForcePasswordContent() {
   const account = await getCurrentAccount();
   if (!account) redirect("/login");
-  if (!account.phai_doi_mat_khau) redirect("/");
+  if (account.da_doi_mat_khau) redirect("/");
 
   return (
     <main className={styles.screen}>

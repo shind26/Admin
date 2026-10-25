@@ -1,0 +1,367 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #244e6e;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.countBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #dceff8;
+  color: #244e6e;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.subTitle {
+  font-size: 12px;
+  color: #627d90;
+  margin: 0;
+}
+
+/* ── Tabs bộ lọc ── */
+.tabsRow {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid #e2ebf2;
+  padding-bottom: 6px;
+}
+
+.tabBtn {
+  border: none;
+  background: transparent;
+  color: #627d90;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tabBtn:hover {
+  color: #244e6e;
+  background: #eff8fc;
+}
+
+.tabBtnActive {
+  color: #244e6e;
+  background: #dceff8;
+  font-weight: 700;
+}
+
+/* ── Trục Timeline dọc ── */
+.timeline {
+  position: relative;
+  padding-left: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 4px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: 12px;
+  width: 2px;
+  background: #cbdce8;
+}
+
+.timelineItem {
+  position: relative;
+}
+
+.timelineDot {
+  position: absolute;
+  left: -28px;
+  top: 14px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #cbdce8;
+  display: grid;
+  place-items: center;
+  color: #627d90;
+  box-shadow: 0 1px 3px rgba(66, 91, 107, 0.08);
+  z-index: 2;
+}
+
+.timelineDotActive {
+  border-color: #166534;
+  background: #e6f4ea;
+  color: #166534;
+}
+
+.timelineDotEnded {
+  border-color: #cbdce8;
+  background: #f1f4f8;
+  color: #627d90;
+}
+
+.timelineDotPending {
+  border-color: #4a90c2;
+  background: #eff8fc;
+  color: #4a90c2;
+}
+
+/* ── Thẻ chi tiết hợp đồng ── */
+.card {
+  background: #ffffff;
+  border: 1px solid #e2ebf2;
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  border-color: #76b5d8;
+  box-shadow: 0 3px 12px rgba(74, 144, 194, 0.12);
+}
+
+.cardActive {
+  border-color: #76b5d8;
+  background: #eff8fc;
+  border-left: 4px solid #4a90c2;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tenantInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tenantAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #dceff8;
+  color: #244e6e;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tenantAvatarActive {
+  background: #e6f4ea;
+  color: #166534;
+}
+
+.tenantNameGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.tenantName {
+  font-size: 14px;
+  font-weight: 700;
+  color: #244e6e;
+}
+
+.tenantRole {
+  font-size: 11px;
+  color: #627d90;
+}
+
+.headerBadges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badgeOk {
+  background: #e6f4ea;
+  color: #166534;
+  border: 1px solid #b8e2c8;
+}
+
+.badgeInfo {
+  background: #dceff8;
+  color: #1d5c8a;
+  border: 1px solid #b8ddf0;
+}
+
+.badgeMuted {
+  background: #f1f4f8;
+  color: #627d90;
+  border: 1px solid #dce4ec;
+}
+
+.contractCode {
+  font-family: monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #244e6e;
+  background: #eff8fc;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #dceff8;
+  text-decoration: none;
+}
+
+.contractCode:hover {
+  background: #dceff8;
+  border-color: #76b5d8;
+}
+
+/* ── Lưới thông tin hợp đồng ── */
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #eff8fc;
+  border-radius: 8px;
+  border: 1px solid #dceff8;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #627d90;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fieldValue {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #425b6b;
+}
+
+.priceCol {
+  color: #244e6e;
+  font-size: 13.5px;
+  font-weight: 800;
+}
+
+.durationTag {
+  display: inline-block;
+  font-size: 10.5px;
+  color: #627d90;
+  font-weight: 600;
+  background: #dceff8;
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+
+/* ── Chân thẻ ── */
+.cardFooter {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.linkDetail {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a90c2;
+  text-decoration: none;
+}
+
+.linkDetail:hover {
+  color: #3a78a6;
+  text-decoration: underline;
+}
+
+.emptyState {
+  padding: 32px 16px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px dashed #cbdce8;
+  border-radius: 12px;
+  color: #627d90;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.btnNewContract {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #4a90c2;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  margin-top: 6px;
+  transition: background 0.15s;
+}
+
+.btnNewContract:hover {
+  background: #3a78a6;
+}

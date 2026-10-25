@@ -1,156 +1,815 @@
-.statsGrid {
+/* ─────────────────────────────────────────────────────────────
+   DASHBOARD STYLES (SKY BLUE PMS - FINANCIAL COMMAND CENTER)
+───────────────────────────────────────────────────────────── */
+
+.dashboardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── 1. DASHBOARD HEADER & QUICK ACTIONS ── */
+.dashHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: #ffffff;
+  padding: 18px 24px;
+  border-radius: 14px;
+  border: 1px solid #e2ebf2;
+  box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
+}
+
+.dashTitleCol h1 {
+  font-size: 21px;
+  font-weight: 800;
+  color: #4a90c2;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.dashSub {
+  font-size: 13px;
+  color: #425b6b;
+  margin-top: 4px;
+}
+
+.dashQuickActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btnActionPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #4a90c2;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(74, 144, 194, 0.25);
+}
+
+.btnActionPrimary:hover {
+  background: #3a7ba8;
+  transform: translateY(-1px);
+}
+
+.btnActionSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  color: #425b6b;
+  border: 1px solid #cbdce8;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.btnActionSecondary:hover {
+  background: #eff8fc;
+  border-color: #76b5d8;
+  color: #4a90c2;
+}
+
+/* ── 2. FINANCIAL KPI CARDS GRID ── */
+.financialGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
-  margin-bottom: 24px;
 }
 
-.statCard {
+.kpiCard {
   background: #ffffff;
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  border-radius: 14px;
+  padding: 20px;
+  border: 1px solid #e2ebf2;
+  box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 132px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.statHead {
+.kpiCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(74, 144, 194, 0.1);
+  border-color: #cbdce8;
+}
+
+.kpiHead {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.kpiLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #7e97a6;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.kpiIconBox {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpiValue {
+  font-size: 24px;
+  font-weight: 800;
+  color: #234358;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.kpiFoot {
+  font-size: 12px;
+  color: #425b6b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Progress bar inside KPI */
+.progressTrack {
+  width: 100%;
+  height: 6px;
+  background: #f1f4f8;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 6px 0 8px;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.kpiBadgeUp {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #e6f4ea;
+  color: #166534;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.kpiBadgeDown {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #fde8e8;
+  color: #991b1b;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+/* ── 3. CHARTS GRID (BAR & DONUT) ── */
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 1.6fr 1.1fr;
+  gap: 20px;
+}
+
+.chartCard {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 22px;
+  border: 1px solid #e2ebf2;
+  box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.chartHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chartTitle {
+  font-size: 15px;
+  font-weight: 800;
+  color: #234358;
+  margin: 0;
+}
+
+.chartSub {
+  font-size: 12px;
+  color: #7e97a6;
+  margin: 3px 0 0;
+}
+
+.chartLegend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: #425b6b;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.dotCollected {
+  background: #4a90c2;
+}
+
+.dotDebt {
+  background: #f59e0b;
+}
+
+/* SVG Bar Chart */
+.svgWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.chartSvg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.barTransition {
+  transition: all 0.2s ease;
+}
+
+/* Tooltip floating box */
+.tooltipBox {
+  position: absolute;
+  top: 15px;
+  transform: translateX(-50%);
+  background: #234358;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(35, 67, 88, 0.25);
+  pointer-events: none;
+  z-index: 20;
+  font-size: 11.5px;
+  min-width: 170px;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.tooltipTitle {
+  font-weight: 700;
+  color: #dceff8;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  font-size: 10.5px;
+}
+
+.tooltipRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin: 3px 0;
+}
+
+.tooltipDotOk {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4a90c2;
+  display: inline-block;
+}
+
+.tooltipDotWarn {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f59e0b;
+  display: inline-block;
+}
+
+.tooltipDivider {
+  height: 1px;
+  background: #425b6b;
+  margin: 6px 0;
+}
+
+/* Donut Chart Layout */
+.donutLayout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.donutSvgContainer {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  flex-shrink: 0;
+}
+
+.donutSvg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.donutSegment {
+  transition: stroke-dasharray 0.3s ease;
+}
+
+.donutCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.donutCenterLabel {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #7e97a6;
+  text-transform: uppercase;
+}
+
+.donutCenterVal {
+  font-size: 16px;
+  font-weight: 800;
+  color: #234358;
+}
+
+.donutLegendList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 180px;
+}
+
+.donutLegendRow {
+  display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.statLabel {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #707eae;
-}
-
-.statIcon {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: #eef2ff;
-  color: #4f46e5;
+.legendColorBox {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
   flex-shrink: 0;
 }
 
-.warnIcon {
-  background: #fffbeb;
-  color: #d97706;
+.legendTextCol {
+  flex: 1;
 }
 
-.safeIcon {
-  background: #dcfce7;
-  color: #16a34a;
-}
-
-.statValue {
-  font-size: 24px;
-  font-weight: 700;
-  color: #2b3674;
-  margin: 10px 0;
-}
-
-.statInline {
-  font-size: 13px;
-  font-weight: 400;
-  color: #707eae;
-}
-
-.statFoot {
+.legendCategory {
   font-size: 12px;
-  color: #707eae;
+  color: #425b6b;
+  font-weight: 600;
 }
 
-.ok {
-  color: #15803d;
-  font-weight: 700;
-}
-
-.danger {
-  color: #dc2626;
-  font-weight: 700;
-}
-
-.readyCard {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 48px 24px;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-}
-
-.readyIcon {
-  color: #16a34a;
-  margin-bottom: 12px;
-}
-
-.readyCard h2 {
-  font-size: 18px;
-  font-weight: 700;
-  color: #2b3674;
-  margin-bottom: 10px;
-}
-
-.readyCard p {
-  max-width: 620px;
-  margin: 0 auto;
+.legendAmount {
   font-size: 13px;
-  line-height: 1.7;
-  color: #707eae;
+  font-weight: 800;
+  color: #234358;
 }
 
-.readyActions {
+.legendPercentBadge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ── 4. FINANCIAL TABLES GRID ── */
+.tablesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.tableCard {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px;
+  border: 1px solid #e2ebf2;
+  box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
-  flex-wrap: wrap;
+  flex-direction: column;
 }
 
-.primaryButton,
-.secondaryButton {
+.tableHeadRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.tableTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iconBadgeWarn {
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
-  padding: 10px 22px;
-  font-size: 13.5px;
+  background: #f6e6b4;
+  color: #854d0e;
+  display: grid;
+  place-items: center;
+}
+
+.iconBadgeOk {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #e6f4ea;
+  color: #166534;
+  display: grid;
+  place-items: center;
+}
+
+.tableTitle {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #234358;
+  margin: 0;
+}
+
+.tableSub {
+  font-size: 11.5px;
+  color: #7e97a6;
+  margin: 2px 0 0;
+}
+
+.viewAllLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4a90c2;
+  text-decoration: none;
+}
+
+.viewAllLink:hover {
+  text-decoration: underline;
+  color: #3a7ba8;
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.dashTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.dashTable th {
+  text-align: left;
+  padding: 10px 12px;
+  background: #76b5d8;
+  color: #ffffff;
+  font-weight: 700;
+  border-bottom: 1px solid #5c9fc2;
+  white-space: nowrap;
+}
+
+.dashTable tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.dashTable tbody tr:nth-child(even) {
+  background: #eff8fc;
+}
+
+.dashTable tbody tr:hover {
+  background: #e0f0f8;
+}
+
+.dashTable td {
+  padding: 11px 12px;
+  border-bottom: 1px solid #eaf1f6;
+  color: #425b6b;
+  vertical-align: middle;
+}
+
+.dashTable tr:last-child td {
+  border-bottom: none;
+}
+
+.strongText {
+  font-weight: 700;
+  color: #234358;
+}
+
+.mutedText {
+  font-size: 11px;
+  color: #7e97a6;
+}
+
+.invoiceBadge {
+  font-family: monospace;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #26597d;
+  background: #dceff8;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.debtHighlight {
+  color: #991b1b;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.collectedHighlight {
+  color: #166534;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.dateCell {
+  color: #7e97a6;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btnQuickPay {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #4a90c2;
+  color: #ffffff;
+  padding: 4px 9px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.btnQuickPay:hover {
+  background: #3a7ba8;
+}
+
+.btnViewInv {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #f1f4f8;
+  color: #425b6b;
+  border: 1px solid #cbdce8;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 11px;
   font-weight: 600;
   text-decoration: none;
-  border: 1px solid transparent;
+  transition: all 0.15s ease;
 }
 
-.primaryButton {
-  background: #1e40af;
-  color: #ffffff;
+.btnViewInv:hover {
+  background: #eff8fc;
+  color: #4a90c2;
 }
 
-.primaryButton:hover {
-  background: #1e3a8a;
+.methodBadge {
+  background: #dceff8;
+  color: #26597d;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
 }
 
-.secondaryButton {
-  border-color: #cbd5e1;
-  color: #475569;
+.statusOk {
+  background: #e6f4ea;
+  color: #166534;
+  border: 1px solid #c6e7d0;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.statusWarn {
+  background: #f6e6b4;
+  color: #854d0e;
+  border: 1px solid #eed793;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.emptyCell {
+  text-align: center;
+  padding: 28px 12px;
+  color: #7e97a6;
+}
+
+.emptyBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #166534;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* ── 5. OPERATIONS & ALERT BANNER ── */
+.operationsRow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.opCard {
   background: #ffffff;
+  border-radius: 12px;
+  padding: 14px 18px;
+  border: 1px solid #e2ebf2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(66, 91, 107, 0.03);
 }
 
-.secondaryButton:hover {
-  background: #f8fafc;
+.opCard:hover {
+  border-color: #76b5d8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 194, 0.1);
 }
 
+.opLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.opIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.opLabel {
+  font-size: 12px;
+  color: #7e97a6;
+}
+
+.opValue {
+  font-size: 16px;
+  font-weight: 800;
+  color: #234358;
+}
+
+/* Banner nhắc cọc chờ duyệt */
+.pendingQueueAlert {
+  background: linear-gradient(135deg, #e6f4ea 0%, #eff8fc 100%);
+  border: 1px solid #c6e7d0;
+  border-radius: 14px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pendingAlertLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pendingAlertText h4 {
+  font-size: 14px;
+  font-weight: 800;
+  color: #166534;
+  margin: 0;
+}
+
+.pendingAlertText p {
+  font-size: 12px;
+  color: #425b6b;
+  margin: 2px 0 0;
+}
+
+.btnAlertAction {
+  background: #4a90c2;
+  color: #ffffff;
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.btnAlertAction:hover {
+  background: #3a7ba8;
+}
+
+/* Responsive */
 @media (max-width: 1200px) {
-  .statsGrid {
+  .financialGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .chartsGrid {
+    grid-template-columns: 1fr;
+  }
+  .tablesGrid {
+    grid-template-columns: 1fr;
+  }
+  .operationsRow {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 560px) {
-  .statsGrid {
+@media (max-width: 640px) {
+  .financialGrid {
     grid-template-columns: 1fr;
+  }
+  .operationsRow {
+    grid-template-columns: 1fr;
+  }
+  .dashHeader {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

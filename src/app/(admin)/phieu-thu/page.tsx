@@ -9,12 +9,25 @@ import {
   DeleteReceiptButton,
   ReceiptEditorToggle,
   ReceiptForm,
+  QuickApproveReceiptButton,
+  QuickRejectReceiptButton,
 } from "./receipt-forms";
+import { ReceiptDetailTrigger } from "./receipt-detail-modal";
 import styles from "@/components/business.module.css";
 
-type SearchParams = Promise<{ status?: string; invoiceId?: string }>;
+type SearchParams = Promise<{
+  status?: string;
+  invoiceId?: string;
+  keyword?: string;
+}>;
 
-const STATUS_OPTIONS = ["All", "Đã xác nhận", "Chờ xác nhận", "Từ chối"];
+const STATUS_OPTIONS = [
+  "All",
+  "Đã xác nhận",
+  "Đã khớp lệnh",
+  "Chờ xác nhận",
+  "Từ chối",
+];
 
 function formatMoney(value: string | null) {
   if (value === null) return "0 đ";
@@ -27,7 +40,7 @@ function formatDate(value: string | null) {
 }
 
 function statusClass(status: string | null) {
-  if (status === "Đã xác nhận") return styles.badgeOk;
+  if (status === "Đã xác nhận" || status === "Đã khớp lệnh") return styles.badgeOk;
   if (status === "Từ chối") return styles.badgeMuted;
   return styles.badgeWarn;
 }
@@ -42,9 +55,10 @@ async function ReceiptsContent({
   const params = await searchParams;
   const status = params.status || "All";
   const invoiceId = params.invoiceId;
+  const keyword = params.keyword;
 
   const [receipts, invoices] = await Promise.all([
-    getReceipts({ status, invoiceId }, scopeQuery),
+    getReceipts({ status, invoiceId, keyword }, scopeQuery),
     getInvoices({ status: "All" }, scopeQuery),
   ]);
 
@@ -52,7 +66,12 @@ async function ReceiptsContent({
     (invoice) => Number(invoice.tong_tien ?? 0) > Number(invoice.da_thu ?? 0),
   );
   const confirmed = receipts.filter(
-    (receipt) => receipt.trang_thai === "Đã xác nhận",
+    (receipt) =>
+      receipt.trang_thai === "Đã xác nhận" ||
+      receipt.trang_thai === "Đã khớp lệnh",
+  );
+  const pending = receipts.filter(
+    (receipt) => receipt.trang_thai === "Chờ xác nhận",
   );
   const totalCollected = confirmed.reduce(
     (sum, receipt) => sum + Number(receipt.so_tien_thu ?? 0),
@@ -60,26 +79,15 @@ async function ReceiptsContent({
   );
 
   return (
-    <AdminShell active="invoice">
+    <AdminShell active="receipt">
       <div className={styles.pageHead}>
         <div>
           <h1 className={styles.title}>Phiếu thu</h1>
           <p className={styles.subtitle}>
             {invoiceId
               ? `Đang lọc theo hóa đơn ${invoiceId}`
-              : "Phiếu thu sẽ tự cập nhật trạng thái hóa đơn"}
+              : "Phiếu thu tiền phòng & dịch vụ — Tự động đồng bộ công nợ hóa đơn"}
           </p>
-        </div>
-        <div className={styles.navTabs}>
-          <Link href="/hop-dong" className={styles.navTab}>
-            Hợp đồng
-          </Link>
-          <Link href="/hoa-don" className={styles.navTab}>
-            Hóa đơn
-          </Link>
-          <Link href="/phieu-thu" className={styles.navTabActive}>
-            Phiếu thu
-          </Link>
         </div>
       </div>
 
@@ -89,8 +97,12 @@ async function ReceiptsContent({
           <div className={styles.miniValue}>{receipts.length}</div>
         </div>
         <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Đã xác nhận</div>
+          <div className={styles.miniLabel}>Đã xác nhận / Khớp lệnh</div>
           <div className={styles.miniValue}>{confirmed.length}</div>
+        </div>
+        <div className={styles.miniCard}>
+          <div className={styles.miniLabel}>Chờ xác nhận</div>
+          <div className={styles.miniValue}>{pending.length}</div>
         </div>
         <div className={styles.miniCard}>
           <div className={styles.miniLabel}>Tổng tiền đã thu</div>
@@ -101,7 +113,7 @@ async function ReceiptsContent({
       </section>
 
       <details className={styles.createBox}>
-        <summary className={styles.createSummary}>+ Ghi nhận phiếu thu</summary>
+        <summary className={styles.createSummary}>+ Ghi nhận phiếu thu mới</summary>
         <ReceiptForm
           mode="create"
           invoices={unpaidInvoices}
@@ -111,7 +123,16 @@ async function ReceiptsContent({
 
       <form className={styles.filterCard} action="/phieu-thu">
         <div className={styles.filterField}>
-          <label htmlFor="invoiceId">Mã hóa đơn (để trống xem tất cả)</label>
+          <label htmlFor="keyword">Tìm kiếm nhanh</label>
+          <input
+            id="keyword"
+            name="keyword"
+            defaultValue={keyword ?? ""}
+            placeholder="Mã phiếu, HĐ, phòng, khách, tra cứu..."
+          />
+        </div>
+        <div className={styles.filterField}>
+          <label htmlFor="invoiceId">Mã hóa đơn</label>
           <input
             id="invoiceId"
             name="invoiceId"
@@ -145,11 +166,11 @@ async function ReceiptsContent({
             <thead>
               <tr>
                 <th>Mã phiếu thu</th>
+                <th>Khách thuê &amp; Phòng</th>
                 <th>Hóa đơn</th>
-                <th>Phòng</th>
                 <th>Số tiền</th>
                 <th>Ngày thu</th>
-                <th>Hình thức</th>
+                <th>Hình thức &amp; Tra cứu</th>
                 <th>Trạng thái</th>
                 <th>Thao tác</th>
               </tr>
@@ -165,29 +186,77 @@ async function ReceiptsContent({
                 receipts.map((receipt) => (
                   <tr key={receipt.ma_phieu_thu}>
                     <td>
-                      <div className={styles.strong}>
-                        {receipt.ma_phieu_thu}
+                      <div>
+                        <ReceiptDetailTrigger receipt={receipt} />
                       </div>
-                      <div className={styles.muted}>{receipt.ma_tra_cuu}</div>
+                      {receipt.ma_tra_cuu && (
+                        <div
+                          className={styles.muted}
+                          style={{ fontSize: "11px", marginTop: "2px" }}
+                        >
+                          TC: {receipt.ma_tra_cuu}
+                        </div>
+                      )}
                     </td>
-                    <td>{receipt.ma_hoa_don}</td>
-                    <td>{receipt.ma_phong}</td>
-                    <td className={styles.strong}>
+                    <td>
+                      <div className={styles.strong}>
+                        {receipt.ten_khach || "—"}
+                      </div>
+                      <div className={styles.muted}>
+                        Phòng {receipt.ma_phong || "—"}{" "}
+                        {receipt.toa_nha ? `(${receipt.toa_nha})` : ""}
+                      </div>
+                    </td>
+                    <td>
+                      <div className={styles.strong}>
+                        {receipt.ma_hoa_don || "—"}
+                      </div>
+                      {receipt.tong_tien_hoa_don && (
+                        <div className={styles.muted} style={{ fontSize: "11px" }}>
+                          Tổng: {formatMoney(receipt.tong_tien_hoa_don)}
+                        </div>
+                      )}
+                    </td>
+                    <td className={styles.strong} style={{ color: "#0f766e" }}>
                       {formatMoney(receipt.so_tien_thu)}
                     </td>
                     <td>{formatDate(receipt.ngay_thu)}</td>
-                    <td>{receipt.hinh_thuc}</td>
+                    <td>
+                      <div>{receipt.hinh_thuc || "—"}</div>
+                    </td>
                     <td>
                       <span className={statusClass(receipt.trang_thai)}>
                         {receipt.trang_thai}
                       </span>
                     </td>
                     <td>
-                      <div className={styles.actionCell}>
+                      <div
+                        className={styles.actionCell}
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "6px",
+                          alignItems: "center",
+                        }}
+                      >
+                        <ReceiptDetailTrigger receipt={receipt} asButton={true} />
+
+                        {receipt.trang_thai === "Chờ xác nhận" && (
+                          <>
+                            <QuickApproveReceiptButton
+                              maPhieuThu={receipt.ma_phieu_thu}
+                            />
+                            <QuickRejectReceiptButton
+                              maPhieuThu={receipt.ma_phieu_thu}
+                            />
+                          </>
+                        )}
+
                         <ReceiptEditorToggle
                           receipt={receipt}
                           invoices={invoices}
                         />
+
                         <DeleteReceiptButton
                           maPhieuThu={receipt.ma_phieu_thu}
                         />

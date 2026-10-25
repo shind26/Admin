@@ -5,10 +5,9 @@ import { LoaderCircle } from "lucide-react";
 import {
   createInvoice,
   deleteInvoice,
-  updateInvoice,
   type InvoiceFormState,
 } from "./actions";
-import type { ContractOption, InvoiceRow } from "@/lib/queries";
+import type { ContractOption } from "@/lib/queries";
 import styles from "@/components/business.module.css";
 
 const initialState: InvoiceFormState = { error: null, success: null };
@@ -24,105 +23,96 @@ function inDays(days: number) {
 }
 
 export function InvoiceForm({
-  mode,
-  invoice,
   contracts,
 }: {
-  mode: "create" | "edit";
-  invoice?: InvoiceRow;
   contracts: ContractOption[];
 }) {
-  const action = mode === "create" ? createInvoice : updateInvoice;
-  const [state, formAction, pending] = useActionState(action, initialState);
+  const [state, formAction, pending] = useActionState(createInvoice, initialState);
+  const [loaiPhatSinh, setLoaiPhatSinh] = useState("BoiThuong");
 
   return (
     <form action={formAction} className={styles.formGrid}>
-      {mode === "edit" && (
-        <input
-          type="hidden"
-          name="maHoaDon"
-          value={invoice?.ma_hoa_don ?? ""}
-        />
-      )}
+      <div style={{ gridColumn: "1 / -1", background: "#f8fafc", padding: "10px 14px", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12.5, color: "#475569", lineHeight: 1.5 }}>
+        💡 <strong>Lưu ý:</strong> Hóa đơn định kỳ tháng (tiền phòng + điện nước + dịch vụ trọn gói) được hệ thống <strong>tự động sinh khi chốt số Điện Nước</strong>. Form này dùng để lập hóa đơn cho các <strong>khoản thu phát sinh / đột xuất</strong> ngoài chu kỳ (đền bù hư hại, dịch vụ thêm, tiền lẻ ngày...).
+      </div>
 
       <div className={`${styles.formField} ${styles.formFieldWide}`}>
-        <label htmlFor={`maHopDong-${mode}`}>Hợp đồng *</label>
+        <label htmlFor="maHopDong">Hợp đồng / Phòng thuê *</label>
         <select
-          id={`maHopDong-${mode}`}
+          id="maHopDong"
           name="maHopDong"
-          defaultValue={invoice?.ma_hop_dong ?? ""}
+          defaultValue=""
           required
         >
-          <option value="">-- Chọn hợp đồng --</option>
+          <option value="">-- Chọn phòng / hợp đồng --</option>
           {contracts.map((contract) => (
             <option key={contract.ma_hop_dong} value={contract.ma_hop_dong}>
-              {contract.ma_hop_dong} - {contract.ma_phong} -{" "}
-              {contract.ten_khach}
+              Phòng {contract.ma_phong} — {contract.ten_khach} ({contract.ma_hop_dong})
             </option>
           ))}
         </select>
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`ngayLap-${mode}`}>Ngày lập</label>
+        <label htmlFor="loaiPhatSinh">Phân loại phát sinh *</label>
+        <select
+          id="loaiPhatSinh"
+          name="loaiPhatSinh"
+          value={loaiPhatSinh}
+          onChange={(e) => setLoaiPhatSinh(e.target.value)}
+        >
+          <option value="BoiThuong">Bồi thường / Sửa chữa tài sản</option>
+          <option value="DichVuThem">Dịch vụ phát sinh ngoài gói</option>
+          <option value="TienPhongLe">Tiền phòng lẻ ngày</option>
+          <option value="PhatViPham">Phạt vi phạm nội quy</option>
+          <option value="Khac">Khoản thu phát sinh khác</option>
+        </select>
+      </div>
+
+      <div className={styles.formField}>
+        <label htmlFor="tenKhoanThu">Tên khoản thu / Diễn giải *</label>
         <input
-          id={`ngayLap-${mode}`}
+          id="tenKhoanThu"
+          name="tenKhoanThu"
+          type="text"
+          placeholder="Ví dụ: Bồi thường vỡ gương, Thuê thêm nệm..."
+          required
+        />
+      </div>
+
+      <div className={styles.formField}>
+        <label htmlFor="soTien">Số tiền phát sinh (đ) *</label>
+        <input
+          id="soTien"
+          name="soTien"
+          type="number"
+          step="1000"
+          min="1000"
+          placeholder="200.000"
+          required
+        />
+      </div>
+
+      <div className={styles.formField}>
+        <label htmlFor="ngayLap">Ngày lập</label>
+        <input
+          id="ngayLap"
           name="ngayLap"
           type="date"
-          defaultValue={invoice?.ngay_lap?.slice(0, 10) ?? today()}
+          defaultValue={today()}
         />
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`hanDongTien-${mode}`}>Hạn đóng tiền</label>
+        <label htmlFor="hanDongTien">Hạn đóng tiền *</label>
         <input
-          id={`hanDongTien-${mode}`}
+          id="hanDongTien"
           name="hanDongTien"
           type="date"
-          defaultValue={invoice?.han_dong_tien?.slice(0, 10) ?? inDays(7)}
+          defaultValue={inDays(5)}
+          required
         />
       </div>
-
-      <div className={styles.formField}>
-        <label htmlFor={`tienPhong-${mode}`}>Tiền phòng (đ)</label>
-        <input
-          id={`tienPhong-${mode}`}
-          name="tienPhong"
-          type="number"
-          step="1000"
-          defaultValue={invoice?.tong_tien ? "" : ""}
-        />
-      </div>
-
-      <div className={styles.formField}>
-        <label htmlFor={`tienDienNuoc-${mode}`}>Tiền điện nước (đ)</label>
-        <input
-          id={`tienDienNuoc-${mode}`}
-          name="tienDienNuoc"
-          type="number"
-          step="1000"
-        />
-      </div>
-
-      <div className={styles.formField}>
-        <label htmlFor={`tienDichVuKhac-${mode}`}>Tiền dịch vụ khác (đ)</label>
-        <input
-          id={`tienDichVuKhac-${mode}`}
-          name="tienDichVuKhac"
-          type="number"
-          step="1000"
-        />
-      </div>
-
-      <div className={styles.formField}>
-        <label htmlFor={`noCu-${mode}`}>Nợ cũ (đ)</label>
-        <input id={`noCu-${mode}`} name="noCu" type="number" step="1000" />
-      </div>
-
-      <p className={`${styles.formMessage} ${styles.formHint}`}>
-        Tổng tiền = tiền phòng + điện nước + dịch vụ khác + nợ cũ. Trạng thái
-        thanh toán được tính tự động theo phiếu thu đã xác nhận.
-      </p>
 
       {state.error && (
         <p className={`${styles.formMessage} ${styles.formError}`} role="alert">
@@ -148,10 +138,8 @@ export function InvoiceForm({
             <>
               <LoaderCircle size={15} className={styles.spinner} /> Đang lưu...
             </>
-          ) : mode === "create" ? (
-            "Tạo hóa đơn"
           ) : (
-            "Lưu thay đổi"
+            "Tạo hóa đơn phát sinh"
           )}
         </button>
       </div>
@@ -181,32 +169,5 @@ export function DeleteInvoiceButton({ maHoaDon }: { maHoaDon: string }) {
       </form>
       {state.error && <span className={styles.rowError}>{state.error}</span>}
     </span>
-  );
-}
-
-export function InvoiceEditorToggle({
-  invoice,
-  contracts,
-}: {
-  invoice: InvoiceRow;
-  contracts: ContractOption[];
-}) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <button
-        className={styles.linkButton}
-        type="button"
-        onClick={() => setOpen((value) => !value)}
-      >
-        {open ? "Đóng" : "Sửa"}
-      </button>
-      {open && (
-        <div className={styles.inlineEditor}>
-          <InvoiceForm mode="edit" invoice={invoice} contracts={contracts} />
-        </div>
-      )}
-    </>
   );
 }

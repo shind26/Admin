@@ -4,6 +4,9 @@ import { revalidatePath } from "next/cache";
 import { getDbPool } from "@/lib/db";
 import { assertContractInScope, assertInvoiceInScope } from "@/lib/guards";
 import { getCurrentAccount, requireScope } from "@/lib/session";
+import { createNotification } from "@/lib/notifications";
+import { ScopeQuery } from "@/lib/scope";
+import { getInvoiceDetail } from "@/lib/queries";
 
 export type InvoiceFormState = { error: string | null; success: string | null };
 
@@ -19,28 +22,8 @@ function money(formData: FormData, key: string) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-/** Tính trạng thái theo InvoiceController.RefreshStatus dựa trên phiếu thu đã xác nhận. */
-async function refreshInvoiceStatus(maHoaDon: string, tongTien: number) {
-  const { rows } = await getDbPool().query<{ paid: string }>(
-    `SELECT COALESCE(SUM(so_tien_thu), 0)::text AS paid
-     FROM public.phieu_thu
-     WHERE ma_hoa_don = $1 AND trang_thai = 'Đã xác nhận'`,
-    [maHoaDon],
-  );
-  const paid = Number(rows[0]?.paid ?? 0);
-  const trangThai =
-    paid <= 0
-      ? "Chưa thanh toán"
-      : paid >= tongTien
-        ? "Đã thanh toán"
-        : "Thanh toán một phần";
-  await getDbPool().query(
-    "UPDATE public.hoa_don SET trang_thai = $2 WHERE ma_hoa_don = $1",
-    [maHoaDon, trangThai],
-  );
-}
 
-/** Tạo hóa đơn theo InvoiceController.Create. */
+/** Tạo hóa đơn phát sinh / thu đột xuất ngoài chu kỳ. */
 export async function createInvoice(
   _previous: InvoiceFormState,
   formData: FormData,
@@ -50,133 +33,110 @@ export async function createInvoice(
   const { scope } = await requireScope();
 
   const maHopDong = text(formData, "maHopDong");
-  const ngayLap = text(formData, "ngayLap");
-  const hanDongTien = text(formData, "hanDongTien");
+  const loaiPhatSinh = text(formData, "loaiPhatSinh") || "Khac";
+  const tenKhoanThu = text(formData, "tenKhoanThu");
+  const soTien = money(formData, "soTien");
+  const ngayLap = text(formData, "ngayLap") || new Date().toISOString().slice(0, 10);
+  const hanDongTien = text(formData, "hanDongTien") || new Date(Date.now() + 5 * 86400000).toISOString().slice(0, 10);
 
-  if (!maHopDong) return { error: "Vui lòng chọn hợp đồng.", success: null };
+  if (!maHopDong) return { error: "Vui lòng chọn hợp đồng / phòng.", success: null };
+  if (!tenKhoanThu) return { error: "Vui lòng nhập tên khoản thu / lý do phát sinh.", success: null };
+  if (soTien <= 0) return { error: "Số tiền phát sinh phải lớn hơn 0 đ.", success: null };
+  if (hanDongTien < ngayLap) {
+    return { error: "Hạn đóng tiền không được trước ngày lập hóa đơn.", success: null };
+  }
 
   const contractGuard = await assertContractInScope(maHopDong, scope);
   if (contractGuard) return { error: contractGuard, success: null };
-  if (hanDongTien && ngayLap && hanDongTien < ngayLap) {
-    return { error: "Hạn đóng tiền không được trước ngày lập.", success: null };
-  }
 
-  const tienPhong = money(formData, "tienPhong");
-  const tienDienNuoc = money(formData, "tienDienNuoc");
-  const tienDichVuKhac = money(formData, "tienDichVuKhac");
-  const noCu = money(formData, "noCu");
-  const tongTien = tienPhong + tienDienNuoc + tienDichVuKhac + noCu;
-
-  if (tongTien <= 0)
-    return { error: "Tổng tiền hóa đơn phải lớn hơn 0.", success: null };
-
+  const client = await getDbPool().connect();
   try {
-    const { rows } = await getDbPool().query(
-      "SELECT 1 FROM public.hop_dong WHERE ma_hop_dong = $1 LIMIT 1",
+    await client.query("BEGIN");
+
+    const { rows: contractRows } = await client.query<{
+      ma_phong: string;
+      toa_nha: string | null;
+      rep_tai_khoan: string | null;
+    }>(
+      `SELECT hd.ma_phong, p.toa_nha, k.ma_tai_khoan AS rep_tai_khoan
+       FROM public.hop_dong hd
+       LEFT JOIN public.phong p ON p.ma_phong = hd.ma_phong
+       LEFT JOIN public.khach_thue k ON k.ma_khach = hd.ma_khach_dai_dien
+       WHERE hd.ma_hop_dong = $1 LIMIT 1`,
       [maHopDong],
     );
-    if (rows.length === 0)
+    if (contractRows.length === 0) {
+      await client.query("ROLLBACK");
       return { error: "Hợp đồng không tồn tại.", success: null };
+    }
+    const contract = contractRows[0];
 
-    const maHoaDon =
-      "HD" + crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase();
-    await getDbPool().query(
+    const maHoaDon = "HDPS" + crypto.randomUUID().replace(/-/g, "").slice(0, 6).toUpperCase();
+    const tienPhong = loaiPhatSinh === "TienPhongLe" ? soTien : 0;
+    const tienDichVuKhac = loaiPhatSinh !== "TienPhongLe" ? soTien : 0;
+
+    await client.query(
       `INSERT INTO public.hoa_don
          (ma_hoa_don, ma_hop_dong, loai_giao_dich, tien_phong, tien_dien_nuoc,
           tien_dich_vu_khac, no_cu, tong_tien, ngay_lap, han_dong_tien, trang_thai)
-       VALUES ($1,$2,'Thu',$3,$4,$5,$6,$7,$8,$9,'Chưa thanh toán')`,
+       VALUES ($1, $2, 'Phát sinh', $3, 0, $4, 0, $5, $6, $7, 'Chưa thanh toán')`,
       [
         maHoaDon,
         maHopDong,
         tienPhong,
-        tienDienNuoc,
         tienDichVuKhac,
-        noCu,
-        tongTien,
-        ngayLap || null,
-        hanDongTien || null,
+        soTien,
+        ngayLap,
+        hanDongTien,
       ],
     );
-  } catch {
-    return {
-      error: "Không thể lưu hóa đơn. Hãy kiểm tra dữ liệu và thử lại.",
-      success: null,
-    };
-  }
 
-  revalidatePath("/hoa-don");
-  return { error: null, success: "Tạo hóa đơn thành công." };
-}
-
-/** Cập nhật hóa đơn theo InvoiceController.Edit (không cho tổng thấp hơn số đã thu). */
-export async function updateInvoice(
-  _previous: InvoiceFormState,
-  formData: FormData,
-): Promise<InvoiceFormState> {
-  const account = await getCurrentAccount();
-  if (!account) return { error: "Phiên đăng nhập đã hết hạn.", success: null };
-  const { scope } = await requireScope();
-
-  const maHoaDon = text(formData, "maHoaDon");
-  const maHopDong = text(formData, "maHopDong");
-  if (!maHoaDon) return { error: "Thiếu mã hóa đơn.", success: null };
-  if (!maHopDong) return { error: "Vui lòng chọn hợp đồng.", success: null };
-
-  const invoiceGuard = await assertInvoiceInScope(maHoaDon, scope);
-  if (invoiceGuard) return { error: invoiceGuard, success: null };
-  const contractGuard = await assertContractInScope(maHopDong, scope);
-  if (contractGuard) return { error: contractGuard, success: null };
-
-  const tienPhong = money(formData, "tienPhong");
-  const tienDienNuoc = money(formData, "tienDienNuoc");
-  const tienDichVuKhac = money(formData, "tienDichVuKhac");
-  const noCu = money(formData, "noCu");
-  const tongTien = tienPhong + tienDienNuoc + tienDichVuKhac + noCu;
-
-  try {
-    const { rows } = await getDbPool().query<{ collected: string }>(
-      `SELECT COALESCE(SUM(so_tien_thu), 0)::text AS collected
-       FROM public.phieu_thu WHERE ma_hoa_don = $1 AND trang_thai = 'Đã xác nhận'`,
-      [maHoaDon],
+    const maCthd = "CTHD" + crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase();
+    await client.query(
+      `INSERT INTO public.chi_tiet_hoa_don
+         (ma_cthd, ma_hoa_don, ten_khoan_thu, so_luong, don_gia, thanh_tien)
+       VALUES ($1, $2, $3, 1, $4, $4)`,
+      [maCthd, maHoaDon, tenKhoanThu, soTien],
     );
-    if (tongTien < Number(rows[0]?.collected ?? 0)) {
-      return {
-        error: "Tổng hóa đơn không thể thấp hơn số tiền đã thu.",
-        success: null,
-      };
+
+    // Gửi thông báo đến bảng thong_bao cho chủ phòng
+    if (contract.rep_tai_khoan) {
+      await createNotification(
+        {
+          maTaiKhoan: contract.rep_tai_khoan,
+          maPhong: contract.ma_phong,
+          toaNha: contract.toa_nha,
+          tieuDe: "Hóa đơn phát sinh mới",
+          noiDung: `Ban quản lý đã lập hóa đơn phát sinh: ${tenKhoanThu} (${Number(soTien).toLocaleString("vi-VN")} đ). Hạn đóng: ${hanDongTien}.`,
+          loaiThongBao: "HoaDon",
+          duLieuDinhKem: {
+            ma_hoa_don: maHoaDon,
+            so_tien: soTien,
+            ten_khoan_thu: tenKhoanThu,
+          },
+        },
+        client,
+      );
     }
 
-    const { rowCount } = await getDbPool().query(
-      `UPDATE public.hoa_don
-       SET ma_hop_dong = $2, ngay_lap = $3, han_dong_tien = $4, tien_phong = $5,
-           tien_dien_nuoc = $6, tien_dich_vu_khac = $7, no_cu = $8, tong_tien = $9
-       WHERE ma_hoa_don = $1`,
-      [
-        maHoaDon,
-        maHopDong,
-        text(formData, "ngayLap") || null,
-        text(formData, "hanDongTien") || null,
-        tienPhong,
-        tienDienNuoc,
-        tienDichVuKhac,
-        noCu,
-        tongTien,
-      ],
-    );
-    if (rowCount === 0)
-      return { error: "Không tìm thấy hóa đơn.", success: null };
-
-    await refreshInvoiceStatus(maHoaDon, tongTien);
-  } catch {
-    return { error: "Không thể cập nhật hóa đơn. Hãy thử lại.", success: null };
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Create incidental invoice error:", err);
+    return {
+      error: "Không thể lưu hóa đơn phát sinh. Hãy kiểm tra dữ liệu và thử lại.",
+      success: null,
+    };
+  } finally {
+    client.release();
   }
 
   revalidatePath("/hoa-don");
-  revalidatePath("/phieu-thu");
-  return { error: null, success: "Cập nhật hóa đơn thành công." };
+  return { error: null, success: "Tạo hóa đơn phát sinh thành công." };
 }
 
-/** Xóa hóa đơn theo InvoiceController.Delete (chặn khi có phiếu thu hoặc chi tiết). */
+
+/** Xóa hóa đơn (chỉ cho phép khi chưa có phiếu thu). */
 export async function deleteInvoice(
   _previous: InvoiceFormState,
   formData: FormData,
@@ -191,31 +151,59 @@ export async function deleteInvoice(
   const invoiceGuard = await assertInvoiceInScope(maHoaDon, scope);
   if (invoiceGuard) return { error: invoiceGuard, success: null };
 
+  const client = await getDbPool().connect();
   try {
-    const { rows } = await getDbPool().query<{ used: number }>(
-      `SELECT (
-         EXISTS(SELECT 1 FROM public.phieu_thu WHERE ma_hoa_don = $1)
-         OR EXISTS(SELECT 1 FROM public.chi_tiet_hoa_don WHERE ma_hoa_don = $1)
-       )::int AS used`,
+    await client.query("BEGIN");
+
+    const { rows } = await client.query<{ hasReceipt: number }>(
+      `SELECT COUNT(*)::int AS hasReceipt FROM public.phieu_thu WHERE ma_hoa_don = $1`,
       [maHoaDon],
     );
-    if ((rows[0]?.used ?? 0) === 1) {
+    if ((rows[0]?.hasReceipt ?? 0) > 0) {
+      await client.query("ROLLBACK");
       return {
-        error: "Không thể xóa hóa đơn đã có phiếu thu hoặc chi tiết.",
+        error: "Không thể xóa hóa đơn đã có phiếu thu thanh toán.",
         success: null,
       };
     }
 
-    const { rowCount } = await getDbPool().query(
+    // Xóa chi tiết hóa đơn trước (nếu có)
+    await client.query("DELETE FROM public.chi_tiet_hoa_don WHERE ma_hoa_don = $1", [maHoaDon]);
+
+    const { rowCount } = await client.query(
       "DELETE FROM public.hoa_don WHERE ma_hoa_don = $1",
       [maHoaDon],
     );
-    if (rowCount === 0)
+    if (rowCount === 0) {
+      await client.query("ROLLBACK");
       return { error: "Không tìm thấy hóa đơn.", success: null };
-  } catch {
+    }
+
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Delete invoice error:", err);
     return { error: "Không thể xóa hóa đơn. Hãy thử lại.", success: null };
+  } finally {
+    client.release();
   }
 
   revalidatePath("/hoa-don");
   return { error: null, success: "Đã xóa hóa đơn." };
+}
+
+/** Lấy chi tiết hóa đơn theo mã (có kiểm tra phạm vi quyền). */
+export async function getInvoiceDetailAction(maHoaDon: string) {
+  const account = await getCurrentAccount();
+  if (!account) return { error: "Phiên đăng nhập đã hết hạn.", data: null };
+  const { scope } = await requireScope();
+
+  const invoiceGuard = await assertInvoiceInScope(maHoaDon, scope);
+  if (invoiceGuard) return { error: invoiceGuard, data: null };
+
+  const scopeQuery = new ScopeQuery(scope);
+  const data = await getInvoiceDetail(maHoaDon, scopeQuery);
+  if (!data) return { error: "Không tìm thấy hóa đơn.", data: null };
+
+  return { error: null, data };
 }

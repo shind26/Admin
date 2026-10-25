@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(36, 78, 110, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,13 +23,15 @@
 .panel {
   background: #ffffff;
   border-radius: 14px;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+  box-shadow: 0 24px 60px rgba(36, 78, 110, 0.2);
+  border: 1px solid #e2ebf2;
   width: 100%;
   display: flex;
   flex-direction: column;
   max-height: calc(100vh - 40px);
   outline: none;
   animation: panelIn 0.18s ease-out;
+  overflow: hidden;
 }
 
 @keyframes panelIn {
@@ -65,7 +67,8 @@
   justify-content: space-between;
   gap: 16px;
   padding: 18px 20px 14px;
-  border-bottom: 1px solid #eef2f7;
+  border-bottom: 1px solid #e2ebf2;
+  background: #eff8fc;
 }
 
 .heading {
@@ -75,13 +78,13 @@
 .title {
   font-size: 16px;
   font-weight: 700;
-  color: #1e293b;
+  color: #244e6e;
   margin: 0;
 }
 
 .description {
   font-size: 12.5px;
-  color: #64748b;
+  color: #627d90;
   margin: 4px 0 0;
   line-height: 1.5;
 }
@@ -93,15 +96,16 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cbdce8;
   background: #ffffff;
-  color: #64748b;
+  color: #627d90;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .closeButton:hover {
-  background: #f8fafc;
-  color: #1e293b;
+  background: #dceff8;
+  color: #244e6e;
 }
 
 .body {
@@ -114,7 +118,7 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 14px 20px 18px;
-  border-top: 1px solid #eef2f7;
+  border-top: 1px solid #e2ebf2;
   flex-wrap: wrap;
 }
 

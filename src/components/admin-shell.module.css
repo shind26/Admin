@@ -1,17 +1,17 @@
 .shell {
   display: flex;
   min-height: 100vh;
-  background: #f4f7fe;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #2b3674;
+  background: #f1f4f8;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #425b6b;
 }
 
 .sidebar {
   width: 260px;
   flex-shrink: 0;
   background: #ffffff;
-  border-right: 1px solid #e2e8f0;
-  padding: 20px;
+  border-right: 1px solid #e2ebf2;
+  padding: 20px 16px;
   display: flex;
   flex-direction: column;
   position: sticky;
@@ -23,32 +23,36 @@
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 25px;
+  padding: 0 4px;
 }
 
 .brandMark {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
-  background: #eef2ff;
-  color: #1e3a8a;
+  background: #dceff8;
+  color: #4a90c2;
   font-weight: 800;
-  font-size: 13px;
+  font-size: 14px;
+  border: 1px solid #c2e2f2;
 }
 
 .brandName {
-  font-weight: 700;
-  font-size: 15px;
-  color: #1e3a8a;
-  line-height: 1.1;
+  font-weight: 800;
+  font-size: 15.5px;
+  color: #4a90c2;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
 }
 
 .brandSub {
   font-size: 11px;
-  color: #a3aed0;
+  color: #7e97a6;
+  margin-top: 2px;
 }
 
 .nav {
@@ -60,10 +64,12 @@
 .menuLabel {
   display: block;
   font-size: 11px;
-  color: #a3aed0;
+  color: #7e97a6;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  margin-bottom: 10px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding: 0 8px;
 }
 
 .navLink,
@@ -71,38 +77,40 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 11px 14px;
+  padding: 10px 14px;
   font-weight: 600;
   font-size: 13.5px;
   border-radius: 10px;
   text-decoration: none;
-  margin-bottom: 6px;
-  transition:
-    background 0.2s,
-    color 0.2s;
+  margin-bottom: 4px;
+  transition: all 0.15s ease;
 }
 
 .navLink {
-  color: #707eae;
+  color: #425b6b;
 }
 
 .navLink:hover {
-  background: #f4f7fe;
-  color: #2b3674;
+  background: #eff8fc;
+  color: #4a90c2;
 }
 
 .navActive {
-  background: #eef2ff;
-  color: #4f46e5;
+  background: #dceff8;
+  color: #26597d;
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 #4a90c2;
 }
 
 .userBox {
   margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid #edf0f4;
+  padding-top: 14px;
+  border-top: 1px solid #e2ebf2;
   display: flex;
   align-items: center;
   gap: 10px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .userAvatar {
@@ -112,11 +120,12 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #1e40af;
+  background: #4a90c2;
   color: #ffffff;
   font-weight: 700;
   font-size: 13px;
   flex-shrink: 0;
+  box-shadow: 0 2px 5px rgba(74, 144, 194, 0.3);
 }
 
 .userDot {
@@ -126,18 +135,20 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #22c55e;
-  border: 1px solid #ffffff;
+  background: #16a34a;
+  border: 2px solid #ffffff;
 }
 
 .userMeta {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
 }
 
 .userName {
   font-size: 13px;
   font-weight: 700;
-  color: #2b3674;
+  color: #234358;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -145,102 +156,45 @@
 
 .userRole {
   font-size: 11px;
-  color: #707eae;
+  color: #7e97a6;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.logoutForm {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.sidebarLogoutBtn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #e2ebf2;
+  background: #ffffff;
+  color: #7e97a6;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sidebarLogoutBtn:hover {
+  background: #fde8e8;
+  color: #991b1b;
+  border-color: #f8c8c8;
+}
+
 .main {
   flex: 1;
   min-width: 0;
-  padding: 25px 30px 40px;
-}
-
-.topBanner {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 18px 25px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-  margin-bottom: 25px;
-  flex-wrap: wrap;
-}
-
-.connectionPill {
-  display: inline-block;
-  background: #dcfce7;
-  color: #15803d;
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.bannerTitle {
-  font-size: 16px;
-  font-weight: 700;
-  color: #2b3674;
-  margin: 0;
-}
-
-.bannerText {
-  font-size: 12.5px;
-  color: #707eae;
-  margin: 4px 0 0;
-}
-
-.logoutButton {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  border: 1px solid #fca5a5;
-  background: #ffffff;
-  color: #dc2626;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.logoutButton:hover {
-  background: #fef2f2;
+  padding: 24px 28px 40px;
 }
 
 .loading {
   padding: 2rem;
-  color: #707eae;
-}
-
-/* Khung chờ cho top banner, giữ đúng chiều cao để trang không nhảy layout. */
-.bannerSkeleton {
-  height: 96px;
-  border-radius: 16px;
-  background: linear-gradient(90deg, #ffffff 25%, #f1f5f9 37%, #ffffff 63%);
-  background-size: 400% 100%;
-  animation: bannerShimmer 1.4s ease-in-out infinite;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-  margin-bottom: 25px;
-}
-
-@keyframes bannerShimmer {
-  0% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0 50%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bannerSkeleton {
-    animation: none;
-  }
+  color: #7e97a6;
 }
 
 @media (max-width: 900px) {
@@ -253,10 +207,56 @@
     height: auto;
     position: static;
     border-right: 0;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2ebf2;
   }
 
   .main {
-    padding: 20px 16px 32px;
+    padding: 18px 14px 28px;
+  }
+}
+
+/* Khung chờ cho menu điều hướng */
+.navSkeleton {
+  height: 320px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #ffffff 25%, #eff8fc 37%, #ffffff 63%);
+  background-size: 400% 100%;
+  animation: navShimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes navShimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navSkeleton {
+    animation: none;
+  }
+}
+
+/* Ẩn Sidebar khi in ấn */
+@media print {
+  .sidebar,
+  .navSkeleton,
+  :global(.noPrint),
+  :global([data-no-print="true"]) {
+    display: none !important;
+  }
+
+  .shell {
+    display: block !important;
+    min-height: auto !important;
+    background: #ffffff !important;
+  }
+
+  .main {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
   }
 }

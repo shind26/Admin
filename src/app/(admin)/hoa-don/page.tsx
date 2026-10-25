@@ -7,18 +7,28 @@ import { getActiveContracts, getInvoices } from "@/lib/queries";
 import { ScopeQuery } from "@/lib/scope";
 import {
   DeleteInvoiceButton,
-  InvoiceEditorToggle,
   InvoiceForm,
 } from "./invoice-forms";
+import { InvoiceDetailTrigger } from "./invoice-detail-modal";
 import styles from "@/components/business.module.css";
 
-type SearchParams = Promise<{ status?: string; keyword?: string }>;
+type SearchParams = Promise<{
+  status?: string;
+  keyword?: string;
+  loaiGiaoDich?: string;
+}>;
 
 const STATUS_OPTIONS = [
   "All",
   "Chưa thanh toán",
   "Thanh toán một phần",
   "Đã thanh toán",
+];
+
+const LOAI_GIAO_DICH_OPTIONS = [
+  { value: "All", label: "Tất cả loại" },
+  { value: "DinhKy", label: "Hóa đơn định kỳ" },
+  { value: "PhatSinh", label: "Hóa đơn phát sinh" },
 ];
 
 function formatMoney(value: string | null) {
@@ -46,10 +56,11 @@ async function InvoicesContent({
   const scopeQuery = new ScopeQuery(scope);
   const params = await searchParams;
   const status = params.status || "All";
+  const loaiGiaoDich = params.loaiGiaoDich || "All";
   const keyword = params.keyword || "";
 
   const [invoices, contracts] = await Promise.all([
-    getInvoices({ status, keyword }, scopeQuery),
+    getInvoices({ status, keyword, loaiGiaoDich }, scopeQuery),
     getActiveContracts(scopeQuery),
   ]);
 
@@ -71,19 +82,8 @@ async function InvoicesContent({
         <div>
           <h1 className={styles.title}>Hóa đơn &amp; Thu chi</h1>
           <p className={styles.subtitle}>
-            Trạng thái thanh toán tự tính theo phiếu thu đã xác nhận
+            Hóa đơn định kỳ sinh tự động theo chốt điện nước; Hóa đơn phát sinh được lập linh hoạt
           </p>
-        </div>
-        <div className={styles.navTabs}>
-          <Link href="/hop-dong" className={styles.navTab}>
-            Hợp đồng
-          </Link>
-          <Link href="/hoa-don" className={styles.navTabActive}>
-            Hóa đơn
-          </Link>
-          <Link href="/phieu-thu" className={styles.navTab}>
-            Phiếu thu
-          </Link>
         </div>
       </div>
 
@@ -105,21 +105,31 @@ async function InvoicesContent({
       </section>
 
       <details className={styles.createBox}>
-        <summary className={styles.createSummary}>+ Tạo hóa đơn</summary>
-        <InvoiceForm mode="create" contracts={contracts} />
+        <summary className={styles.createSummary}>+ Tạo hóa đơn phát sinh</summary>
+        <InvoiceForm contracts={contracts} />
       </details>
 
       <form className={styles.filterCard} action="/hoa-don">
         <div className={styles.filterField}>
           <label htmlFor="keyword">
-            Tìm theo mã hóa đơn, hợp đồng hoặc tên khách
+            Tìm theo mã hóa đơn, phòng, hợp đồng hoặc tên khách
           </label>
           <input
             id="keyword"
             name="keyword"
             defaultValue={keyword}
-            placeholder="HD..., HĐ..., Nguyễn Văn A"
+            placeholder="HD..., P101, HĐ..., Nguyễn Văn A"
           />
+        </div>
+        <div className={styles.filterField}>
+          <label htmlFor="loaiGiaoDich">Phân loại</label>
+          <select id="loaiGiaoDich" name="loaiGiaoDich" defaultValue={loaiGiaoDich}>
+            {LOAI_GIAO_DICH_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         </div>
         <div className={styles.filterField}>
           <label htmlFor="status">Trạng thái</label>
@@ -147,6 +157,7 @@ async function InvoicesContent({
             <thead>
               <tr>
                 <th>Mã hóa đơn</th>
+                <th>Phân loại</th>
                 <th>Phòng / Khách</th>
                 <th>Tổng tiền</th>
                 <th>Đã thu</th>
@@ -159,43 +170,78 @@ async function InvoicesContent({
             <tbody>
               {invoices.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className={styles.empty}>
+                  <td colSpan={9} className={styles.empty}>
                     Không có hóa đơn phù hợp.
                   </td>
                 </tr>
               ) : (
-                invoices.map((invoice) => (
-                  <tr key={invoice.ma_hoa_don}>
-                    <td>
-                      <div className={styles.strong}>{invoice.ma_hoa_don}</div>
-                      <div className={styles.muted}>{invoice.ma_hop_dong}</div>
-                    </td>
-                    <td>
-                      <div>{invoice.ma_phong}</div>
-                      <div className={styles.muted}>{invoice.ten_khach}</div>
-                    </td>
-                    <td className={styles.strong}>
-                      {formatMoney(invoice.tong_tien)}
-                    </td>
-                    <td>{formatMoney(invoice.da_thu)}</td>
-                    <td>{formatDate(invoice.ngay_lap)}</td>
-                    <td>{formatDate(invoice.han_dong_tien)}</td>
-                    <td>
-                      <span className={statusClass(invoice.trang_thai)}>
-                        {invoice.trang_thai}
-                      </span>
-                    </td>
-                    <td>
-                      <div className={styles.actionCell}>
-                        <InvoiceEditorToggle
-                          invoice={invoice}
-                          contracts={contracts}
-                        />
-                        <DeleteInvoiceButton maHoaDon={invoice.ma_hoa_don} />
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                invoices.map((invoice) => {
+                  const isPhatSinh = invoice.loai_giao_dich
+                    ?.toLowerCase()
+                    .includes("phát sinh");
+                  return (
+                    <tr key={invoice.ma_hoa_don}>
+                      <td>
+                        <div className={styles.strong}>
+                          <InvoiceDetailTrigger maHoaDon={invoice.ma_hoa_don}>
+                            {invoice.ma_hoa_don}
+                          </InvoiceDetailTrigger>
+                        </div>
+                        <div className={styles.muted}>{invoice.ma_hop_dong}</div>
+                      </td>
+                      <td>
+                        <div>
+                          <span
+                            className={
+                              isPhatSinh ? styles.badgeWarn : styles.badgeMuted
+                            }
+                          >
+                            {isPhatSinh ? "⚡ Phát sinh" : "📅 Định kỳ"}
+                          </span>
+                        </div>
+                        {invoice.chi_tiet_khoan_thu ? (
+                          <div
+                            className={styles.muted}
+                            style={{
+                              marginTop: "4px",
+                              maxWidth: "200px",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                            title={invoice.chi_tiet_khoan_thu}
+                          >
+                            {invoice.chi_tiet_khoan_thu}
+                          </div>
+                        ) : null}
+                      </td>
+                      <td>
+                        <div className={styles.strong}>{invoice.ma_phong}</div>
+                        <div className={styles.muted}>{invoice.ten_khach}</div>
+                      </td>
+                      <td className={styles.strong}>
+                        {formatMoney(invoice.tong_tien)}
+                      </td>
+                      <td>{formatMoney(invoice.da_thu)}</td>
+                      <td>{formatDate(invoice.ngay_lap)}</td>
+                      <td>{formatDate(invoice.han_dong_tien)}</td>
+                      <td>
+                        <span className={statusClass(invoice.trang_thai)}>
+                          {invoice.trang_thai}
+                        </span>
+                      </td>
+                      <td>
+                        <div className={styles.actionCell}>
+                          <InvoiceDetailTrigger
+                            maHoaDon={invoice.ma_hoa_don}
+                            asButton={true}
+                          />
+                          <DeleteInvoiceButton maHoaDon={invoice.ma_hoa_don} />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

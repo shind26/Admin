@@ -3,22 +3,36 @@
 import { redirect } from "next/navigation";
 import { getDbPool } from "@/lib/db";
 import { hashPassword, verifyPassword } from "@/lib/password";
-import { getCurrentAccount } from "@/lib/session";
+import {
+  clearSessionCookie,
+  createSessionToken,
+  getCurrentAccount,
+  setSessionCookie,
+} from "@/lib/session";
 
 export type PasswordState = { error: string | null; success: string | null };
 
+type ChangeResult = {
+  error: string | null;
+  newHash: string | null;
+};
+
 /**
  * Xác thực và lưu mật khẩu mới, dùng chung quy tắc của SupabaseApp/AccountController.
- * Trả về lỗi dạng chuỗi, hoặc null khi đã lưu thành công.
+ * Trả về lỗi dạng chuỗi, hoặc hash mật khẩu mới khi đã lưu thành công.
  */
 async function applyPasswordChange(
   maTaiKhoan: string,
   currentPassword: string,
   newPassword: string,
   confirmPassword: string,
-): Promise<string | null> {
-  if (newPassword.length < 6) return "Mật khẩu mới phải có ít nhất 6 ký tự!";
-  if (newPassword !== confirmPassword) return "Mật khẩu xác nhận không khớp!";
+): Promise<ChangeResult> {
+  if (newPassword.length < 6) {
+    return { error: "Mật khẩu mới phải có ít nhất 6 ký tự!", newHash: null };
+  }
+  if (newPassword !== confirmPassword) {
+    return { error: "Mật khẩu xác nhận không khớp!", newHash: null };
+  }
 
   try {
     const { rows } = await getDbPool().query<{ mat_khau: string | null }>(
@@ -26,21 +40,22 @@ async function applyPasswordChange(
       [maTaiKhoan],
     );
     if (!rows[0] || !(await verifyPassword(currentPassword, rows[0].mat_khau))) {
-      return "Mật khẩu hiện tại không chính xác!";
+      return { error: "Mật khẩu hiện tại không chính xác!", newHash: null };
     }
     if (currentPassword === newPassword) {
-      return "Mật khẩu mới phải khác mật khẩu hiện tại!";
+      return { error: "Mật khẩu mới phải khác mật khẩu hiện tại!", newHash: null };
     }
 
+    const newHash = await hashPassword(newPassword);
     await getDbPool().query(
       `UPDATE public.tai_khoan
-       SET mat_khau = $1, phai_doi_mat_khau = false
+       SET mat_khau = $1, da_doi_mat_khau = true
        WHERE ma_tai_khoan = $2`,
-      [await hashPassword(newPassword), maTaiKhoan],
+      [newHash, maTaiKhoan],
     );
-    return null;
+    return { error: null, newHash };
   } catch {
-    return "Không thể lưu mật khẩu mới. Vui lòng thử lại sau!";
+    return { error: "Không thể lưu mật khẩu mới. Vui lòng thử lại sau!", newHash: null };
   }
 }
 
@@ -64,7 +79,8 @@ function readPasswords(formData: FormData) {
 
 /**
  * Đổi mật khẩu tự nguyện (AccountController.ChangePassword):
- * nằm trong khung quản trị, sau khi đổi thành công phải đăng nhập lại.
+ * Nằm trong khung quản trị. Sau khi đổi thành công, hủy cookie và buộc đăng nhập lại
+ * (mọi phiên cũ trên các thiết bị khác cũng lập tức bị vô hiệu hóa do Security Stamp thay đổi).
  */
 export async function changePassword(
   _previous: PasswordState,
@@ -78,7 +94,7 @@ export async function changePassword(
     return { error: "Vui lòng nhập đầy đủ các trường thông tin!", success: null };
   }
 
-  const problem = await applyPasswordChange(
+  const { error: problem } = await applyPasswordChange(
     account.ma_tai_khoan,
     passwords.currentPassword,
     passwords.newPassword,
@@ -86,15 +102,14 @@ export async function changePassword(
   );
   if (problem) return { error: problem, success: null };
 
-  // Bản gốc chuyển sang Logout để buộc đăng nhập lại bằng mật khẩu mới.
-  const { clearSessionCookie } = await import("@/lib/session");
+  // Xóa cookie phiên hiện tại và buộc đăng nhập lại bằng mật khẩu mới
   await clearSessionCookie();
   redirect("/login");
 }
 
 /**
  * Đổi mật khẩu bắt buộc lần đầu (AccountController.ForceChangePassword):
- * chưa đổi xong thì không được vào hệ thống.
+ * Chưa đổi xong thì không được vào hệ thống. Đổi xong lập tức cấp Security Stamp mới và vào trang chủ.
  */
 export async function forceChangePassword(
   _previous: PasswordState,
@@ -108,20 +123,25 @@ export async function forceChangePassword(
     return { error: "Vui lòng nhập đầy đủ các trường thông tin!", success: null };
   }
 
-  const problem = await applyPasswordChange(
+  const { error: problem, newHash } = await applyPasswordChange(
     account.ma_tai_khoan,
     passwords.currentPassword,
     passwords.newPassword,
     passwords.confirmPassword,
   );
-  if (problem) return { error: problem, success: null };
+  if (problem || !newHash) return { error: problem, success: null };
+
+  // Cập nhật cookie phiên mới với Security Stamp tương ứng mật khẩu mới
+  const token = createSessionToken(account.ma_tai_khoan, newHash);
+  if (token) {
+    await setSessionCookie(token);
+  }
 
   redirect("/");
 }
 
 /** Đăng xuất khỏi hệ thống. */
 export async function logout() {
-  const { clearSessionCookie } = await import("@/lib/session");
   await clearSessionCookie();
   redirect("/login");
 }

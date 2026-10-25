@@ -3,14 +3,29 @@ import { Suspense } from "react";
 import { AdminShell } from "@/components/admin-shell";
 import { AdminPageSkeleton } from "@/components/admin-skeleton";
 import { requireScope } from "@/lib/session";
-import { getActiveContracts, getMeterReadings } from "@/lib/queries";
+import {
+  getActiveContracts,
+  getMeterClosingProgress,
+  getMeterReadings,
+} from "@/lib/queries";
 import { ScopeQuery } from "@/lib/scope";
-import { DeleteMeterButton, MeterEditorToggle, MeterForm } from "./meter-forms";
+import { detectMeterAnomaly } from "@/lib/meter-utils";
+import {
+  ClosingProgressCard,
+  CreateMeterModal,
+  DeleteMeterButton,
+  MeterAnomalyBadge,
+  MeterEditorToggle,
+  MeterInvoiceLink,
+  MeterPhotoViewer,
+  QuickApproveButton,
+  QuickRejectButton,
+} from "./meter-forms";
 import styles from "@/components/business.module.css";
 
-type SearchParams = Promise<{ status?: string; keyword?: string }>;
+type SearchParams = Promise<{ status?: string; keyword?: string; period?: string }>;
 
-const STATUS_OPTIONS = ["All", "Chờ duyệt", "Đã duyệt", "Từ chối"];
+const STATUS_OPTIONS = ["All", "Chờ duyệt", "Đã duyệt", "Từ chối", "Bất thường"];
 
 function formatDate(value: string | null) {
   if (!value) return "-";
@@ -29,17 +44,30 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
   const status = params.status || "All";
   const keyword = params.keyword || "";
+  const period = params.period;
 
-  const [readings, contracts] = await Promise.all([
-    getMeterReadings({ status, keyword }, scopeQuery),
+  const [readingsRaw, contracts, progress] = await Promise.all([
+    getMeterReadings(
+      { status: status === "Bất thường" ? undefined : status, keyword },
+      scopeQuery,
+    ),
     getActiveContracts(scopeQuery),
+    getMeterClosingProgress(period, scopeQuery),
   ]);
 
-  const pending = readings.filter(
+  const readings =
+    status === "Bất thường"
+      ? readingsRaw.filter((reading) => detectMeterAnomaly(reading).hasAnomaly)
+      : readingsRaw;
+
+  const pending = readingsRaw.filter(
     (reading) => reading.trang_thai_duyet === "Chờ duyệt",
   ).length;
-  const approved = readings.filter(
+  const approved = readingsRaw.filter(
     (reading) => reading.trang_thai_duyet === "Đã duyệt",
+  ).length;
+  const anomalyCount = readingsRaw.filter(
+    (reading) => detectMeterAnomaly(reading).hasAnomaly,
   ).length;
 
   return (
@@ -48,10 +76,16 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
         <div>
           <h1 className={styles.title}>Điện nước &amp; Công tơ</h1>
           <p className={styles.subtitle}>
-            Ghi chỉ số theo kỳ, duyệt ảnh công tơ, tính tiêu thụ từng phòng
+            Duyệt ảnh đồng hồ công tơ khách gửi từ phòng, cảnh báo bất thường, theo dõi tiến độ chốt số và tự động kết chuyển Hóa đơn.
           </p>
         </div>
+        <div className={styles.pageActions}>
+          <CreateMeterModal contracts={contracts} />
+        </div>
       </div>
+
+      {/* ── TÍNH NĂNG 2: THEO DÕI TIẾN ĐỘ CHỐT SỐ THEO KỲ ── */}
+      <ClosingProgressCard progress={progress} />
 
       <section className={styles.miniStats}>
         <div className={styles.miniCard}>
@@ -60,35 +94,51 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
         </div>
         <div className={styles.miniCard}>
           <div className={styles.miniLabel}>Chờ duyệt</div>
-          <div className={styles.miniValue}>{pending}</div>
+          <div
+            className={styles.miniValue}
+            style={{ color: pending > 0 ? "#d97706" : undefined }}
+          >
+            {pending}
+          </div>
         </div>
         <div className={styles.miniCard}>
           <div className={styles.miniLabel}>Đã duyệt</div>
-          <div className={styles.miniValue}>{approved}</div>
+          <div className={styles.miniValue} style={{ color: "#059669" }}>
+            {approved}
+          </div>
+        </div>
+        <div className={styles.miniCard}>
+          <div className={styles.miniLabel}>Cảnh báo bất thường</div>
+          <div
+            className={styles.miniValue}
+            style={{ color: anomalyCount > 0 ? "#dc2626" : "#64748b" }}
+          >
+            {anomalyCount}
+          </div>
         </div>
       </section>
 
-      <details className={styles.createBox}>
-        <summary className={styles.createSummary}>+ Ghi chỉ số mới</summary>
-        <MeterForm mode="create" contracts={contracts} />
-      </details>
-
       <form className={styles.filterCard} action="/dien-nuoc">
+        {period && <input type="hidden" name="period" value={period} />}
         <div className={styles.filterField}>
           <label htmlFor="keyword">Tìm theo kỳ, mã phòng hoặc tên khách</label>
           <input
             id="keyword"
             name="keyword"
             defaultValue={keyword}
-            placeholder="2026-10, P402, Nguyễn Văn A"
+            placeholder="09/2026, P402, Nguyễn Văn A"
           />
         </div>
         <div className={styles.filterField}>
-          <label htmlFor="status">Trạng thái duyệt</label>
+          <label htmlFor="status">Trạng thái duyệt / Cảnh báo</label>
           <select id="status" name="status" defaultValue={status}>
             {STATUS_OPTIONS.map((option) => (
               <option key={option} value={option}>
-                {option === "All" ? "Tất cả" : option}
+                {option === "All"
+                  ? "Tất cả"
+                  : option === "Bất thường"
+                    ? "⚠️ Bất thường (Đột biến / = 0)"
+                    : option}
               </option>
             ))}
           </select>
@@ -110,19 +160,20 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
               <tr>
                 <th>Kỳ</th>
                 <th>Phòng / Khách</th>
-                <th>Điện cũ → mới</th>
+                <th>Ảnh đồng hồ</th>
+                <th>Điện (Cũ → Mới)</th>
                 <th>Điện tiêu thụ</th>
-                <th>Nước cũ → mới</th>
+                <th>Nước (Cũ → Mới)</th>
                 <th>Nước tiêu thụ</th>
-                <th>Ngày ghi</th>
-                <th>Duyệt</th>
+                <th>Ngày gửi</th>
+                <th>Trạng thái &amp; Hóa đơn</th>
                 <th>Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {readings.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className={styles.empty}>
+                  <td colSpan={10} className={styles.empty}>
                     Không có kỳ ghi chỉ số phù hợp.
                   </td>
                 </tr>
@@ -131,34 +182,70 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
                   <tr key={reading.ma_ky}>
                     <td>
                       <div className={styles.strong}>{reading.thang_nam}</div>
-                      <div className={styles.muted}>{reading.ma_ky}</div>
+                      <div className={styles.muted} style={{ fontSize: 11 }}>
+                        {reading.ma_ky}
+                      </div>
                     </td>
                     <td>
-                      <div>{reading.ma_phong}</div>
-                      <div className={styles.muted}>{reading.ten_khach}</div>
+                      <div className={styles.strong}>{reading.ma_phong}</div>
+                      <div className={styles.muted}>
+                        {reading.ten_khach || "—"}
+                      </div>
+                      {/* ── TÍNH NĂNG 1: CẢNH BÁO BẤT THƯỜNG TRÊN BẢNG ── */}
+                      <MeterAnomalyBadge reading={reading} />
+                    </td>
+                    <td>
+                      <MeterPhotoViewer reading={reading} />
                     </td>
                     <td>
                       {reading.chi_so_dien_cu ?? "-"} →{" "}
-                      {reading.chi_so_dien_moi ?? "-"}
+                      <strong>{reading.chi_so_dien_moi ?? "-"}</strong>
                     </td>
-                    <td className={styles.strong}>
-                      {reading.dien_tieu_thu} kWh
+                    <td>
+                      <div className={styles.strong} style={{ color: "#d97706" }}>
+                        {reading.dien_tieu_thu} kWh
+                      </div>
+                      {reading.dien_ky_truoc !== null &&
+                        reading.dien_ky_truoc !== undefined && (
+                          <div style={{ fontSize: 11, color: "#94a3b8" }}>
+                            Kỳ trước: {reading.dien_ky_truoc} kWh
+                          </div>
+                        )}
                     </td>
                     <td>
                       {reading.chi_so_nuoc_cu ?? "-"} →{" "}
-                      {reading.chi_so_nuoc_moi ?? "-"}
+                      <strong>{reading.chi_so_nuoc_moi ?? "-"}</strong>
                     </td>
-                    <td className={styles.strong}>
-                      {reading.nuoc_tieu_thu} m³
+                    <td>
+                      <div className={styles.strong} style={{ color: "#0284c7" }}>
+                        {reading.nuoc_tieu_thu} m³
+                      </div>
+                      {reading.nuoc_ky_truoc !== null &&
+                        reading.nuoc_ky_truoc !== undefined && (
+                          <div style={{ fontSize: 11, color: "#94a3b8" }}>
+                            Kỳ trước: {reading.nuoc_ky_truoc} m³
+                          </div>
+                        )}
                     </td>
                     <td>{formatDate(reading.ngay_ghi_nhan)}</td>
                     <td>
                       <span className={statusClass(reading.trang_thai_duyet)}>
                         {reading.trang_thai_duyet}
                       </span>
+                      {/* ── TÍNH NĂNG 3: LIÊN KẾT HÓA ĐƠN ĐÃ TỰ ĐỘNG KẾT CHUYỂN ── */}
+                      <MeterInvoiceLink maHoaDon={reading.ma_hoa_don} />
                     </td>
                     <td>
-                      <div className={styles.actionCell}>
+                      <div
+                        className={styles.actionCell}
+                        style={{ display: "flex", gap: 6, alignItems: "center" }}
+                      >
+                        {reading.trang_thai_duyet === "Chờ duyệt" && (
+                          <>
+                            <QuickApproveButton maKy={reading.ma_ky} />
+                            <QuickRejectButton maKy={reading.ma_ky} />
+                          </>
+                        )}
                         <MeterEditorToggle
                           reading={reading}
                           contracts={contracts}
@@ -188,3 +275,4 @@ export default function MeterPage({
     </Suspense>
   );
 }
+

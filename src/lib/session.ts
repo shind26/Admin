@@ -1,11 +1,16 @@
 import "server-only";
-import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { connection } from "next/server";
 import { getDbPool } from "@/lib/db";
-export const SESSION_COOKIE = "admin_session";
-export const SESSION_MAX_AGE = 4 * 60 * 60; // 4 giờ, tương ứng IdleTimeout của SupabaseApp.
+import {
+  SESSION_COOKIE,
+  SESSION_MAX_AGE,
+  createSessionToken as makeToken,
+  verifySessionToken,
+  computePasswordStamp,
+} from "@/lib/session-token";
+
+export { SESSION_COOKIE, SESSION_MAX_AGE };
 
 export type AccountRow = {
   ma_tai_khoan: string;
@@ -13,19 +18,24 @@ export type AccountRow = {
   vai_tro: string | null;
   co_so_van_hanh: string | null;
   ho_ten: string | null;
-  phai_doi_mat_khau: boolean | null;
+  da_doi_mat_khau: boolean | null;
 };
 
-function sign(payload: string, secret: string) {
-  return createHmac("sha256", secret).update(payload).digest("hex");
-}
+type DbAccountRow = AccountRow & {
+  mat_khau: string | null;
+};
 
-/** Tạo token phiên dạng `maTaiKhoan.hethan.chuky` đã ký HMAC. */
-export function createSessionToken(accountId: string): string | null {
+/**
+ * Tạo token phiên dạng `maTaiKhoan.stamp.hethan.chuky` đã ký HMAC.
+ * `passwordHash` được dùng để tạo Security Stamp: nếu mật khẩu trong DB đổi, token cũ sẽ mất hiệu lực.
+ */
+export function createSessionToken(
+  accountId: string,
+  passwordHash?: string | null,
+): string | null {
   const secret = process.env.SESSION_SECRET;
-  if (!secret || secret.length < 32) return null;
-  const payload = `${accountId}.${Date.now() + SESSION_MAX_AGE * 1000}`;
-  return `${payload}.${sign(payload, secret)}`;
+  if (!secret) return null;
+  return makeToken(accountId, secret, passwordHash);
 }
 
 export async function setSessionCookie(token: string) {
@@ -42,51 +52,51 @@ export async function clearSessionCookie() {
   (await cookies()).delete(SESSION_COOKIE);
 }
 
-/** Đọc cookie phiên, xác thực chữ ký rồi nạp lại tài khoản đang hoạt động từ Supabase. */
+/**
+ * Đọc cookie phiên, xác thực chữ ký HMAC và kiểm tra Security Stamp so với DB:
+ * 1. Chữ ký HMAC phải hợp lệ và chưa hết hạn.
+ * 2. Tài khoản phải ở trạng thái HoatDong và có vai trò Admin / QuanLy.
+ * 3. Nếu token có stamp, mật khẩu hiện tại trong DB phải khớp stamp (thu hồi tức thì nếu đổi mật khẩu).
+ */
 export async function getCurrentAccount(): Promise<AccountRow | null> {
-  // Session data depends on the incoming request, so render it at request time.
-  await connection();
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   const secret = process.env.SESSION_SECRET;
-  if (!token || !secret || secret.length < 32) return null;
+  const parsed = verifySessionToken(token, secret);
+  if (!parsed) return null;
 
-  const signatureAt = token.lastIndexOf(".");
-  if (signatureAt < 0) return null;
-  const payload = token.slice(0, signatureAt);
-  const signature = token.slice(signatureAt + 1);
-  const expected = sign(payload, secret);
-  if (
-    !/^[a-f0-9]{64}$/.test(signature) ||
-    !timingSafeEqual(
-      Buffer.from(signature, "hex"),
-      Buffer.from(expected, "hex"),
-    )
-  ) {
-    return null;
-  }
-
-  const expiresAt = payload.lastIndexOf(".");
-  if (expiresAt < 0) return null;
-  const accountId = payload.slice(0, expiresAt);
-  const expires = Number(payload.slice(expiresAt + 1));
-  if (!accountId || !Number.isSafeInteger(expires) || expires < Date.now())
-    return null;
-
-  const { rows } = await getDbPool().query<AccountRow>(
-    `SELECT ma_tai_khoan, ten_dang_nhap, vai_tro, co_so_van_hanh, ho_ten, phai_doi_mat_khau
+  const { rows } = await getDbPool().query<DbAccountRow>(
+    `SELECT ma_tai_khoan, ten_dang_nhap, vai_tro, co_so_van_hanh, ho_ten, da_doi_mat_khau, mat_khau
      FROM public.tai_khoan
      WHERE ma_tai_khoan = $1 AND vai_tro IN ('Admin', 'QuanLy') AND trang_thai = 'HoatDong'
      LIMIT 1`,
-    [accountId],
+    [parsed.accountId],
   );
-  return rows[0] ?? null;
+  const account = rows[0];
+  if (!account) return null;
+
+  // Kiểm tra Security Stamp để vô hiệu hóa phiên cũ nếu người dùng đã đổi mật khẩu
+  if (parsed.stamp && parsed.stamp !== "none") {
+    const currentStamp = computePasswordStamp(account.mat_khau);
+    if (parsed.stamp !== currentStamp) {
+      return null;
+    }
+  }
+
+  return {
+    ma_tai_khoan: account.ma_tai_khoan,
+    ten_dang_nhap: account.ten_dang_nhap,
+    vai_tro: account.vai_tro,
+    co_so_van_hanh: account.co_so_van_hanh,
+    ho_ten: account.ho_ten,
+    da_doi_mat_khau: account.da_doi_mat_khau,
+  };
 }
 
 /** Dùng trong Server Component: chưa đăng nhập thì về /login, chưa đổi mật khẩu lần đầu thì sang trang bắt buộc. */
 export async function requireAccount(): Promise<AccountRow> {
   const account = await getCurrentAccount();
   if (!account) redirect("/login");
-  if (account.phai_doi_mat_khau ?? true) redirect("/doi-mat-khau-lan-dau");
+  if (!account.da_doi_mat_khau) redirect("/doi-mat-khau-lan-dau");
   return account;
 }
 

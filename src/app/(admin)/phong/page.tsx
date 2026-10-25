@@ -6,14 +6,14 @@ import { requireScope } from "@/lib/session";
 import {
   ALL_BUILDINGS,
   getBuildings,
-  getExpiringContractCount,
   getDashboardStats,
   getRooms,
   getRoomTypes,
   type RoomRow,
 } from "@/lib/queries";
 import { ScopeQuery } from "@/lib/scope";
-import { DeleteRoomButton, RoomEditorToggle, RoomForm, type RoomFormData } from "./room-forms";
+import { RoomCard } from "./room-card";
+import { CreateRoomModal, RoomForm } from "./room-forms";
 import styles from "@/components/business.module.css";
 import roomStyles from "./rooms.module.css";
 
@@ -27,73 +27,103 @@ const STATUS_OPTIONS = [
   { value: "All", label: "Tất cả" },
   { value: "DangThue", label: "Đang thuê" },
   { value: "Trong", label: "Trống" },
-  { value: "SuaChua", label: "Sửa chữa" },
+  { value: "SuaChua", label: "Đang bảo trì" },
+  { value: "DaCoc", label: "Đã đặt cọc" },
 ];
 
-function formatMoney(value: string | null) {
-  if (value === null) return "Chưa cập nhật";
-  return `${Number(value).toLocaleString("vi-VN")} đ`;
-}
+type FloorGroup = {
+  key: string;
+  label: string;
+  /** Mô tả phụ dưới tiêu đề tầng: số phòng đang thuê và sự cố đang mở. */
+  meta: string;
+  summary: string;
+  rooms: RoomRow[];
+};
 
-function toFormData(room: RoomRow): RoomFormData {
-  return {
-    maPhong: room.ma_phong,
-    tenHienThi: room.ten_hien_thi ?? "",
-    tang: room.tang,
-    dienTich: room.dien_tich,
-    giaThue: room.gia_thue,
-    trangThai: room.trang_thai ?? "Trống",
-    toaNha: room.toa_nha ?? "",
-    maLoaiPhong: room.ma_loai_phong ?? "",
-    moTaNgan: room.mo_ta_ngan ?? "",
-    tienDatCoc: room.tien_dat_coc,
-  };
+/**
+ * Nhóm phòng theo tòa rồi theo tầng để hiển thị dạng phân tầng.
+ * Mỗi nhóm kèm dòng thống kê "N phòng - M phòng trống".
+ */
+function groupByFloor(rooms: RoomRow[], multipleBuildings: boolean): FloorGroup[] {
+  const groups = new Map<string, FloorGroup>();
+
+  for (const room of rooms) {
+    const building = room.toa_nha || "Chưa phân tòa";
+    const floor = room.tang;
+    const key = `${building}|${floor ?? "none"}`;
+
+    if (!groups.has(key)) {
+      const floorLabel =
+        floor === null ? "Chưa xếp tầng" : `Tầng ${floor}`;
+      groups.set(key, {
+        key,
+        label: multipleBuildings ? `${building} • ${floorLabel}` : floorLabel,
+        meta: "",
+        summary: "",
+        rooms: [],
+      });
+    }
+    groups.get(key)!.rooms.push(room);
+  }
+
+  const result = [...groups.values()];
+  for (const group of result) {
+    const empty = group.rooms.filter((r) => r.trang_thai === "Trống").length;
+    group.summary = `${group.rooms.length} phòng • ${empty} phòng trống`;
+
+    const rented = group.rooms.filter((r) => r.trang_thai === "Đang thuê").length;
+    const issues = group.rooms.filter((r) => r.su_co_dang_mo !== null).length;
+    const parts: string[] = [];
+    if (rented > 0) parts.push(`${rented} đang thuê`);
+    if (issues > 0) parts.push(`${issues} sự cố mở`);
+    group.meta = parts.length > 0 ? parts.join(" • ") : "Không có sự cố";
+  }
+
+  return result;
 }
 
 async function RoomsContent({ searchParams }: { searchParams: SearchParams }) {
-  const { scope } = await requireScope();
+  const { account, scope } = await requireScope();
+  const isAdmin = account.vai_tro === "Admin";
   const scopeQuery = new ScopeQuery(scope);
   const params = await searchParams;
-  // Quản lý tòa luôn bị khóa theo tòa được gán; quản trị viên có thể chọn tòa.
+  // Quản lý tòa luôn bị khóa theo tòa được gán; quản trị viên có thể chọn tòa để xem.
   const building = scope.allBuildings
     ? params.building || ALL_BUILDINGS
     : (scope.building ?? "");
+
   const status = params.status || "All";
   const keyword = params.keyword || "";
 
-  const [rooms, buildings, roomTypes, stats, sapHetHan] = await Promise.all([
+  const [rooms, buildings, stats, roomTypes] = await Promise.all([
     getRooms({ building, status, keyword, scope: scopeQuery }),
     getBuildings(scopeQuery),
-    getRoomTypes(),
     getDashboardStats(building, scopeQuery),
-    getExpiringContractCount(building, scopeQuery),
+    getRoomTypes(),
   ]);
+  // Khi xem nhiều tòa, tiêu đề nhóm ghi kèm tên tòa để không lẫn tầng giữa các tòa.
+  const floorGroups = groupByFloor(rooms, building === ALL_BUILDINGS && buildings.length > 1);
 
   return (
     <AdminShell active="room">
       <div className={styles.pageHead}>
         <div>
-          <h1 className={styles.title}>Phòng &amp; hợp đồng</h1>
+          <h1 className={styles.title}>Quản lý phòng</h1>
           <p className={styles.subtitle}>
             {scope.allBuildings
               ? `Quản lý phòng tại ${building || "tất cả cơ sở"}`
               : `Quản lý phòng tại cơ sở ${scope.building}`}
           </p>
         </div>
-        <Link href="/hop-dong" className={styles.resetButton}>
-          Hợp đồng
-        </Link>
+        {isAdmin && (
+          <CreateRoomModal
+            buildings={buildings}
+            roomTypes={roomTypes}
+            defaultBuilding={building === ALL_BUILDINGS ? buildings[0] ?? "" : building}
+            editableBuilding={scope.allBuildings}
+          />
+        )}
       </div>
-
-      <details className={styles.createBox}>
-        <summary className={styles.createSummary}>+ Thêm phòng mới</summary>
-        <RoomForm
-          mode="create"
-          buildings={buildings}
-          roomTypes={roomTypes}
-          defaultBuilding={building}
-        />
-      </details>
 
       <section className={styles.miniStats}>
         <div className={styles.miniCard}>
@@ -113,12 +143,29 @@ async function RoomsContent({ searchParams }: { searchParams: SearchParams }) {
           </div>
         </div>
         <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Sắp hết hạn</div>
+          <div className={styles.miniLabel}>Đã đặt cọc</div>
           <div className={`${styles.miniValue} ${styles.warn}`}>
-            {sapHetHan}
+            {stats.daDatCoc}
           </div>
         </div>
       </section>
+
+      {isAdmin && (
+        <details className={styles.createBox}>
+          <summary className={styles.createSummary}>+ Thêm phòng mới</summary>
+          <RoomForm
+            mode="create"
+            buildings={buildings}
+            roomTypes={roomTypes}
+            defaultBuilding={
+              building !== ALL_BUILDINGS && building
+                ? building
+                : (buildings[0] ?? "Tòa A")
+            }
+            editableBuilding={true}
+          />
+        </details>
+      )}
 
       <form className={styles.filterCard} action="/phong">
         <div className={styles.filterField}>
@@ -165,87 +212,28 @@ async function RoomsContent({ searchParams }: { searchParams: SearchParams }) {
         </div>
       </form>
 
-      <div className={styles.tableCard}>
-        <div className={styles.tableScroll}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Phòng</th>
-                <th>Tầng / Loại</th>
-                <th>Diện tích</th>
-                <th>Giá thuê</th>
-                <th>Trạng thái</th>
-                <th>Khách thuê</th>
-                <th>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rooms.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className={styles.empty}>
-                    Không có phòng phù hợp với bộ lọc.
-                  </td>
-                </tr>
-              ) : (
-                rooms.map((room) => (
-                  <tr key={room.ma_phong}>
-                    <td>
-                      <div className={roomStyles.roomName}>
-                        {room.ten_hien_thi || room.ma_phong}
-                      </div>
-                      <div className={roomStyles.roomCode}>{room.ma_phong}</div>
-                    </td>
-                    <td>
-                      <div>
-                        {room.tang !== null
-                          ? `Tầng ${room.tang}`
-                          : "Chưa xếp tầng"}
-                      </div>
-                      <div className={roomStyles.roomCode}>
-                        {room.ten_loai_phong || "Chưa phân loại"}
-                      </div>
-                    </td>
-                    <td>
-                      {room.dien_tich !== null ? `${room.dien_tich} m²` : "-"}
-                    </td>
-                    <td className={roomStyles.money}>
-                      {formatMoney(room.gia_thue)}
-                    </td>
-                    <td>
-                      <span
-                        className={
-                          room.trang_thai === "Đang thuê"
-                            ? styles.badgeOk
-                            : room.trang_thai === "Sửa chữa"
-                              ? styles.badgeWarn
-                              : styles.badgeMuted
-                        }
-                      >
-                        {room.trang_thai}
-                      </span>
-                    </td>
-                    <td>{room.khach_thue || "Chưa có hợp đồng"}</td>
-                    <td>
-                      <div className={styles.actionCell}>
-                        <RoomEditorToggle
-                          room={toFormData(room)}
-                          buildings={buildings}
-                          roomTypes={roomTypes}
-                          defaultBuilding={building}
-                        />
-                        <DeleteRoomButton
-                          maPhong={room.ma_phong}
-                          tenPhong={room.ten_hien_thi || room.ma_phong}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      {rooms.length === 0 ? (
+        <div className={styles.tableCard}>
+          <p className={styles.empty}>Không có phòng phù hợp với bộ lọc.</p>
         </div>
-      </div>
+      ) : (
+        floorGroups.map((group) => (
+          <section key={group.key} className={roomStyles.floorSection}>
+            <header className={roomStyles.floorHeader}>
+              <div>
+                <div className={roomStyles.floorTitle}>{group.label}</div>
+                <div className={roomStyles.floorMeta}>{group.meta}</div>
+              </div>
+              <span className={roomStyles.floorSummary}>{group.summary}</span>
+            </header>
+            <div className={roomStyles.cardGrid}>
+              {group.rooms.map((room) => (
+                <RoomCard key={room.ma_phong} room={room} />
+              ))}
+            </div>
+          </section>
+        ))
+      )}
     </AdminShell>
   );
 }

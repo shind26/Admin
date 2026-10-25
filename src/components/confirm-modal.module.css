@@ -15,23 +15,23 @@
 }
 
 .dangerIcon {
-  background: #fef2f2;
-  color: #dc2626;
+  background: #fde8e8;
+  color: #991b1b;
 }
 
 .warnIcon {
-  background: #eef2ff;
-  color: #4338ca;
+  background: #dceff8;
+  color: #4a90c2;
 }
 
 .message {
   font-size: 13.5px;
   line-height: 1.6;
-  color: #334155;
+  color: #425b6b;
 }
 
 .message strong {
-  color: #0f172a;
+  color: #244e6e;
 }
 
 .cancelButton,
@@ -43,32 +43,34 @@
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
+  transition: all 0.15s ease;
 }
 
 .cancelButton {
   background: #ffffff;
-  border-color: #cbd5e1;
-  color: #475569;
+  border-color: #cbdce8;
+  color: #425b6b;
 }
 
 .cancelButton:hover {
-  background: #f8fafc;
+  background: #eff8fc;
+  color: #244e6e;
 }
 
 .confirmButton {
-  background: #1e40af;
+  background: #4a90c2;
   color: #ffffff;
 }
 
 .confirmButton:hover {
-  background: #1e3a8a;
+  background: #3a78a6;
 }
 
 .dangerButton {
-  background: #dc2626;
+  background: #991b1b;
   color: #ffffff;
 }
 
 .dangerButton:hover {
-  background: #b91c1c;
+  background: #7f1d1d;
 }

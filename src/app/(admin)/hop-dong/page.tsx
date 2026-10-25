@@ -3,18 +3,33 @@ import { Suspense } from "react";
 import { AdminShell } from "@/components/admin-shell";
 import { AdminPageSkeleton } from "@/components/admin-skeleton";
 import { requireScope } from "@/lib/session";
-import { getContracts, getRoomOptions, getTenantOptions } from "@/lib/queries";
+import {
+  getContracts,
+  getRoomOptions,
+  getTenantOptions,
+  getPaidReservationsPendingContract,
+  getPendingLiquidationRequests,
+  getPendingRoomTransferRequests,
+} from "@/lib/queries";
 import { ScopeQuery } from "@/lib/scope";
 import {
   ContractEditorToggle,
   ContractForm,
   DeleteContractButton,
 } from "./contract-forms";
+import { PendingReservationsQueue } from "./pending-reservations";
+import { PendingLiquidationQueue } from "./pending-liquidation";
+import { PendingTransfersQueue } from "./pending-transfers";
 import styles from "@/components/business.module.css";
 
 type SearchParams = Promise<{ status?: string; keyword?: string }>;
 
-const STATUS_OPTIONS = ["All", "Đang thuê", "Còn hạn", "Đã cọc", "Đã kết thúc"];
+const STATUS_OPTIONS = [
+  "All",
+  "Còn hạn",
+  "Đã đặt cọc",
+  "Đã kết thúc",
+];
 
 function formatDate(value: string | null) {
   if (!value) return "-";
@@ -28,7 +43,7 @@ function formatMoney(value: string | null) {
 
 function statusClass(status: string | null) {
   if (status === "Còn hạn" || status === "Đang thuê") return styles.badgeOk;
-  if (status === "Đã cọc") return styles.badgeInfo;
+  if (status === "Đã đặt cọc") return styles.badgeInfo;
   return styles.badgeMuted;
 }
 
@@ -43,34 +58,36 @@ async function ContractsContent({
   const status = params.status || "All";
   const keyword = params.keyword || "";
 
-  const [{ contracts, stats }, rooms, tenants] = await Promise.all([
-    getContracts({ status, keyword }, scopeQuery),
-    getRoomOptions(scopeQuery),
-    getTenantOptions(scopeQuery),
-  ]);
+  const [{ contracts, stats }, rooms, tenants, pendingReservations, pendingLiquidations, pendingTransfers] =
+    await Promise.all([
+      getContracts({ status, keyword }, scopeQuery),
+      getRoomOptions(scopeQuery),
+      getTenantOptions(scopeQuery),
+      getPaidReservationsPendingContract(scopeQuery),
+      getPendingLiquidationRequests(scopeQuery),
+      getPendingRoomTransferRequests(scopeQuery),
+    ]);
+
+  const emptyRooms = rooms.filter(
+    (r) => r.trang_thai !== "Đang thuê" && r.trang_thai !== "Đã đặt cọc" && r.trang_thai !== "Đã cọc",
+  );
 
   return (
-    <AdminShell active="invoice">
+    <AdminShell active="contract">
       <div className={styles.pageHead}>
         <div>
           <h1 className={styles.title}>Hợp đồng thuê phòng</h1>
-          <p className={styles.subtitle}>
-            Tạo hợp đồng sẽ tự cập nhật trạng thái phòng thành Đang thuê khi hợp
-            đồng còn hiệu lực
-          </p>
-        </div>
-        <div className={styles.navTabs}>
-          <Link href="/hop-dong" className={styles.navTabActive}>
-            Hợp đồng
-          </Link>
-          <Link href="/hoa-don" className={styles.navTab}>
-            Hóa đơn
-          </Link>
-          <Link href="/phieu-thu" className={styles.navTab}>
-            Phiếu thu
-          </Link>
         </div>
       </div>
+
+      {/* Hàng đợi các yêu cầu đặt cọc thành công từ Mobile App cần lập hợp đồng ngay */}
+      <PendingReservationsQueue reservations={pendingReservations} />
+
+      {/* Hàng đợi các yêu cầu đổi / chuyển phòng từ Mobile App chờ duyệt */}
+      <PendingTransfersQueue requests={pendingTransfers} emptyRooms={emptyRooms} />
+
+      {/* Hàng đợi các yêu cầu trả phòng / thanh lý hợp đồng từ Mobile App chờ duyệt */}
+      <PendingLiquidationQueue requests={pendingLiquidations} />
 
       <section className={styles.miniStats}>
         <div className={styles.miniCard}>
@@ -149,7 +166,15 @@ async function ContractsContent({
               ) : (
                 contracts.map((contract) => (
                   <tr key={contract.ma_hop_dong}>
-                    <td className={styles.strong}>{contract.ma_hop_dong}</td>
+                    <td>
+                      <Link
+                        href={`/hop-dong/${encodeURIComponent(contract.ma_hop_dong)}`}
+                        className={styles.strong}
+                        style={{ color: "#1e40af", textDecoration: "underline" }}
+                      >
+                        {contract.ma_hop_dong}
+                      </Link>
+                    </td>
                     <td>{contract.ma_phong}</td>
                     <td>{contract.ten_khach}</td>
                     <td>
@@ -159,9 +184,53 @@ async function ContractsContent({
                     <td>{formatMoney(contract.gia_thue_thoa_thuan)}</td>
                     <td>{formatMoney(contract.tien_dat_coc)}</td>
                     <td>
-                      <span className={statusClass(contract.trang_thai)}>
-                        {contract.trang_thai}
-                      </span>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start" }}>
+                        <span className={statusClass(contract.trang_thai)}>
+                          {contract.trang_thai}
+                        </span>
+                        {contract.co_yeu_cau_thanh_ly && (
+                          <Link
+                            href={`/hop-dong/${encodeURIComponent(contract.ma_hop_dong)}`}
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 3,
+                              background: "#F6E6B4",
+                              color: "#92400E",
+                              border: "1px solid #FDE68A",
+                              borderRadius: 4,
+                              padding: "2px 6px",
+                              fontSize: 11,
+                              fontWeight: 700,
+                              textDecoration: "none",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            ⚡ Yêu cầu trả phòng
+                          </Link>
+                        )}
+                        {contract.co_yeu_cau_doi_phong && (
+                          <Link
+                            href={`/hop-dong/${encodeURIComponent(contract.ma_hop_dong)}`}
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 3,
+                              background: "#DCEFF8",
+                              color: "#0369A1",
+                              border: "1px solid #BAE6FD",
+                              borderRadius: 4,
+                              padding: "2px 6px",
+                              fontSize: 11,
+                              fontWeight: 700,
+                              textDecoration: "none",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            ⚡ Yêu cầu đổi phòng
+                          </Link>
+                        )}
+                      </div>
                     </td>
                     <td>
                       <div className={styles.actionCell}>

@@ -1,0 +1,779 @@
+/* ── Khung Quản lý tài sản trong phòng ── */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #244e6e;
+  margin: 0;
+}
+
+.subTitle {
+  font-size: 12px;
+  color: #627d90;
+  margin: 0;
+}
+
+.actionsGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Thẻ thống kê nhanh ── */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.statPill {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #eff8fc;
+  border: 1px solid #dceff8;
+}
+
+.statLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #627d90;
+}
+
+.statValue {
+  font-size: 16px;
+  font-weight: 800;
+  color: #244e6e;
+  margin-top: 2px;
+}
+
+.statValueOk {
+  color: #166534;
+}
+
+.statValueWarn {
+  color: #854d0e;
+}
+
+.statValueDanger {
+  color: #991b1b;
+}
+
+/* ── Bảng danh mục tài sản ── */
+.tableCard {
+  border: 1px solid #e2ebf2;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(66, 91, 107, 0.05);
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.table th {
+  background: #76b5d8;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #68a5c7;
+  white-space: nowrap;
+}
+
+.table tbody tr:nth-child(even) {
+  background: #eff8fc;
+}
+
+.table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e2ebf2;
+  vertical-align: middle;
+  color: #425b6b;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover td {
+  background: #e0f0f8;
+}
+
+.assetName {
+  font-weight: 700;
+  color: #244e6e;
+}
+
+.assetCode {
+  font-size: 11px;
+  color: #627d90;
+  font-family: monospace;
+  margin-top: 2px;
+}
+
+.brandTag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #425b6b;
+}
+
+.serialCode {
+  font-size: 11px;
+  color: #627d90;
+  font-family: monospace;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badgeOk {
+  background: #e6f4ea;
+  color: #166534;
+  border: 1px solid #b8e2c8;
+}
+
+.badgeInfo {
+  background: #dceff8;
+  color: #1d5c8a;
+  border: 1px solid #b8ddf0;
+}
+
+.badgeWarn {
+  background: #f6e6b4;
+  color: #854d0e;
+  border: 1px solid #ebd391;
+}
+
+.badgeDanger {
+  background: #fde8e8;
+  color: #991b1b;
+  border: 1px solid #f8b4b4;
+}
+
+.moneyCol {
+  font-weight: 600;
+  white-space: nowrap;
+  color: #244e6e;
+}
+
+.emptyState {
+  padding: 32px 20px;
+  text-align: center;
+  color: #627d90;
+  font-size: 13px;
+}
+
+/* ── Nút thao tác ── */
+.btnPrimary,
+.btnSecondary,
+.btnGhost,
+.btnDangerSmall {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btnPrimary {
+  background: #4a90c2;
+  color: #ffffff;
+  border: 1px solid #4a90c2;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: #3a78a6;
+}
+
+.btnSecondary {
+  background: #ffffff;
+  color: #425b6b;
+  border: 1px solid #cbdce8;
+}
+
+.btnSecondary:hover:not(:disabled) {
+  background: #eff8fc;
+  border-color: #76b5d8;
+}
+
+.btnGhost {
+  background: transparent;
+  color: #4a90c2;
+  border: none;
+  padding: 4px 8px;
+}
+
+.btnGhost:hover {
+  background: #eff8fc;
+}
+
+.btnDangerSmall {
+  background: #ffffff;
+  color: #991b1b;
+  border: 1px solid #f8b4b4;
+  padding: 4px 8px;
+  font-size: 11.5px;
+}
+
+.btnDangerSmall:hover:not(:disabled) {
+  background: #fde8e8;
+}
+
+.btnPrimary:disabled,
+.btnSecondary:disabled,
+.btnDangerSmall:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tableActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+/* ── Modal & Form ── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 16px;
+  overflow-y: auto;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(36, 78, 110, 0.45);
+  backdrop-filter: blur(2px);
+  border: none;
+  cursor: pointer;
+}
+
+.modalPanel {
+  position: relative;
+  width: min(100%, 720px);
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(36, 78, 110, 0.2);
+  border: 1px solid #e2ebf2;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalPanelPrint {
+  width: min(100%, 860px);
+}
+
+.modalHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2ebf2;
+  background: #eff8fc;
+}
+
+.modalTitle {
+  font-size: 16px;
+  font-weight: 800;
+  color: #244e6e;
+  margin: 0;
+}
+
+.modalClose {
+  border: 1px solid #cbdce8;
+  background: #ffffff;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: #627d90;
+  cursor: pointer;
+}
+
+.modalClose:hover {
+  color: #244e6e;
+  background: #dceff8;
+}
+
+.modalBody {
+  padding: 20px;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.formFieldWide {
+  grid-column: span 2;
+}
+
+.formField label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #244e6e;
+  margin-bottom: 5px;
+}
+
+.formField input,
+.formField select,
+.formField textarea {
+  width: 100%;
+  height: 38px;
+  border: 1px solid #cbdce8;
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 13px;
+  color: #425b6b;
+  background: #ffffff;
+}
+
+.formField textarea {
+  height: auto;
+  min-height: 60px;
+  padding: 8px 10px;
+}
+
+.formField input:focus,
+.formField select:focus,
+.formField textarea:focus {
+  border-color: #4a90c2;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(74, 144, 194, 0.15);
+}
+
+.formHint {
+  display: block;
+  font-size: 11px;
+  color: #627d90;
+  margin-top: 4px;
+}
+
+.formMessage {
+  grid-column: 1 / -1;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.formError {
+  background: #fde8e8;
+  color: #991b1b;
+  border: 1px solid #f8b4b4;
+}
+
+.formSuccess {
+  background: #e6f4ea;
+  color: #166534;
+  border: 1px solid #b8e2c8;
+}
+
+.formActions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* ── BIÊN BẢN BÀN GIAO & KIỂM KÊ (CHUẨN IN A4) ── */
+.handoverHeaderControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #dceff8;
+  border-radius: 8px;
+  margin-bottom: 18px;
+}
+
+.handoverTypeSelect {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #244e6e;
+}
+
+.handoverTypeSelect select {
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #76b5d8;
+  border-radius: 6px;
+  background: #ffffff;
+  font-weight: 600;
+  color: #425b6b;
+}
+
+.printDoc {
+  background: #ffffff;
+  padding: 24px;
+  border: 1px solid #e2ebf2;
+  border-radius: 10px;
+  color: #425b6b;
+  line-height: 1.5;
+}
+
+.docNation {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.docNationHeading {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #244e6e;
+}
+
+.docNationMotto {
+  font-size: 12px;
+  font-weight: 700;
+  color: #425b6b;
+}
+
+.docDivider {
+  display: inline-block;
+  width: 140px;
+  border-bottom: 1.5px solid #4a90c2;
+  margin-top: 4px;
+}
+
+.docTitle {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #244e6e;
+  margin: 14px 0 6px;
+}
+
+.docSubtitle {
+  text-align: center;
+  font-size: 12px;
+  font-style: italic;
+  color: #627d90;
+  margin-bottom: 18px;
+}
+
+.docMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  margin-bottom: 16px;
+  font-size: 12.5px;
+}
+
+.docTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin: 14px 0;
+}
+
+.docTable th,
+.docTable td {
+  border: 1px solid #cbdce8;
+  padding: 6px 8px;
+}
+
+.docTable th {
+  background: #dceff8;
+  color: #244e6e;
+  font-weight: 700;
+  text-align: center;
+}
+
+.docTerms {
+  font-size: 11.5px;
+  color: #425b6b;
+  line-height: 1.6;
+  margin: 16px 0;
+  font-style: italic;
+}
+
+.docSignatures {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+  text-align: center;
+  font-size: 12.5px;
+}
+
+.signatureBox {
+  width: 45%;
+}
+
+.signatureTitle {
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #244e6e;
+}
+
+.signatureHint {
+  font-size: 11px;
+  font-style: italic;
+  color: #627d90;
+  margin-top: 2px;
+}
+
+.signatureSpace {
+  height: 60px;
+}
+
+/* ── Nút nạp gói & chip chọn nhanh ── */
+.btnPreset {
+  background: #eff8fc;
+  color: #244e6e;
+  border: 1px solid #dceff8;
+}
+
+.btnPreset:hover:not(:disabled) {
+  background: #dceff8;
+  border-color: #76b5d8;
+}
+
+.quickChipsBox {
+  grid-column: 1 / -1;
+  background: #eff8fc;
+  border: 1px dashed #cbdce8;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quickChipsTitle {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #244e6e;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.quickChipsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.quickChipBtn {
+  background: #ffffff;
+  border: 1px solid #cbdce8;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11.5px;
+  color: #425b6b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.quickChipBtn:hover {
+  background: #dceff8;
+  border-color: #76b5d8;
+  color: #244e6e;
+}
+
+.presetBanner {
+  background: #eff8fc;
+  border: 1px solid #dceff8;
+  border-left: 4px solid #4a90c2;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.presetBannerText {
+  font-size: 13px;
+  color: #425b6b;
+}
+
+.presetBannerText strong {
+  color: #244e6e;
+}
+
+.presetCardsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.presetCard {
+  border: 1px solid #e2ebf2;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  text-align: left;
+  background: #ffffff;
+}
+
+.presetCard:hover {
+  background: #eff8fc;
+  border-color: #76b5d8;
+}
+
+.presetCardActive {
+  background: #dceff8;
+  border-color: #4a90c2;
+}
+
+.presetCardTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #244e6e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.presetCardDesc {
+  font-size: 11.5px;
+  color: #627d90;
+  line-height: 1.4;
+}
+
+/* ── Media print: tối ưu in trực tiếp ── */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  body {
+    background: #ffffff !important;
+  }
+  
+  :global(nav),
+  :global(aside),
+  :global(header),
+  :global(.admin-skeleton),
+  :global(.noPrint),
+  :global([data-no-print="true"]),
+  :global([class*="topBanner"]),
+  :global([class*="sidebar"]),
+  .noPrint,
+  .modalBackdrop,
+  .modalHead,
+  .actionsGroup,
+  .btnPrimary,
+  .btnSecondary {
+    display: none !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .printDoc,
+  .printDoc * {
+    visibility: visible;
+  }
+
+  .modalOverlay {
+    position: static !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .modalPanel {
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .modalBody {
+    padding: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .printDoc {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    border: none !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+}

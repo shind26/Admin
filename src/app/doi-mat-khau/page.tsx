@@ -14,7 +14,7 @@ async function ChangePasswordContent() {
   if (!account) redirect("/login");
 
   return (
-    <AdminShell active="account">
+    <AdminShell active="password">
       <div className={styles.pageHead}>
         <div>
           <h1 className={styles.title}>Đổi mật khẩu</h1>

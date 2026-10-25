@@ -5,7 +5,12 @@ import { AdminPageSkeleton } from "@/components/admin-skeleton";
 import { requireScope } from "@/lib/session";
 import { getIssues, getRoomOptions, getTenantOptions } from "@/lib/queries";
 import { ScopeQuery } from "@/lib/scope";
-import { DeleteIssueButton, IssueEditorToggle, IssueForm } from "./issue-forms";
+import {
+  DeleteIssueButton,
+  IssueForm,
+  IssueImageGallery,
+  IssueStatusSelect,
+} from "./issue-forms";
 import styles from "@/components/business.module.css";
 
 type SearchParams = Promise<{ status?: string; keyword?: string }>;
@@ -136,7 +141,8 @@ async function IssuesContent({ searchParams }: { searchParams: SearchParams }) {
                 <th>Phòng</th>
                 <th>Khách báo</th>
                 <th>Danh mục</th>
-                <th>Nội dung</th>
+                <th>Mô tả sự cố</th>
+                <th>Hình ảnh</th>
                 <th>Ưu tiên</th>
                 <th>Chi phí</th>
                 <th>Ngày báo</th>
@@ -147,7 +153,7 @@ async function IssuesContent({ searchParams }: { searchParams: SearchParams }) {
             <tbody>
               {issues.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className={styles.empty}>
+                  <td colSpan={11} className={styles.empty}>
                     Không có phiếu sự cố phù hợp.
                   </td>
                 </tr>
@@ -158,7 +164,12 @@ async function IssuesContent({ searchParams }: { searchParams: SearchParams }) {
                     <td>{issue.ma_phong}</td>
                     <td>{issue.ten_khach_bao || "Không xác định"}</td>
                     <td>{issue.danh_muc}</td>
-                    <td>{issue.noi_dung}</td>
+                    <td style={{ maxWidth: 280, wordBreak: "break-word" }}>
+                      {issue.mo_ta || "—"}
+                    </td>
+                    <td>
+                      <IssueImageGallery images={issue.hinh_anh} />
+                    </td>
                     <td>
                       <span className={priorityClass(issue.muc_do_uu_tien)}>
                         {issue.muc_do_uu_tien}
@@ -167,17 +178,13 @@ async function IssuesContent({ searchParams }: { searchParams: SearchParams }) {
                     <td>{formatMoney(issue.chi_phi_sua_chua)}</td>
                     <td>{formatDate(issue.ngay_bao_cao)}</td>
                     <td>
-                      <span className={statusClass(issue.trang_thai)}>
-                        {issue.trang_thai}
-                      </span>
+                      <IssueStatusSelect
+                        maSuCo={issue.ma_su_co}
+                        currentStatus={issue.trang_thai ?? "Chờ xử lý"}
+                      />
                     </td>
                     <td>
                       <div className={styles.actionCell}>
-                        <IssueEditorToggle
-                          issue={issue}
-                          rooms={rooms}
-                          tenants={tenants}
-                        />
                         <DeleteIssueButton maSuCo={issue.ma_su_co} />
                       </div>
                     </td>

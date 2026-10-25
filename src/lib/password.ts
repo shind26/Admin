@@ -2,6 +2,9 @@ import "server-only";
 import { pbkdf2Sync, timingSafeEqual } from "node:crypto";
 import { compare, hash } from "bcryptjs";
 
+/** Mật khẩu mặc định cấp cho tài khoản khách thuê (cư dân) trên Mobile App */
+export const DEFAULT_CUSTOMER_PASSWORD = "123456";
+
 /**
  * Tương thích với PasswordHelper của SupabaseApp (C#).
  * Hỗ trợ: BCrypt ($2a/$2b/$2y/$2x), PBKDF2 legacy của ASP.NET Crypto, và dữ liệu seed dạng thô.

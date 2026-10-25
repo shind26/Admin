@@ -1,0 +1,361 @@
+.backRow {
+  margin-bottom: 14px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a90c2;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.backLink:hover {
+  color: #3a78a6;
+  text-decoration: underline;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── Cột ảnh ── */
+.photoPanel {
+  background: #ffffff;
+  border: 1px solid #e2ebf2;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(66, 91, 107, 0.05);
+}
+
+.photoFrame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #eff8fc;
+  display: grid;
+  place-items: center;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photoEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #627d90;
+  font-size: 12.5px;
+}
+
+.photoActions {
+  padding: 14px;
+  border-top: 1px solid #e2ebf2;
+}
+
+/* ── Cột thông tin ── */
+.infoPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.headCard {
+  background: #ffffff;
+  border: 1px solid #e2ebf2;
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: 0 1px 3px rgba(66, 91, 107, 0.05);
+}
+
+.roomCode {
+  font-size: 24px;
+  font-weight: 800;
+  color: #244e6e;
+  letter-spacing: -0.4px;
+  margin: 0;
+}
+
+.roomSub {
+  font-size: 12.5px;
+  color: #627d90;
+  margin: 4px 0 0;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.section {
+  background: #ffffff;
+  border: 1px solid #e2ebf2;
+  border-radius: 14px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 3px rgba(66, 91, 107, 0.05);
+}
+
+.sectionTitle {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #244e6e;
+  background: #dceff8;
+  border-left: 3px solid #4a90c2;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin: 0 0 14px;
+  display: inline-block;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px 20px;
+  margin: 0;
+}
+
+.field dt {
+  font-size: 11.5px;
+  color: #627d90;
+  margin-bottom: 3px;
+}
+
+.field dd {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #425b6b;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.chip {
+  background: #dceff8;
+  color: #1d5c8a;
+  border: 1px solid #b8ddf0;
+  border-radius: 999px;
+  padding: 4px 11px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.chipEmpty {
+  color: #627d90;
+  font-size: 12.5px;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.badgeOk {
+  background: #e6f4ea;
+  color: #166534;
+  border: 1px solid #b8e2c8;
+}
+.badgeInfo {
+  background: #dceff8;
+  color: #1d5c8a;
+  border: 1px solid #b8ddf0;
+}
+.badgeWarn {
+  background: #f6e6b4;
+  color: #854d0e;
+  border: 1px solid #ebd391;
+}
+.badgeDanger {
+  background: #fde8e8;
+  color: #991b1b;
+  border: 1px solid #f8b4b4;
+}
+.badgeMuted {
+  background: #f1f4f8;
+  color: #627d90;
+  border: 1px solid #dce4ec;
+}
+
+.warning {
+  background: #f6e6b4;
+  border: 1px solid #ebd391;
+  color: #854d0e;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Nút hành động trên trang chi tiết ── */
+.editButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  background: #4a90c2;
+  color: #ffffff;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.editButton:hover {
+  background: #3a78a6;
+}
+
+.deleteWrap {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.deleteButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #f8b4b4;
+  background: #ffffff;
+  color: #991b1b;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background: #fde8e8;
+}
+
+.deleteButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.deleteError {
+  font-size: 11.5px;
+  color: #991b1b;
+}
+
+/* ── Hộp thoại sửa phòng ── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 20px;
+  overflow-y: auto;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: rgba(36, 78, 110, 0.45);
+  backdrop-filter: blur(2px);
+  cursor: pointer;
+}
+
+.modalPanel {
+  position: relative;
+  width: min(100%, 940px);
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(36, 78, 110, 0.2);
+  overflow: hidden;
+  border: 1px solid #e2ebf2;
+}
+
+.modalHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2ebf2;
+  background: #eff8fc;
+}
+
+.modalTitle {
+  font-size: 17px;
+  font-weight: 800;
+  color: #244e6e;
+  margin: 0;
+}
+
+.modalSub {
+  font-size: 12.5px;
+  color: #627d90;
+  margin: 4px 0 0;
+}
+
+.modalClose {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: 1px solid #cbdce8;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #627d90;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modalClose:hover {
+  background: #dceff8;
+  color: #244e6e;
+}
+
+.modalBody {
+  padding: 22px 24px 26px;
+  max-height: calc(100vh - 190px);
+  overflow-y: auto;
+}
+
+/* Form trong hộp thoại rộng nên chia 3 cột như thiết kế gốc. */
+.modalBody :global(form) {
+  margin-top: 0;
+}

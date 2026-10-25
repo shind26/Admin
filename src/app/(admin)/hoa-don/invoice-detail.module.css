@@ -1,0 +1,475 @@
+/* Modal styles */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(36, 78, 110, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.modalContainer {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 860px;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(36, 78, 110, 0.25);
+  border: 1px solid #e2ebf2;
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e2ebf2;
+  background: #eff8fc;
+}
+
+.modalTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modalTitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: #244e6e;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  color: #627d90;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.closeButton:hover {
+  background: #dceff8;
+  color: #244e6e;
+}
+
+.modalBody {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Invoice Bill Document Styling */
+.billPaper {
+  background: #ffffff;
+  border: 1px solid #e2ebf2;
+  border-radius: 12px;
+  padding: 32px;
+  color: #425b6b;
+}
+
+.billHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e2ebf2;
+  margin-bottom: 24px;
+}
+
+.brandName {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #4a90c2;
+  text-transform: uppercase;
+}
+
+.brandSub {
+  font-size: 12.5px;
+  color: #627d90;
+  margin-top: 4px;
+}
+
+.billTitleBlock {
+  text-align: right;
+}
+
+.billTitle {
+  font-size: 20px;
+  font-weight: 800;
+  color: #244e6e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 6px 0;
+}
+
+.billCode {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #4a90c2;
+}
+
+.billMetaRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* Two column Info section */
+.billInfoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  background: #eff8fc;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  border: 1px solid #dceff8;
+}
+
+.infoCol h4 {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #244e6e;
+  letter-spacing: 0.5px;
+  margin: 0 0 10px 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #cbdce8;
+}
+
+.infoItem {
+  display: flex;
+  font-size: 13px;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.infoLabel {
+  width: 110px;
+  color: #627d90;
+  flex-shrink: 0;
+}
+
+.infoValue {
+  color: #244e6e;
+  font-weight: 600;
+}
+
+/* Tables in Bill */
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #244e6e;
+  margin: 20px 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.billTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.billTable th {
+  background: #76b5d8;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 10px 12px;
+  text-align: left;
+  border: 1px solid #68a5c7;
+  white-space: nowrap;
+}
+
+.billTable td {
+  padding: 10px 12px;
+  border: 1px solid #e2ebf2;
+  color: #425b6b;
+}
+
+.billTable tbody tr:nth-child(even) {
+  background: #eff8fc;
+}
+
+.billTable tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.textRight {
+  text-align: right !important;
+}
+
+.textCenter {
+  text-align: center !important;
+}
+
+/* Utilities box */
+.meterBox {
+  background: #e6f4ea;
+  border: 1px solid #b8e2c8;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 12.5px;
+  color: #166534;
+}
+
+.meterGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.meterItem {
+  background: #ffffff;
+  border: 1px solid #b8e2c8;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.meterLabel {
+  font-weight: 700;
+  color: #166534;
+  margin-bottom: 4px;
+}
+
+/* Summary Box */
+.summaryContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 2px solid #e2ebf2;
+}
+
+.summaryBox {
+  width: 320px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  padding: 6px 0;
+  color: #627d90;
+}
+
+.summaryTotalRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 10px 0;
+  border-top: 2px solid #4a90c2;
+  border-bottom: 1px solid #e2ebf2;
+  color: #244e6e;
+  margin: 6px 0;
+}
+
+.summaryDueRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 8px 0;
+  color: #991b1b;
+}
+
+.summaryPaidRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 0;
+  color: #166534;
+}
+
+/* Receipts section */
+.receiptsBox {
+  margin-top: 24px;
+  background: #eff8fc;
+  border: 1px dashed #cbdce8;
+  border-radius: 8px;
+  padding: 14px 18px;
+}
+
+/* Actions */
+.btnIcon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+
+.btnPrint {
+  background: #4a90c2;
+  color: #ffffff;
+}
+
+.btnPrint:hover {
+  background: #3a78a6;
+}
+
+.btnPdf {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-color: #bae6fd;
+}
+
+.btnPdf:hover {
+  background: #bae6fd;
+  color: #0284c7;
+  border-color: #7dd3fc;
+}
+
+.btnIcon:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+.btnSecondary {
+  background: #ffffff;
+  border-color: #cbdce8;
+  color: #425b6b;
+}
+
+.btnSecondary:hover {
+  background: #eff8fc;
+  color: #244e6e;
+}
+
+.btnDetailRow {
+  background: #eff8fc;
+  color: #4a90c2;
+  border: 1px solid #dceff8;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btnDetailRow:hover {
+  background: #dceff8;
+}
+
+/* Print Styles */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  body {
+    background: #ffffff !important;
+  }
+
+  :global(aside),
+  :global(header),
+  :global(nav),
+  :global(.admin-skeleton),
+  :global(.noPrint),
+  :global([data-no-print="true"]),
+  :global([class*="topBanner"]),
+  :global([class*="sidebar"]),
+  .noPrint {
+    display: none !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .billPaper,
+  .billPaper * {
+    visibility: visible;
+  }
+
+  .billPaper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+
+  .modalBackdrop {
+    position: static;
+    background: none;
+    padding: 0;
+  }
+
+  .modalContainer {
+    box-shadow: none;
+    max-width: 100%;
+    max-height: none;
+    border-radius: 0;
+    border: none;
+  }
+
+  .modalHeader {
+    display: none !important;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
