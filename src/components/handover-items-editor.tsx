@@ -45,23 +45,25 @@ export function HandoverItemsEditor({
   });
 
   // Khi danh sách nội thất sẵn có thay đổi (chẳng hạn khi đổi phòng)
-  useEffect(() => {
+  const [prevFurnitureList, setPrevFurnitureList] = useState(furnitureList);
+  if (furnitureList !== prevFurnitureList) {
+    setPrevFurnitureList(furnitureList);
     if (!furnitureList || furnitureList.length === 0) {
       setItems([]);
-      return;
+    } else {
+      setItems(
+        furnitureList
+          .filter((s) => s && s.trim())
+          .map((item, idx) => ({
+            id: `init-${Date.now()}-${idx}`,
+            tenTaiSan: item.trim(),
+            soLuong: 1,
+            tinhTrang: "Hoạt động tốt",
+            ghiChu: "",
+          })),
+      );
     }
-    setItems(
-      furnitureList
-        .filter((s) => s && s.trim())
-        .map((item, idx) => ({
-          id: `init-${Date.now()}-${idx}`,
-          tenTaiSan: item.trim(),
-          soLuong: 1,
-          tinhTrang: "Hoạt động tốt",
-          ghiChu: "",
-        })),
-    );
-  }, [furnitureList]);
+  }
 
   const updateItem = (id: string, patch: Partial<HandoverItem>) => {
     setItems((prev) =>

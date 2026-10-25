@@ -71,12 +71,14 @@ export function RoomForm({
   const [selectedType, setSelectedType] = useState(defaultRoomType);
   const [noiThatVal, setNoiThatVal] = useState(room?.noiThat ?? "");
 
-  useEffect(() => {
-    if (state.success && mode === "create") {
+  const [prevSuccess, setPrevSuccess] = useState(state.success);
+  if (state.success && state.success !== prevSuccess) {
+    setPrevSuccess(state.success);
+    if (mode === "create") {
       formRef.current?.reset();
       setNoiThatVal("");
     }
-  }, [state.success, mode]);
+  }
 
   const selectedTypeObj = roomTypes.find((t) => t.ma_loai_phong === selectedType);
 

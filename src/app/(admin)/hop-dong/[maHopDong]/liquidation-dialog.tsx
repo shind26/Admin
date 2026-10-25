@@ -109,22 +109,12 @@ export function LiquidationDialog({
   const [tienCocCoTheHoan, setTienCocCoTheHoan] = useState<number>(
     isDungHanAuto ? tienDatCoc : 0,
   );
+  const [prevNgayTra, setPrevNgayTra] = useState(ngayTraPhong);
 
-  // Cập nhật khi ngày trả phòng thay đổi
-  useEffect(() => {
-    if (ngayKtHopDong && ngayTraPhong) {
-      const kt = new Date(ngayKtHopDong);
-      const tra = new Date(ngayTraPhong);
-      const dKt = new Date(kt.getFullYear(), kt.getMonth(), kt.getDate()).getTime();
-      const dTra = new Date(tra.getFullYear(), tra.getMonth(), tra.getDate()).getTime();
-      const diff = Math.round((dKt - dTra) / (1000 * 60 * 60 * 24));
-      if (diff <= 30) {
-        setTienCocCoTheHoan(tienDatCoc);
-      } else {
-        setTienCocCoTheHoan(0);
-      }
-    }
-  }, [ngayTraPhong, ngayKtHopDong, tienDatCoc]);
+  if (ngayTraPhong !== prevNgayTra) {
+    setPrevNgayTra(ngayTraPhong);
+    setTienCocCoTheHoan(isDungHanAuto ? tienDatCoc : 0);
+  }
 
   // Tính toán số liệu tiêu thụ & tiền
   const dienTieuThu = Math.max(0, chiSoDienCuoi - chiSoDienDau);

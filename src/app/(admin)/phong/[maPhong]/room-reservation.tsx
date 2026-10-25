@@ -133,15 +133,15 @@ export function RoomReservationManager({
   const [ngayHetHan, setNgayHetHan] = useState<string>(addDays(5));
 
   // Update date when reservation changes
-  useEffect(() => {
-    if (reservation?.ngay_du_kien_o) {
-      const dStr = reservation.ngay_du_kien_o.slice(0, 10);
-      setNgayBd(dStr);
-      const d = new Date(dStr);
-      d.setFullYear(d.getFullYear() + 1);
-      setNgayKt(d.toISOString().slice(0, 10));
-    }
-  }, [reservation?.ngay_du_kien_o]);
+  const [prevResDate, setPrevResDate] = useState(reservation?.ngay_du_kien_o);
+  if (reservation?.ngay_du_kien_o && reservation.ngay_du_kien_o !== prevResDate) {
+    setPrevResDate(reservation.ngay_du_kien_o);
+    const dStr = reservation.ngay_du_kien_o.slice(0, 10);
+    setNgayBd(dStr);
+    const d = new Date(dStr);
+    d.setFullYear(d.getFullYear() + 1);
+    setNgayKt(d.toISOString().slice(0, 10));
+  }
 
   const tienCocGiu = reservation ? Number(reservation.so_tien_the_chan || 0) : 0;
   const tongCocHopDong = tienDatCocNiemYet ? Number(tienDatCocNiemYet) : 0;

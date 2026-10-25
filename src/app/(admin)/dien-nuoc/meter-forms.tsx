@@ -2027,13 +2027,15 @@ export function CreateMeterModal({
   const dienLoi = dienMoi !== "" && dienMoiNum < dienCuNum;
   const nuocLoi = nuocMoi !== "" && nuocMoiNum < nuocCuNum;
 
-  useEffect(() => {
-    if (state.success && open) {
+  const [prevSuccess, setPrevSuccess] = useState(state.success);
+  if (state.success && state.success !== prevSuccess) {
+    setPrevSuccess(state.success);
+    if (open) {
       setOpen(false);
       setDienMoi("");
       setNuocMoi("");
     }
-  }, [state.success, open]);
+  }
 
   return (
     <>

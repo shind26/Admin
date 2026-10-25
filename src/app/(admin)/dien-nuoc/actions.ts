@@ -2,6 +2,7 @@
 
 import crypto from "crypto";
 import { revalidatePath } from "next/cache";
+import type { PoolClient } from "pg";
 import { getDbPool } from "@/lib/db";
 import { assertContractInScope, assertMeterInScope, assertRoomInScope } from "@/lib/guards";
 import { getCurrentAccount, requireScope } from "@/lib/session";
@@ -346,7 +347,7 @@ export async function deleteMeterReading(
  * Tự động kết chuyển chỉ số điện nước sang chi tiết dịch vụ và Hóa đơn (Auto-Billing).
  */
 async function syncMeterToInvoice(
-  client: any,
+  client: PoolClient,
   maKy: string,
 ): Promise<{
   maHoaDon: string;
@@ -378,11 +379,11 @@ async function syncMeterToInvoice(
   );
 
   // 2. Lấy đơn giá điện & nước từ bảng dịch vụ
-  const { rows: rates } = await client.query(
+  const { rows: rates } = await client.query<{ ma_dich_vu: string; don_gia: string | number }>(
     `SELECT ma_dich_vu, don_gia FROM public.dich_vu WHERE ma_dich_vu IN ('DV_DIEN', 'DV_NUOC')`,
   );
   const rateMap = Object.fromEntries(
-    rates.map((r: any) => [r.ma_dich_vu, Number(r.don_gia)]),
+    rates.map((r) => [r.ma_dich_vu, Number(r.don_gia)]),
   );
   const donGiaDien = rateMap["DV_DIEN"] ?? 3500;
   const donGiaNuoc = rateMap["DV_NUOC"] ?? 20000;

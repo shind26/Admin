@@ -70,11 +70,7 @@ export function ResidentDrawer({
       Boolean(tenant.anh_cccd_mat_truoc) ||
       Boolean(tenant.anh_cccd_mat_sau);
 
-    if (!hasPhotos) {
-      setCccdImages({ truoc: null, sau: null });
-      return;
-    }
-    if (cccdImages) return;
+    if (!hasPhotos || cccdImages) return;
 
     let active = true;
     setLoadingCccd(true);
