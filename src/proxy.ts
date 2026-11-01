@@ -3,16 +3,22 @@ import type { NextRequest } from "next/server";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session-token";
 
 /**
- * Next.js 16 Proxy (thay thế middleware.js):
+ * Next.js 16 Proxy:
  * Chạy trước khi route được render để lọc nhanh quyền truy cập ở tầng mạng:
- * 1. Chặn mọi truy cập chưa đăng nhập vào các trang quản trị -> chuyển về /login.
- * 2. Tự động chuyển người dùng đã có phiên hợp lệ từ /login về trang chủ /.
+ * 1. Chặn mọi truy cập chưa đăng nhập vào các trang nội bộ -> chuyển về /login.
+ * 2. Tự động chuyển người dùng đã có phiên hợp lệ từ /login về trang chủ /,
+ *    TRỪ KHI người dùng bấm đăng xuất hoặc truy cập /logout.
  * 3. Bảo vệ các endpoint API nội bộ.
  */
 export function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
   const token = request.cookies.get(SESSION_COOKIE)?.value;
   const secret = process.env.SESSION_SECRET;
+
+  // Cho phép route /logout chạy tự do để xóa phiên
+  if (pathname === "/logout") {
+    return NextResponse.next();
+  }
 
   // Kiểm tra chữ ký số và thời hạn của token phiên (optimistic check)
   const session = verifySessionToken(token, secret, Date.now());
@@ -20,9 +26,9 @@ export function proxy(request: NextRequest) {
   const isLoginPage = pathname === "/login";
   const isApi = pathname.startsWith("/api");
 
-  // Đã có phiên hợp lệ mà vào /login -> đưa về trang chủ
+  // Đã có phiên hợp lệ mà vào /login -> đưa về trang chủ (trừ khi có param ?switch=1 để đổi tài khoản)
   if (isLoginPage) {
-    if (session) {
+    if (session && !searchParams.has("switch")) {
       return NextResponse.redirect(new URL("/", request.url));
     }
     return NextResponse.next();
@@ -38,7 +44,6 @@ export function proxy(request: NextRequest) {
     }
 
     const loginUrl = new URL("/login", request.url);
-    // Lưu lại URL đích để sau khi đăng nhập có thể quay lại đúng trang (tùy chọn)
     if (pathname !== "/") {
       loginUrl.searchParams.set("from", pathname);
     }
@@ -50,14 +55,6 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Khớp tất cả các đường dẫn ngoại trừ:
-     * - _next/static (tệp tĩnh build của Next.js)
-     * - _next/image (tối ưu hóa hình ảnh)
-     * - favicon.ico (icon trình duyệt)
-     * - Các tệp tĩnh công khai (.svg, .png, .jpg, .jpeg, .gif, .webp, .css, .js)
-     */
     "/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|css|js)$).*)",
   ],
 };
-

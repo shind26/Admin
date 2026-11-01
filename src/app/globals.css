@@ -1,25 +1,25 @@
 :root {
-  /* ── BẢNG MÀU CHỦ ĐẠO (SKY BLUE PMS - QUẢN LÝ NHÀ TRỌ) ── */
-  --color-primary-dark: #4a90c2;        /* 1. Xanh da trời đậm (Tiêu đề chính, brand, primary buttons) */
-  --color-primary-hover: #3a7ba8;       /* Hover cho primary button */
-  --color-table-header: #76b5d8;        /* 2. Xanh da trời vừa (Header bảng) */
-  --color-section-header: #dceff8;      /* 3. Xanh da trời nhạt (Tiêu đề nhóm, pill active) */
-  --color-section-text: #26597d;        /* Chữ trên nền tiêu đề nhóm */
-  --color-row-zebra: #eff8fc;           /* 4. Xanh rất nhạt (Nền xen kẽ dòng bảng, hover card) */
-  --color-row-hover: #e0f0f8;           /* Hover cho hàng bảng */
-  --color-bg-main: #ffffff;             /* 5. Trắng (Nền chính, thẻ card, input) */
-  --color-text-main: #425b6b;           /* 6. Xám xanh đậm (Chữ nội dung chính) */
-  --color-text-title: #234358;          /* Chữ tiêu đề đậm hơn */
-  --color-text-muted: #7e97a6;          /* Chữ phụ, caption */
-  --color-border: #e2ebf2;              /* 7. Viền, đường kẻ nhẹ nhàng */
-  --color-border-dark: #cbdce8;         /* Viền đậm hơn khi focus / nhấn */
-  --color-bg-subtle: #f1f4f8;           /* 7. Xám rất nhạt (Nền trang shell, viền, nền phụ) */
-  --color-accent-gold: #f6e6b4;         /* 8. Vàng kem nhạt (Điểm nhấn nhẹ, cảnh báo nhẹ) */
-  --color-accent-gold-text: #854d0e;    /* Chữ vàng nâu */
-  --color-status-success: #e6f4ea;      /* 9. Xanh lá nhạt (Thông báo thành công) */
-  --color-status-success-text: #166534; /* Chữ xanh lá */
-  --color-status-error: #fde8e8;        /* 10. Hồng nhạt (Cảnh báo, lỗi) */
-  --color-status-error-text: #991b1b;   /* Chữ đỏ hồng */
+  /* ── BẢNG MÀU CHỦ ĐẠO (FACEBOOK DESIGN SYSTEM) ── */
+  --color-primary-dark: #1877f2;        /* Xanh Facebook chính */
+  --color-primary-hover: #166fe5;       /* Xanh Facebook hover */
+  --color-table-header: #1877f2;        /* Header bảng xanh Facebook */
+  --color-section-header: #e7f3ff;      /* Nền xanh nhạt Facebook (selected / active) */
+  --color-section-text: #1877f2;        /* Chữ xanh Facebook */
+  --color-row-zebra: #fafbfa;           /* Nền xen kẽ dòng bảng */
+  --color-row-hover: #f0f2f5;           /* Hover dòng bảng */
+  --color-bg-main: #ffffff;             /* Trắng nền thẻ card, container */
+  --color-text-main: #1c1e21;           /* Chữ nội dung chính (Facebook body) */
+  --color-text-title: #050505;          /* Chữ tiêu đề đậm nét (Facebook dark) */
+  --color-text-muted: #65676b;          /* Chữ phụ, caption (Facebook muted) */
+  --color-border: #e4e6eb;              /* Đường viền xám Facebook */
+  --color-border-dark: #ced0d4;         /* Viền input, border đậm */
+  --color-bg-subtle: #f0f2f5;           /* Nền xám nhạt Facebook toàn trang */
+  --color-accent-gold: #fef6e0;         /* Vàng cam cảnh báo */
+  --color-accent-gold-text: #b45309;    /* Chữ cảnh báo */
+  --color-status-success: #e7f7ed;      /* Xanh lá Facebook */
+  --color-status-success-text: #1f7a37; /* Chữ xanh lá */
+  --color-status-error: #feecee;        /* Đỏ Facebook */
+  --color-status-error-text: #e41e3f;   /* Chữ đỏ */
 
   --background: var(--color-bg-subtle);
   --foreground: var(--color-text-main);
@@ -57,23 +57,23 @@ a {
   text-decoration: none;
 }
 
-/* Custom modern scrollbar with sky blue touch */
+/* Custom scrollbar matching Facebook style */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f4f8;
+  background: #f0f2f5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbdce8;
+  background: #bcc0c4;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #76b5d8;
+  background: #8a8d91;
 }
 
 /* Quy tắc in ấn toàn cục */

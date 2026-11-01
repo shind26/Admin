@@ -9,13 +9,16 @@ import {
   getDashboardStats,
   getRooms,
   getRoomTypes,
-  type RoomRow,
 } from "@/lib/queries";
 import { ScopeQuery } from "@/lib/scope";
-import { RoomCard } from "./room-card";
-import { CreateRoomModal, RoomForm } from "./room-forms";
+import {
+  CreateRoomModal,
+  DeleteRoomButton,
+  RoomEditorToggle,
+  RoomForm,
+  type RoomFormData,
+} from "./room-forms";
 import styles from "@/components/business.module.css";
-import roomStyles from "./rooms.module.css";
 
 type SearchParams = Promise<{
   status?: string;
@@ -31,55 +34,16 @@ const STATUS_OPTIONS = [
   { value: "DaCoc", label: "Đã đặt cọc" },
 ];
 
-type FloorGroup = {
-  key: string;
-  label: string;
-  /** Mô tả phụ dưới tiêu đề tầng: số phòng đang thuê và sự cố đang mở. */
-  meta: string;
-  summary: string;
-  rooms: RoomRow[];
-};
+function formatMoney(value: string | number | null) {
+  if (value === null || value === undefined) return "—";
+  return `${Number(value).toLocaleString("vi-VN")}\u00A0đ`;
+}
 
-/**
- * Nhóm phòng theo tòa rồi theo tầng để hiển thị dạng phân tầng.
- * Mỗi nhóm kèm dòng thống kê "N phòng - M phòng trống".
- */
-function groupByFloor(rooms: RoomRow[], multipleBuildings: boolean): FloorGroup[] {
-  const groups = new Map<string, FloorGroup>();
-
-  for (const room of rooms) {
-    const building = room.toa_nha || "Chưa phân tòa";
-    const floor = room.tang;
-    const key = `${building}|${floor ?? "none"}`;
-
-    if (!groups.has(key)) {
-      const floorLabel =
-        floor === null ? "Chưa xếp tầng" : `Tầng ${floor}`;
-      groups.set(key, {
-        key,
-        label: multipleBuildings ? `${building} • ${floorLabel}` : floorLabel,
-        meta: "",
-        summary: "",
-        rooms: [],
-      });
-    }
-    groups.get(key)!.rooms.push(room);
-  }
-
-  const result = [...groups.values()];
-  for (const group of result) {
-    const empty = group.rooms.filter((r) => r.trang_thai === "Trống").length;
-    group.summary = `${group.rooms.length} phòng • ${empty} phòng trống`;
-
-    const rented = group.rooms.filter((r) => r.trang_thai === "Đang thuê").length;
-    const issues = group.rooms.filter((r) => r.su_co_dang_mo !== null).length;
-    const parts: string[] = [];
-    if (rented > 0) parts.push(`${rented} đang thuê`);
-    if (issues > 0) parts.push(`${issues} sự cố mở`);
-    group.meta = parts.length > 0 ? parts.join(" • ") : "Không có sự cố";
-  }
-
-  return result;
+function roomStatusClass(status: string | null) {
+  if (status === "Đang thuê") return styles.badgeInfo;
+  if (status === "Trống") return styles.badgeOk;
+  if (status === "Đã đặt cọc" || status === "Đã cọc") return styles.badgeWarn;
+  return styles.badgeMuted;
 }
 
 async function RoomsContent({ searchParams }: { searchParams: SearchParams }) {
@@ -101,8 +65,9 @@ async function RoomsContent({ searchParams }: { searchParams: SearchParams }) {
     getDashboardStats(building, scopeQuery),
     getRoomTypes(),
   ]);
-  // Khi xem nhiều tòa, tiêu đề nhóm ghi kèm tên tòa để không lẫn tầng giữa các tòa.
-  const floorGroups = groupByFloor(rooms, building === ALL_BUILDINGS && buildings.length > 1);
+
+  const defaultBuildingName =
+    building !== ALL_BUILDINGS && building ? building : (buildings[0] ?? "Tòa A");
 
   return (
     <AdminShell active="room">
@@ -111,15 +76,15 @@ async function RoomsContent({ searchParams }: { searchParams: SearchParams }) {
           <h1 className={styles.title}>Quản lý phòng</h1>
           <p className={styles.subtitle}>
             {scope.allBuildings
-              ? `Quản lý phòng tại ${building || "tất cả cơ sở"}`
-              : `Quản lý phòng tại cơ sở ${scope.building}`}
+              ? `Danh sách phòng tại ${building === ALL_BUILDINGS ? "tất cả cơ sở" : building}`
+              : `Danh sách phòng tại cơ sở ${scope.building}`}
           </p>
         </div>
         {isAdmin && (
           <CreateRoomModal
             buildings={buildings}
             roomTypes={roomTypes}
-            defaultBuilding={building === ALL_BUILDINGS ? buildings[0] ?? "" : building}
+            defaultBuilding={defaultBuildingName}
             editableBuilding={scope.allBuildings}
           />
         )}
@@ -157,11 +122,7 @@ async function RoomsContent({ searchParams }: { searchParams: SearchParams }) {
             mode="create"
             buildings={buildings}
             roomTypes={roomTypes}
-            defaultBuilding={
-              building !== ALL_BUILDINGS && building
-                ? building
-                : (buildings[0] ?? "Tòa A")
-            }
+            defaultBuilding={defaultBuildingName}
             editableBuilding={true}
           />
         </details>
@@ -212,28 +173,138 @@ async function RoomsContent({ searchParams }: { searchParams: SearchParams }) {
         </div>
       </form>
 
-      {rooms.length === 0 ? (
-        <div className={styles.tableCard}>
-          <p className={styles.empty}>Không có phòng phù hợp với bộ lọc.</p>
+      <div className={styles.tableCard}>
+        <div className={styles.tableScroll}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                                <th style={{ whiteSpace: "nowrap" }}>Phòng</th>
+                <th style={{ whiteSpace: "nowrap" }}>Cơ sở / Tầng</th>
+                <th style={{ whiteSpace: "nowrap" }}>Loại phòng</th>
+                <th style={{ whiteSpace: "nowrap" }}>Diện tích</th>
+                <th style={{ whiteSpace: "nowrap" }}>Khách thuê</th>
+                <th style={{ whiteSpace: "nowrap" }}>Giá niêm yết</th>
+                <th style={{ whiteSpace: "nowrap" }}>Tiền cọc</th>
+                <th style={{ whiteSpace: "nowrap" }}>Trạng thái</th>
+                <th style={{ whiteSpace: "nowrap" }}>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rooms.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className={styles.empty}>
+                    Không có phòng phù hợp với bộ lọc.
+                  </td>
+                </tr>
+              ) : (
+                rooms.map((room) => {
+                  const roomFormData: RoomFormData = {
+                    maPhong: room.ma_phong,
+                    tenHienThi: room.ten_hien_thi ?? room.ma_phong,
+                    tang: room.tang,
+                    dienTich: room.dien_tich,
+                    giaThue: room.gia_thue,
+                    trangThai: room.trang_thai ?? "Trống",
+                    toaNha: room.toa_nha ?? "",
+                    maLoaiPhong: room.ma_loai_phong ?? "",
+                    moTaNgan: room.mo_ta_ngan ?? "",
+                    tienDatCoc: room.tien_dat_coc,
+                    noiThat: (room.noi_that_san_co ?? []).join("\n"),
+                    hinhAnh: room.hinh_anh ?? "",
+                    chiSoDien: room.chi_so_dien,
+                    chiSoNuoc: room.chi_so_nuoc,
+                  };
+
+                  return (
+                    <tr key={room.ma_phong}>
+                      <td>
+                        <Link
+                          href={`/phong/${encodeURIComponent(room.ma_phong)}`}
+                          className={styles.strong}
+                          style={{ color: "#1877f2", textDecoration: "none", fontWeight: 700 }}
+                        >
+                          {room.ten_hien_thi || room.ma_phong}
+                        </Link>
+                      </td>
+                      <td style={{ whiteSpace: "nowrap" }}>
+                        {room.toa_nha || "—"}
+                        {room.tang !== null ? ` • Tầng ${room.tang}` : ""}
+                      </td>
+                      <td>{room.ten_loai_phong || "Tiêu chuẩn"}</td>
+                      <td style={{ whiteSpace: "nowrap" }}>{room.dien_tich ? `${room.dien_tich} m²` : "—"}</td>
+                      <td>
+                        {room.khach_thue ? (
+                          <div>
+                            <div className={styles.strong}>{room.khach_thue}</div>
+                            {room.ma_hop_dong && (
+                              <div className={styles.muted} style={{ fontSize: 11 }}>
+                                {room.ma_hop_dong}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className={styles.muted}>Trống</span>
+                        )}
+                      </td>
+                      <td style={{ whiteSpace: "nowrap", fontWeight: 600 }}>{formatMoney(room.gia_thue)}</td>
+                      <td style={{ whiteSpace: "nowrap" }}>{formatMoney(room.tien_dat_coc)}</td>
+                      <td>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start" }}>
+                          <span className={roomStatusClass(room.trang_thai)}>
+                            {room.trang_thai ?? "—"}
+                          </span>
+                          {room.su_co_dang_mo && (
+                            <span
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 3,
+                                background: "#fee2e2",
+                                color: "#991b1b",
+                                border: "1px solid #fecaca",
+                                borderRadius: 4,
+                                padding: "2px 6px",
+                                fontSize: 11,
+                                fontWeight: 700,
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              Sự cố: {room.su_co_dang_mo}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td style={{ whiteSpace: "nowrap" }}>
+                        <div className={styles.actionCell} style={{ flexWrap: "nowrap" }}>
+                          <Link
+                            href={`/phong/${encodeURIComponent(room.ma_phong)}`}
+                            className={styles.linkButton}
+                          >
+                            Chi tiết
+                          </Link>
+                          <RoomEditorToggle
+                            room={roomFormData}
+                            buildings={buildings}
+                            roomTypes={roomTypes}
+                            defaultBuilding={room.toa_nha || defaultBuildingName}
+                            editableBuilding={scope.allBuildings}
+                          />
+                          {isAdmin && (
+                            <DeleteRoomButton
+                              maPhong={room.ma_phong}
+                              tenPhong={room.ten_hien_thi || room.ma_phong}
+                            />
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
         </div>
-      ) : (
-        floorGroups.map((group) => (
-          <section key={group.key} className={roomStyles.floorSection}>
-            <header className={roomStyles.floorHeader}>
-              <div>
-                <div className={roomStyles.floorTitle}>{group.label}</div>
-                <div className={roomStyles.floorMeta}>{group.meta}</div>
-              </div>
-              <span className={roomStyles.floorSummary}>{group.summary}</span>
-            </header>
-            <div className={roomStyles.cardGrid}>
-              {group.rooms.map((room) => (
-                <RoomCard key={room.ma_phong} room={room} />
-              ))}
-            </div>
-          </section>
-        ))
-      )}
+      </div>
     </AdminShell>
   );
 }

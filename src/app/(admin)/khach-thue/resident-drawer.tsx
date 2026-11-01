@@ -291,7 +291,7 @@ export function ResidentDrawer({
             className={`${styles.drawerTab} ${tab === "info" ? styles.drawerTabActive : ""}`}
             onClick={() => setTab("info")}
           >
-            <User size={15} /> Hồ sơ &amp; eKYC
+            <User size={15} /> Hồ sơ &amp; CCCD
           </button>
           <button
             className={`${styles.drawerTab} ${tab === "vehicles" ? styles.drawerTabActive : ""}`}
@@ -381,7 +381,7 @@ export function ResidentDrawer({
                   }}
                 >
                   <h3 className={styles.sectionTitle} style={{ margin: 0 }}>
-                    <Eye size={16} color="#4f46e5" /> Xác thực eKYC CCCD (Mobile App)
+                    <Eye size={16} color="#4f46e5" /> Xác thực ảnh CCCD (Mobile App)
                   </h3>
                   <div>
                     {ekycStatus === "DaXacThuc" ? (
@@ -713,7 +713,7 @@ export function ResidentDrawer({
                         </td>
                         <td>{v.ma_the_xe || <span style={{ color: "#94a3b8" }}>Chưa gán</span>}</td>
                         <td>
-                          {v.trang_thai === "DaDuyet" ? (
+                          {["DaDuyet", "Đang sử dụng", "Hoạt động", "Đã duyệt"].includes(v.trang_thai) ? (
                             <span className={`${styles.badgePill} ${styles.badgeGreen}`}>
                               Đã duyệt
                             </span>
@@ -731,7 +731,7 @@ export function ResidentDrawer({
                               alignItems: "center",
                             }}
                           >
-                            {v.trang_thai === "ChoDuyet" && (
+                            {["ChoDuyet", "Chờ duyệt"].includes(v.trang_thai) && (
                               <button
                                 type="button"
                                 onClick={() => handleApproveVehicle(v.ma_phuong_tien)}

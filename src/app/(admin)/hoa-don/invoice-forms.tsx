@@ -32,10 +32,6 @@ export function InvoiceForm({
 
   return (
     <form action={formAction} className={styles.formGrid}>
-      <div style={{ gridColumn: "1 / -1", background: "#f8fafc", padding: "10px 14px", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12.5, color: "#475569", lineHeight: 1.5 }}>
-        💡 <strong>Lưu ý:</strong> Hóa đơn định kỳ tháng (tiền phòng + điện nước + dịch vụ trọn gói) được hệ thống <strong>tự động sinh khi chốt số Điện Nước</strong>. Form này dùng để lập hóa đơn cho các <strong>khoản thu phát sinh / đột xuất</strong> ngoài chu kỳ (đền bù hư hại, dịch vụ thêm, tiền lẻ ngày...).
-      </div>
-
       <div className={`${styles.formField} ${styles.formFieldWide}`}>
         <label htmlFor="maHopDong">Hợp đồng / Phòng thuê *</label>
         <select

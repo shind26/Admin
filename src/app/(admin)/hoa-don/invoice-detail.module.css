@@ -21,7 +21,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 25px 50px -12px rgba(36, 78, 110, 0.25);
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   overflow: hidden;
 }
 
@@ -30,8 +30,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  border-bottom: 1px solid #e2ebf2;
-  background: #eff8fc;
+  border-bottom: 1px solid #e4e6eb;
+  background: #f0f2f5;
 }
 
 .modalTitleGroup {
@@ -58,7 +58,7 @@
   border: none;
   font-size: 20px;
   line-height: 1;
-  color: #627d90;
+  color: #65676b;
   cursor: pointer;
   padding: 6px;
   border-radius: 8px;
@@ -69,7 +69,7 @@
 }
 
 .closeButton:hover {
-  background: #dceff8;
+  background: #e7f3ff;
   color: #244e6e;
 }
 
@@ -82,10 +82,10 @@
 /* Invoice Bill Document Styling */
 .billPaper {
   background: #ffffff;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   border-radius: 12px;
   padding: 32px;
-  color: #425b6b;
+  color: #65676b;
 }
 
 .billHeader {
@@ -93,7 +93,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding-bottom: 20px;
-  border-bottom: 2px solid #e2ebf2;
+  border-bottom: 2px solid #e4e6eb;
   margin-bottom: 24px;
 }
 
@@ -101,13 +101,13 @@
   font-size: 18px;
   font-weight: 800;
   letter-spacing: 0.5px;
-  color: #4a90c2;
+  color: #1877f2;
   text-transform: uppercase;
 }
 
 .brandSub {
   font-size: 12.5px;
-  color: #627d90;
+  color: #65676b;
   margin-top: 4px;
 }
 
@@ -127,7 +127,7 @@
 .billCode {
   font-size: 13.5px;
   font-weight: 600;
-  color: #4a90c2;
+  color: #1877f2;
 }
 
 .billMetaRow {
@@ -143,11 +143,11 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
-  background: #eff8fc;
+  background: #f0f2f5;
   border-radius: 10px;
   padding: 16px 20px;
   margin-bottom: 24px;
-  border: 1px solid #dceff8;
+  border: 1px solid #e7f3ff;
 }
 
 .infoCol h4 {
@@ -158,7 +158,7 @@
   letter-spacing: 0.5px;
   margin: 0 0 10px 0;
   padding-bottom: 6px;
-  border-bottom: 1px solid #cbdce8;
+  border-bottom: 1px solid #ced0d4;
 }
 
 .infoItem {
@@ -170,7 +170,7 @@
 
 .infoLabel {
   width: 110px;
-  color: #627d90;
+  color: #65676b;
   flex-shrink: 0;
 }
 
@@ -198,7 +198,7 @@
 }
 
 .billTable th {
-  background: #76b5d8;
+  background: #4599ff;
   color: #ffffff;
   font-weight: 700;
   padding: 10px 12px;
@@ -209,12 +209,12 @@
 
 .billTable td {
   padding: 10px 12px;
-  border: 1px solid #e2ebf2;
-  color: #425b6b;
+  border: 1px solid #e4e6eb;
+  color: #65676b;
 }
 
 .billTable tbody tr:nth-child(even) {
-  background: #eff8fc;
+  background: #f0f2f5;
 }
 
 .billTable tbody tr:nth-child(odd) {
@@ -266,7 +266,7 @@
   justify-content: flex-end;
   margin-top: 20px;
   padding-top: 16px;
-  border-top: 2px solid #e2ebf2;
+  border-top: 2px solid #e4e6eb;
 }
 
 .summaryBox {
@@ -278,7 +278,7 @@
   justify-content: space-between;
   font-size: 13.5px;
   padding: 6px 0;
-  color: #627d90;
+  color: #65676b;
 }
 
 .summaryTotalRow {
@@ -287,8 +287,8 @@
   font-size: 16px;
   font-weight: 800;
   padding: 10px 0;
-  border-top: 2px solid #4a90c2;
-  border-bottom: 1px solid #e2ebf2;
+  border-top: 2px solid #1877f2;
+  border-bottom: 1px solid #e4e6eb;
   color: #244e6e;
   margin: 6px 0;
 }
@@ -314,8 +314,8 @@
 /* Receipts section */
 .receiptsBox {
   margin-top: 24px;
-  background: #eff8fc;
-  border: 1px dashed #cbdce8;
+  background: #f0f2f5;
+  border: 1px dashed #ced0d4;
   border-radius: 8px;
   padding: 14px 18px;
 }
@@ -336,7 +336,7 @@
 }
 
 .btnPrint {
-  background: #4a90c2;
+  background: #1877f2;
   color: #ffffff;
 }
 
@@ -376,19 +376,19 @@
 
 .btnSecondary {
   background: #ffffff;
-  border-color: #cbdce8;
-  color: #425b6b;
+  border-color: #ced0d4;
+  color: #65676b;
 }
 
 .btnSecondary:hover {
-  background: #eff8fc;
+  background: #f0f2f5;
   color: #244e6e;
 }
 
 .btnDetailRow {
-  background: #eff8fc;
-  color: #4a90c2;
-  border: 1px solid #dceff8;
+  background: #f0f2f5;
+  color: #1877f2;
+  border: 1px solid #e7f3ff;
   padding: 4px 10px;
   border-radius: 6px;
   font-size: 12px;
@@ -400,7 +400,7 @@
 }
 
 .btnDetailRow:hover {
-  background: #dceff8;
+  background: #e7f3ff;
 }
 
 /* Print Styles */

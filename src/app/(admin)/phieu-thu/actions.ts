@@ -8,8 +8,8 @@ import { createNotification } from "@/lib/notifications";
 
 export type ReceiptFormState = { error: string | null; success: string | null };
 
-const RECEIPT_STATUSES = ["Đã xác nhận", "Chờ xác nhận", "Từ chối"];
-const PAYMENT_METHODS = ["Tiền mặt", "Chuyển khoản", "VietQR"];
+const RECEIPT_STATUSES = ["Đã xác nhận", "Đã khớp lệnh", "Đã thanh toán", "Chờ xác nhận", "Từ chối"];
+const PAYMENT_METHODS = ["Tiền mặt", "Chuyển khoản", "VietQR", "Cổng VNPAY", "VNPAY"];
 
 function text(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -52,7 +52,7 @@ async function refreshInvoiceStatusByReceipt(
   const { rows: paidRows } = await getDbPool().query<{ paid: string }>(
     `SELECT COALESCE(SUM(so_tien_thu), 0)::text AS paid
      FROM public.phieu_thu
-     WHERE ma_hoa_don = $1 AND trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh')
+     WHERE ma_hoa_don = $1 AND trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')
        AND ($2::text IS NULL OR ma_phieu_thu <> $2)`,
     [maHoaDon, exceptReceiptId ?? null],
   );
@@ -84,7 +84,7 @@ async function confirmedTotal(maHoaDon: string, exceptReceiptId?: string) {
   const { rows } = await getDbPool().query<{ paid: string }>(
     `SELECT COALESCE(SUM(so_tien_thu), 0)::text AS paid
      FROM public.phieu_thu
-     WHERE ma_hoa_don = $1 AND trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh')
+     WHERE ma_hoa_don = $1 AND trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')
        AND ($2::text IS NULL OR ma_phieu_thu <> $2)`,
     [maHoaDon, exceptReceiptId ?? null],
   );
@@ -261,7 +261,8 @@ export async function updateReceipt(
     // LỰA CHỌN A: Khóa sửa phiếu thu đã xác nhận
     if (
       currentReceipt.trang_thai === "Đã xác nhận" ||
-      currentReceipt.trang_thai === "Đã khớp lệnh"
+      currentReceipt.trang_thai === "Đã khớp lệnh" ||
+      currentReceipt.trang_thai === "Đã thanh toán"
     ) {
       return {
         error:
@@ -376,7 +377,7 @@ export async function quickApproveReceipt(
       return { error: "Không tìm thấy phiếu thu.", success: null };
 
     const pt = rows[0];
-    if (pt.trang_thai === "Đã xác nhận" || pt.trang_thai === "Đã khớp lệnh") {
+    if (pt.trang_thai === "Đã xác nhận" || pt.trang_thai === "Đã khớp lệnh" || pt.trang_thai === "Đã thanh toán") {
       return { error: null, success: "Phiếu thu đã được xác nhận trước đó." };
     }
     const maHoaDon = pt.ma_hoa_don;

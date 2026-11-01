@@ -77,7 +77,7 @@ export function InvoiceDetailView({
             {invoice.trang_thai}
           </span>
           <span className={isPhatSinh ? busStyles.badgeWarn : busStyles.badgeMuted}>
-            {isPhatSinh ? "⚡ Hóa đơn phát sinh" : "📅 Hóa đơn định kỳ"}
+            {isPhatSinh ? "Hóa đơn phát sinh" : "Hóa đơn định kỳ"}
           </span>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
@@ -85,7 +85,7 @@ export function InvoiceDetailView({
             type="button"
             onClick={handlePrint}
             className={`${styles.btnIcon} ${styles.btnPrint}`}
-            title="In hóa đơn hoặc lưu PDF qua trình duyệt"
+            title="In hóa đơn"
           >
             <Printer size={14} /> In hóa đơn
           </button>
@@ -94,7 +94,7 @@ export function InvoiceDetailView({
             onClick={handleDownloadPdf}
             disabled={isExporting}
             className={`${styles.btnIcon} ${styles.btnPdf}`}
-            title="Tải trực tiếp file PDF hóa đơn miễn phí"
+            title="Tải file PDF hóa đơn"
           >
             {isExporting ? (
               <>
@@ -106,7 +106,7 @@ export function InvoiceDetailView({
               </>
             ) : (
               <>
-                <Download size={14} /> Tải PDF (Miễn phí)
+                <Download size={14} /> Tải PDF
               </>
             )}
           </button>
@@ -120,9 +120,9 @@ export function InvoiceDetailView({
           <div>
             <div className={styles.brandName}>HỆ THỐNG CĂN HỘ KIỀU GIANG</div>
             <div className={styles.brandSub}>
-              Cơ sở vận hành: {invoice.toa_nha || "Toàn hệ thống"}
+              Cơ sở: {invoice.toa_nha || "Toàn hệ thống"}
             </div>
-            <div className={styles.brandSub}>Hotline hỗ trợ: 0903 111 222</div>
+            <div className={styles.brandSub}>Hotline: 0903 111 222</div>
           </div>
           <div className={styles.billTitleBlock}>
             <h2 className={styles.billTitle}>HÓA ĐƠN THANH TOÁN</h2>
@@ -175,7 +175,7 @@ export function InvoiceDetailView({
                 {invoice.ma_hop_dong ? (
                   <Link
                     href={`/hop-dong/${encodeURIComponent(invoice.ma_hop_dong)}`}
-                    style={{ color: "#1e40af", textDecoration: "underline" }}
+                    style={{ color: "#1877f2", textDecoration: "underline" }}
                   >
                     {invoice.ma_hop_dong}
                   </Link>
@@ -190,7 +190,7 @@ export function InvoiceDetailView({
             </div>
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Hạn thanh toán:</span>
-              <span className={styles.infoValue} style={{ color: "#b91c1c" }}>
+              <span className={styles.infoValue} style={{ color: "#b91c1c", fontWeight: 600 }}>
                 {formatDate(invoice.han_dong_tien)}
               </span>
             </div>
@@ -201,7 +201,7 @@ export function InvoiceDetailView({
         {invoice.chi_so_dien_nuoc && (
           <div className={styles.meterBox}>
             <div style={{ fontWeight: 700, display: "flex", alignItems: "center", gap: 6 }}>
-              ⚡ Chi số tiêu thụ Điện Nước kỳ {invoice.chi_so_dien_nuoc.thang_nam}
+              Chỉ số tiêu thụ điện nước kỳ {invoice.chi_so_dien_nuoc.thang_nam}
             </div>
             <div className={styles.meterGrid}>
               <div className={styles.meterItem}>
@@ -228,7 +228,7 @@ export function InvoiceDetailView({
         )}
 
         {/* Line Items Table */}
-        <div className={styles.sectionTitle}>📋 Chi tiết các khoản thanh toán</div>
+        <div className={styles.sectionTitle}>Chi tiết các khoản thanh toán</div>
         <table className={styles.billTable}>
           <thead>
             <tr>
@@ -241,35 +241,33 @@ export function InvoiceDetailView({
           </thead>
           <tbody>
             {hasLineItems ? (
-              invoice.chi_tiet.map((item, idx) => (
-                <tr key={item.ma_cthd || idx}>
+              invoice.chi_tiet!.map((item, idx) => (
+                <tr key={item.id ?? idx}>
                   <td className={styles.textCenter}>{idx + 1}</td>
-                  <td style={{ fontWeight: 600 }}>{item.ten_khoan_thu}</td>
-                  <td className={styles.textCenter}>{Number(item.so_luong || 1).toLocaleString("vi-VN")}</td>
-                  <td className={styles.textRight}>{formatMoney(item.don_gia)}</td>
+                  <td>{item.tenKhoanThu}</td>
+                  <td className={styles.textCenter}>{item.soLuong ?? 1}</td>
+                  <td className={styles.textRight}>{formatMoney(item.donGia)}</td>
                   <td className={`${styles.textRight} ${styles.infoValue}`}>
-                    {formatMoney(item.thanh_tien)}
+                    {formatMoney(item.thanhTien)}
                   </td>
                 </tr>
               ))
             ) : (
-              /* Fallback for periodic invoices without individual line items */
               <>
-                {Number(invoice.tien_phong || 0) > 0 && (
-                  <tr>
-                    <td className={styles.textCenter}>1</td>
-                    <td style={{ fontWeight: 600 }}>Tiền thuê phòng tháng</td>
-                    <td className={styles.textCenter}>1</td>
-                    <td className={styles.textRight}>{formatMoney(invoice.tien_phong)}</td>
-                    <td className={`${styles.textRight} ${styles.infoValue}`}>
-                      {formatMoney(invoice.tien_phong)}
-                    </td>
-                  </tr>
-                )}
+                {/* Fallback default rows */}
+                <tr>
+                  <td className={styles.textCenter}>1</td>
+                  <td>Tiền thuê phòng</td>
+                  <td className={styles.textCenter}>1</td>
+                  <td className={styles.textRight}>{formatMoney(invoice.tien_phong)}</td>
+                  <td className={`${styles.textRight} ${styles.infoValue}`}>
+                    {formatMoney(invoice.tien_phong)}
+                  </td>
+                </tr>
                 {Number(invoice.tien_dien_nuoc || 0) > 0 && (
                   <tr>
                     <td className={styles.textCenter}>2</td>
-                    <td style={{ fontWeight: 600 }}>Tiền điện &amp; nước sinh hoạt</td>
+                    <td>Tiền điện, nước sinh hoạt</td>
                     <td className={styles.textCenter}>1</td>
                     <td className={styles.textRight}>{formatMoney(invoice.tien_dien_nuoc)}</td>
                     <td className={`${styles.textRight} ${styles.infoValue}`}>
@@ -280,7 +278,7 @@ export function InvoiceDetailView({
                 {Number(invoice.tien_dich_vu_khac || 0) > 0 && (
                   <tr>
                     <td className={styles.textCenter}>3</td>
-                    <td style={{ fontWeight: 600 }}>Dịch vụ trọn gói &amp; phụ phí</td>
+                    <td>Dịch vụ khác &amp; Tiện ích</td>
                     <td className={styles.textCenter}>1</td>
                     <td className={styles.textRight}>{formatMoney(invoice.tien_dich_vu_khac)}</td>
                     <td className={`${styles.textRight} ${styles.infoValue}`}>
@@ -308,20 +306,18 @@ export function InvoiceDetailView({
         <div className={styles.summaryContainer}>
           <div className={styles.summaryBox}>
             <div className={styles.summaryRow}>
-              <span>Tổng tiền dịch vụ:</span>
+              <span>TỔNG TIỀN PHẢI THU:</span>
               <span>{formatMoney(invoice.tong_tien)}</span>
             </div>
             <div className={styles.summaryPaidRow}>
-              <span>Đã thanh toán:</span>
-              <span>- {formatMoney(invoice.da_thu)}</span>
-            </div>
-            <div className={styles.summaryTotalRow}>
-              <span>TỔNG PHẢI THU:</span>
-              <span>{formatMoney(invoice.tong_tien)}</span>
+              <span>ĐÃ THANH TOÁN:</span>
+              <span style={{ color: "#16a34a" }}>{formatMoney(invoice.da_thu)}</span>
             </div>
             <div className={styles.summaryDueRow}>
               <span>CÒN LẠI CẦN THU:</span>
-              <span>{formatMoney(conLai)}</span>
+              <span style={{ color: conLai > 0 ? "#dc2626" : "#16a34a", fontSize: 16, fontWeight: 800 }}>
+                {formatMoney(conLai)}
+              </span>
             </div>
           </div>
         </div>
@@ -329,7 +325,7 @@ export function InvoiceDetailView({
         {/* Payment History / Receipts */}
         <div className={styles.receiptsBox}>
           <div style={{ fontWeight: 700, fontSize: 13, color: "#1e293b", marginBottom: 8 }}>
-            💳 Lịch sử phiếu thu đã ghi nhận ({invoice.phieu_thu.length} giao dịch)
+            Lịch sử phiếu thu đã ghi nhận ({invoice.phieu_thu.length} giao dịch)
           </div>
           {invoice.phieu_thu.length === 0 ? (
             <div style={{ fontSize: 12.5, color: "#64748b", fontStyle: "italic" }}>
@@ -378,4 +374,3 @@ export function InvoiceDetailView({
     </div>
   );
 }
-

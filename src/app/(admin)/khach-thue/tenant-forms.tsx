@@ -283,7 +283,7 @@ export function TenantForm({
             marginTop: 6,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 700, color: "#1e40af", marginBottom: 6 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 700, color: "#1877f2", marginBottom: 6 }}>
             <ShieldCheck size={18} /> Đã cấp tài khoản Mobile App cho khách:
           </div>
           <div style={{ fontSize: 13, color: "#334155", display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>

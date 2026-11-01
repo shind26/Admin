@@ -7,6 +7,7 @@ import {
   DeleteServiceButton,
   ServiceEditorToggle,
   ServiceForm,
+  ServiceStatusToggle,
 } from "./service-forms";
 import styles from "@/components/business.module.css";
 
@@ -21,11 +22,8 @@ async function ServicesContent() {
   const { account } = await requireScope();
   const services = await getServices();
 
-  const isAdmin = account.vai_tro === "Admin";
-  const total = services.reduce(
-    (sum, item) => sum + Number(item.don_gia ?? 0),
-    0,
-  );
+  const canManage = account.vai_tro === "Admin" || account.vai_tro === "QuanLy";
+  const activeCount = services.filter((item) => item.dang_ap_dung).length;
   const applied = services.filter((item) => item.so_lan_ap_dung > 0).length;
 
   return (
@@ -39,29 +37,24 @@ async function ServicesContent() {
         </div>
       </div>
 
-      {!isAdmin && (
-        <p className={styles.formMessage} role="status">
-          Bạn đang xem ở chế độ chỉ đọc. Chỉ tài khoản <strong>Admin</strong>{" "}
-          được sửa bảng giá dịch vụ dùng chung.
-        </p>
-      )}
-
       <section className={styles.miniStats}>
         <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Số dịch vụ</div>
+          <div className={styles.miniLabel}>Tổng số dịch vụ</div>
           <div className={styles.miniValue}>{services.length}</div>
         </div>
         <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Tổng đơn giá</div>
-          <div className={styles.miniValue}>{formatMoney(String(total))}</div>
+          <div className={styles.miniLabel}>Đang áp dụng</div>
+          <div className={styles.miniValue} style={{ color: "#16a34a" }}>
+            {activeCount}
+          </div>
         </div>
         <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Đang áp dụng</div>
-          <div className={`${styles.miniValue} ${styles.info}`}>{applied}</div>
+          <div className={styles.miniLabel}>Đã phát sinh kỳ dùng</div>
+          <div className={styles.miniValue}>{applied}</div>
         </div>
       </section>
 
-      {isAdmin && (
+      {canManage && (
         <details className={styles.createBox}>
           <summary className={styles.createSummary}>+ Thêm dịch vụ mới</summary>
           <ServiceForm mode="create" />
@@ -78,14 +71,15 @@ async function ServicesContent() {
                 <th>Đơn giá</th>
                 <th>Đơn vị tính</th>
                 <th>Ghi chú</th>
-                <th>Đã áp dụng</th>
+                <th>Trạng thái</th>
+                <th>Đã dùng</th>
                 <th>Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {services.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className={styles.empty}>
+                  <td colSpan={8} className={styles.empty}>
                     Chưa có dịch vụ nào trong bảng giá.
                   </td>
                 </tr>
@@ -99,6 +93,13 @@ async function ServicesContent() {
                     </td>
                     <td>{service.don_vi_tinh}</td>
                     <td>{service.ghi_chu || "-"}</td>
+                    <td>
+                      <ServiceStatusToggle
+                        maDichVu={service.ma_dich_vu}
+                        dangApDung={service.dang_ap_dung}
+                        readOnly={!canManage}
+                      />
+                    </td>
                     <td>
                       {service.so_lan_ap_dung > 0 ? (
                         <span className={styles.badgeInfo}>
@@ -117,13 +118,14 @@ async function ServicesContent() {
                             donViTinh: service.don_vi_tinh ?? "",
                             donGia: service.don_gia ?? "",
                             ghiChu: service.ghi_chu ?? "",
+                            dangApDung: service.dang_ap_dung,
                           }}
-                          readOnly={!isAdmin}
+                          readOnly={!canManage}
                         />
                         <DeleteServiceButton
                           maDichVu={service.ma_dich_vu}
                           tenDichVu={service.ten_dich_vu ?? service.ma_dich_vu}
-                          readOnly={!isAdmin}
+                          readOnly={!canManage}
                         />
                       </div>
                     </td>

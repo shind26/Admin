@@ -18,21 +18,21 @@
   background: #ffffff;
   padding: 18px 24px;
   border-radius: 14px;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
 }
 
 .dashTitleCol h1 {
   font-size: 21px;
   font-weight: 800;
-  color: #4a90c2;
+  color: #1877f2;
   margin: 0;
   letter-spacing: -0.01em;
 }
 
 .dashSub {
   font-size: 13px;
-  color: #425b6b;
+  color: #1c1e21;
   margin-top: 4px;
 }
 
@@ -47,7 +47,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #4a90c2;
+  background: #1877f2;
   color: #ffffff;
   padding: 8px 16px;
   border-radius: 8px;
@@ -55,11 +55,11 @@
   font-weight: 700;
   text-decoration: none;
   transition: all 0.15s ease;
-  box-shadow: 0 2px 6px rgba(74, 144, 194, 0.25);
+  box-shadow: 0 2px 6px rgba(24, 119, 242, 0.2);
 }
 
 .btnActionPrimary:hover {
-  background: #3a7ba8;
+  background: #166fe5;
   transform: translateY(-1px);
 }
 
@@ -68,8 +68,8 @@
   align-items: center;
   gap: 6px;
   background: #ffffff;
-  color: #425b6b;
-  border: 1px solid #cbdce8;
+  color: #1c1e21;
+  border: 1px solid #ced0d4;
   padding: 8px 14px;
   border-radius: 8px;
   font-size: 12.5px;
@@ -79,15 +79,15 @@
 }
 
 .btnActionSecondary:hover {
-  background: #eff8fc;
-  border-color: #76b5d8;
-  color: #4a90c2;
+  background: #f0f2f5;
+  border-color: #1877f2;
+  color: #1877f2;
 }
 
 /* ── 2. FINANCIAL KPI CARDS GRID ── */
 .financialGrid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -95,7 +95,7 @@
   background: #ffffff;
   border-radius: 14px;
   padding: 20px;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
   display: flex;
   flex-direction: column;
@@ -107,8 +107,8 @@
 
 .kpiCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(74, 144, 194, 0.1);
-  border-color: #cbdce8;
+  box-shadow: 0 6px 16px rgba(24, 119, 242, 0.1);
+  border-color: #ced0d4;
 }
 
 .kpiHead {
@@ -121,7 +121,7 @@
 .kpiLabel {
   font-size: 12px;
   font-weight: 700;
-  color: #7e97a6;
+  color: #65676b;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -139,14 +139,14 @@
 .kpiValue {
   font-size: 24px;
   font-weight: 800;
-  color: #234358;
+  color: #050505;
   letter-spacing: -0.02em;
   margin-bottom: 8px;
 }
 
 .kpiFoot {
   font-size: 12px;
-  color: #425b6b;
+  color: #1c1e21;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -157,7 +157,7 @@
 .progressTrack {
   width: 100%;
   height: 6px;
-  background: #f1f4f8;
+  background: #f0f2f5;
   border-radius: 999px;
   overflow: hidden;
   margin: 6px 0 8px;
@@ -204,7 +204,7 @@
   background: #ffffff;
   border-radius: 14px;
   padding: 22px;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
   display: flex;
   flex-direction: column;
@@ -222,13 +222,13 @@
 .chartTitle {
   font-size: 15px;
   font-weight: 800;
-  color: #234358;
+  color: #050505;
   margin: 0;
 }
 
 .chartSub {
   font-size: 12px;
-  color: #7e97a6;
+  color: #65676b;
   margin: 3px 0 0;
 }
 
@@ -237,7 +237,7 @@
   align-items: center;
   gap: 14px;
   font-size: 12px;
-  color: #425b6b;
+  color: #1c1e21;
 }
 
 .legendItem {
@@ -254,7 +254,7 @@
 }
 
 .dotCollected {
-  background: #4a90c2;
+  background: #1877f2;
 }
 
 .dotDebt {
@@ -282,7 +282,7 @@
   position: absolute;
   top: 15px;
   transform: translateX(-50%);
-  background: #234358;
+  background: #050505;
   color: #ffffff;
   padding: 8px 12px;
   border-radius: 8px;
@@ -307,7 +307,7 @@
 
 .tooltipTitle {
   font-weight: 700;
-  color: #dceff8;
+  color: #e7f3ff;
   margin-bottom: 6px;
   text-transform: uppercase;
   font-size: 10.5px;
@@ -325,7 +325,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #4a90c2;
+  background: #1877f2;
   display: inline-block;
 }
 
@@ -339,7 +339,7 @@
 
 .tooltipDivider {
   height: 1px;
-  background: #425b6b;
+  background: #1c1e21;
   margin: 6px 0;
 }
 
@@ -383,14 +383,14 @@
 .donutCenterLabel {
   font-size: 10.5px;
   font-weight: 700;
-  color: #7e97a6;
+  color: #65676b;
   text-transform: uppercase;
 }
 
 .donutCenterVal {
   font-size: 16px;
   font-weight: 800;
-  color: #234358;
+  color: #050505;
 }
 
 .donutLegendList {
@@ -420,14 +420,14 @@
 
 .legendCategory {
   font-size: 12px;
-  color: #425b6b;
+  color: #1c1e21;
   font-weight: 600;
 }
 
 .legendAmount {
   font-size: 13px;
   font-weight: 800;
-  color: #234358;
+  color: #050505;
 }
 
 .legendPercentBadge {
@@ -444,11 +444,95 @@
   gap: 20px;
 }
 
+/* ── 4. FINANCIAL TABLES & BOTTOM GRID ── */
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1.6fr 1.1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.opPanelCard {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px;
+  border: 1px solid #e4e6eb;
+  box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.iconBadgeBlue {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #e7f3ff;
+  color: #1877f2;
+  display: grid;
+  place-items: center;
+}
+
+.opMiniGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+  flex: 1;
+}
+
+.opMiniCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.opMiniCard:hover {
+  background: #ffffff;
+  border-color: #1877f2;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.08);
+  transform: translateY(-1px);
+}
+
+.opIconBox {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.opMiniText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.opMiniLabel {
+  font-size: 11.5px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.opMiniValue {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
 .tableCard {
   background: #ffffff;
   border-radius: 14px;
   padding: 20px;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
   display: flex;
   flex-direction: column;
@@ -490,13 +574,13 @@
 .tableTitle {
   font-size: 14.5px;
   font-weight: 800;
-  color: #234358;
+  color: #050505;
   margin: 0;
 }
 
 .tableSub {
   font-size: 11.5px;
-  color: #7e97a6;
+  color: #65676b;
   margin: 2px 0 0;
 }
 
@@ -506,13 +590,13 @@
   gap: 4px;
   font-size: 12px;
   font-weight: 700;
-  color: #4a90c2;
+  color: #1877f2;
   text-decoration: none;
 }
 
 .viewAllLink:hover {
   text-decoration: underline;
-  color: #3a7ba8;
+  color: #166fe5;
 }
 
 .tableScroll {
@@ -528,10 +612,10 @@
 .dashTable th {
   text-align: left;
   padding: 10px 12px;
-  background: #76b5d8;
+  background: #1877f2;
   color: #ffffff;
   font-weight: 700;
-  border-bottom: 1px solid #5c9fc2;
+  border-bottom: 1px solid #166fe5;
   white-space: nowrap;
 }
 
@@ -540,17 +624,17 @@
 }
 
 .dashTable tbody tr:nth-child(even) {
-  background: #eff8fc;
+  background: #f0f2f5;
 }
 
 .dashTable tbody tr:hover {
-  background: #e0f0f8;
+  background: #e4e6eb;
 }
 
 .dashTable td {
   padding: 11px 12px;
   border-bottom: 1px solid #eaf1f6;
-  color: #425b6b;
+  color: #1c1e21;
   vertical-align: middle;
 }
 
@@ -560,28 +644,33 @@
 
 .strongText {
   font-weight: 700;
-  color: #234358;
+  color: #050505;
 }
 
 .mutedText {
   font-size: 11px;
-  color: #7e97a6;
+  color: #65676b;
 }
 
 .invoiceBadge {
   font-family: monospace;
   font-size: 11.5px;
   font-weight: 700;
-  color: #26597d;
-  background: #dceff8;
+  color: #1877f2;
+  background: #e7f3ff;
   padding: 2px 6px;
   border-radius: 4px;
 }
 
 .debtHighlight {
-  color: #991b1b;
+  color: #dc2626;
   font-weight: 800;
   font-size: 13px;
+  background: #fef2f2;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #fecaca;
+  display: inline-block;
 }
 
 .collectedHighlight {
@@ -591,7 +680,7 @@
 }
 
 .dateCell {
-  color: #7e97a6;
+  color: #65676b;
   font-size: 11.5px;
   white-space: nowrap;
 }
@@ -606,7 +695,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: #4a90c2;
+  background: #1877f2;
   color: #ffffff;
   padding: 4px 9px;
   border-radius: 5px;
@@ -618,16 +707,16 @@
 }
 
 .btnQuickPay:hover {
-  background: #3a7ba8;
+  background: #166fe5;
 }
 
 .btnViewInv {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  background: #f1f4f8;
-  color: #425b6b;
-  border: 1px solid #cbdce8;
+  background: #f0f2f5;
+  color: #1c1e21;
+  border: 1px solid #ced0d4;
   padding: 4px 8px;
   border-radius: 5px;
   font-size: 11px;
@@ -637,13 +726,13 @@
 }
 
 .btnViewInv:hover {
-  background: #eff8fc;
-  color: #4a90c2;
+  background: #f0f2f5;
+  color: #1877f2;
 }
 
 .methodBadge {
-  background: #dceff8;
-  color: #26597d;
+  background: #e7f3ff;
+  color: #1877f2;
   padding: 2px 7px;
   border-radius: 4px;
   font-size: 11px;
@@ -673,7 +762,7 @@
 .emptyCell {
   text-align: center;
   padding: 28px 12px;
-  color: #7e97a6;
+  color: #65676b;
 }
 
 .emptyBanner {
@@ -697,7 +786,7 @@
   background: #ffffff;
   border-radius: 12px;
   padding: 14px 18px;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -707,9 +796,9 @@
 }
 
 .opCard:hover {
-  border-color: #76b5d8;
+  border-color: #1877f2;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(74, 144, 194, 0.1);
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.1);
 }
 
 .opLeft {
@@ -729,18 +818,18 @@
 
 .opLabel {
   font-size: 12px;
-  color: #7e97a6;
+  color: #65676b;
 }
 
 .opValue {
   font-size: 16px;
   font-weight: 800;
-  color: #234358;
+  color: #050505;
 }
 
 /* Banner nhắc cọc chờ duyệt */
 .pendingQueueAlert {
-  background: linear-gradient(135deg, #e6f4ea 0%, #eff8fc 100%);
+  background: linear-gradient(135deg, #e6f4ea 0%, #f0f2f5 100%);
   border: 1px solid #c6e7d0;
   border-radius: 14px;
   padding: 14px 20px;
@@ -766,12 +855,12 @@
 
 .pendingAlertText p {
   font-size: 12px;
-  color: #425b6b;
+  color: #1c1e21;
   margin: 2px 0 0;
 }
 
 .btnAlertAction {
-  background: #4a90c2;
+  background: #1877f2;
   color: #ffffff;
   padding: 7px 14px;
   border-radius: 7px;
@@ -782,7 +871,7 @@
 }
 
 .btnAlertAction:hover {
-  background: #3a7ba8;
+  background: #166fe5;
 }
 
 /* Responsive */
@@ -791,6 +880,9 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .chartsGrid {
+    grid-template-columns: 1fr;
+  }
+  .bottomGrid {
     grid-template-columns: 1fr;
   }
   .tablesGrid {
@@ -808,8 +900,12 @@
   .operationsRow {
     grid-template-columns: 1fr;
   }
+  .opMiniGrid {
+    grid-template-columns: 1fr;
+  }
   .dashHeader {
     flex-direction: column;
     align-items: flex-start;
   }
 }
+

@@ -21,7 +21,6 @@ import {
   ArrowRight,
   UserX,
   Smartphone,
-  Sparkles,
 } from "lucide-react";
 import type { RoomReservationDetail, TenantOption } from "@/lib/queries";
 import { HandoverItemsEditor } from "@/components/handover-items-editor";
@@ -245,11 +244,11 @@ export function RoomReservationManager({
                   justifyContent: "center",
                 }}
               >
-                <Sparkles size={18} />
+                <CheckCircle2 size={18} />
               </div>
               <div>
                 <div style={{ fontSize: 14.5, fontWeight: 800, color: "#166534" }}>
-                  🎉 ĐÃ CÓ KHÁCH ĐẶT CỌC GIỮ PHÒNG ({reservation.ma_giu_cho})
+                  ĐÃ CÓ KHÁCH ĐẶT CỌC GIỮ PHÒNG ({reservation.ma_giu_cho})
                 </div>
                 <div style={{ fontSize: 11.5, color: "#15803d" }}>
                   Khách đã hoàn tất chuyển khoản VietQR giữ chỗ từ App Mobile
@@ -622,7 +621,7 @@ export function RoomReservationManager({
                     marginBottom: 16,
                   }}
                 >
-                  <div style={{ fontWeight: 700, color: "#1e40af", fontSize: 13, marginBottom: 6 }}>
+                  <div style={{ fontWeight: 700, color: "#1877f2", fontSize: 13, marginBottom: 6 }}>
                     🎉 Đã kích hoạt Hợp đồng & Cấp User Mobile App cho cư dân:
                   </div>
                   <div style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap", fontSize: 13 }}>

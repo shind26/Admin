@@ -72,6 +72,7 @@ async function InvoicesContent({
     (sum, invoice) => sum + Number(invoice.da_thu ?? 0),
     0,
   );
+  const totalDebt = Math.max(0, total - collected);
   const outstanding = invoices.filter(
     (invoice) => Number(invoice.tong_tien ?? 0) > Number(invoice.da_thu ?? 0),
   ).length;
@@ -82,7 +83,7 @@ async function InvoicesContent({
         <div>
           <h1 className={styles.title}>Hóa đơn &amp; Thu chi</h1>
           <p className={styles.subtitle}>
-            Hóa đơn định kỳ sinh tự động theo chốt điện nước; Hóa đơn phát sinh được lập linh hoạt
+            Quản lý hóa đơn tiền phòng, điện nước và các khoản thu chi
           </p>
         </div>
       </div>
@@ -97,9 +98,12 @@ async function InvoicesContent({
           <div className={styles.miniValue}>{formatMoney(String(total))}</div>
         </div>
         <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Còn nợ ({outstanding} hóa đơn)</div>
-          <div className={styles.miniValue}>
-            {formatMoney(String(total - collected))}
+          <div className={styles.miniLabel}>Công nợ còn lại ({outstanding} hóa đơn)</div>
+          <div
+            className={styles.miniValue}
+            style={{ color: totalDebt > 0 ? "#dc2626" : "#16a34a", fontWeight: 700 }}
+          >
+            {formatMoney(String(totalDebt))}
           </div>
         </div>
       </section>
@@ -161,6 +165,7 @@ async function InvoicesContent({
                 <th>Phòng / Khách</th>
                 <th>Tổng tiền</th>
                 <th>Đã thu</th>
+                <th>Còn nợ</th>
                 <th>Ngày lập</th>
                 <th>Hạn đóng</th>
                 <th>Trạng thái</th>
@@ -170,7 +175,7 @@ async function InvoicesContent({
             <tbody>
               {invoices.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className={styles.empty}>
+                  <td colSpan={10} className={styles.empty}>
                     Không có hóa đơn phù hợp.
                   </td>
                 </tr>
@@ -179,6 +184,11 @@ async function InvoicesContent({
                   const isPhatSinh = invoice.loai_giao_dich
                     ?.toLowerCase()
                     .includes("phát sinh");
+                  const conNo = Math.max(
+                    0,
+                    Number(invoice.tong_tien ?? 0) - Number(invoice.da_thu ?? 0),
+                  );
+
                   return (
                     <tr key={invoice.ma_hoa_don}>
                       <td>
@@ -196,7 +206,7 @@ async function InvoicesContent({
                               isPhatSinh ? styles.badgeWarn : styles.badgeMuted
                             }
                           >
-                            {isPhatSinh ? "⚡ Phát sinh" : "📅 Định kỳ"}
+                            {isPhatSinh ? "Phát sinh" : "Định kỳ"}
                           </span>
                         </div>
                         {invoice.chi_tiet_khoan_thu ? (
@@ -222,7 +232,25 @@ async function InvoicesContent({
                       <td className={styles.strong}>
                         {formatMoney(invoice.tong_tien)}
                       </td>
-                      <td>{formatMoney(invoice.da_thu)}</td>
+                      <td style={{ color: "#16a34a", fontWeight: 600 }}>
+                        {formatMoney(invoice.da_thu)}
+                      </td>
+                      <td>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            padding: "2px 8px",
+                            borderRadius: 4,
+                            fontSize: 12.5,
+                            fontWeight: 700,
+                            background: conNo > 0 ? "#fef2f2" : "#f0fdf4",
+                            color: conNo > 0 ? "#dc2626" : "#16a34a",
+                            border: `1px solid ${conNo > 0 ? "#fecaca" : "#bbf7d0"}`,
+                          }}
+                        >
+                          {formatMoney(String(conNo))}
+                        </span>
+                      </td>
                       <td>{formatDate(invoice.ngay_lap)}</td>
                       <td>{formatDate(invoice.han_dong_tien)}</td>
                       <td>

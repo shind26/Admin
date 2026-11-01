@@ -4,7 +4,6 @@ import { useState, useActionState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  Sparkles,
   FileCheck,
   Calendar,
   Users,
@@ -115,7 +114,7 @@ export function PendingReservationsQueue({
           marginBottom: 24,
           background: "#ffffff",
           borderRadius: 14,
-          border: "1px solid #DCEFF8",
+          border: "1px solid #e7f3ff",
           overflow: "hidden",
           boxShadow: "0 2px 8px rgba(74, 144, 194, 0.08)",
         }}
@@ -123,8 +122,8 @@ export function PendingReservationsQueue({
         {/* Header section with light sky blue theme */}
         <div
           style={{
-            background: "#EFF8FC",
-            borderBottom: "1px solid #DCEFF8",
+            background: "#f0f2f5",
+            borderBottom: "1px solid #e7f3ff",
             padding: "14px 20px",
             display: "flex",
             justifyContent: "space-between",
@@ -136,7 +135,7 @@ export function PendingReservationsQueue({
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div
               style={{
-                background: "#4A90C2",
+                background: "#1877f2",
                 color: "#ffffff",
                 width: 32,
                 height: 32,
@@ -152,7 +151,7 @@ export function PendingReservationsQueue({
               <h2 style={{ fontSize: 15, fontWeight: 700, color: "#234358", margin: 0 }}>
                 Khách đặt cọc giữ chỗ chờ lập hợp đồng ({reservations.length})
               </h2>
-              <p style={{ fontSize: 12.5, color: "#627D90", margin: "3px 0 0" }}>
+              <p style={{ fontSize: 12.5, color: "#65676b", margin: "3px 0 0" }}>
                 Danh sách khách đã đặt cọc giữ phòng — bấm &quot;Tạo hợp đồng&quot; để bàn giao và kích hoạt phòng
               </p>
             </div>
@@ -164,9 +163,9 @@ export function PendingReservationsQueue({
               fontWeight: 600,
               padding: "4px 10px",
               borderRadius: 999,
-              background: "#DCEFF8",
-              color: "#26597D",
-              border: "1px solid #CBDCE8",
+              background: "#e7f3ff",
+              color: "#1877f2",
+              border: "1px solid #ced0d4",
             }}
           >
             {reservations.length} phòng cần xử lý
@@ -190,7 +189,7 @@ export function PendingReservationsQueue({
                   background: "#ffffff",
                   borderRadius: 12,
                   padding: "16px",
-                  border: "1px solid #E2EBF2",
+                  border: "1px solid #e4e6eb",
                   boxShadow: "0 1px 4px rgba(66, 91, 107, 0.04)",
                   display: "flex",
                   flexDirection: "column",
@@ -227,14 +226,14 @@ export function PendingReservationsQueue({
                   <div
                     style={{
                       background: "#F8FAFC",
-                      border: "1px solid #E2EBF2",
+                      border: "1px solid #e4e6eb",
                       padding: "10px 12px",
                       borderRadius: 8,
                       fontSize: 12.5,
                       display: "flex",
                       flexDirection: "column",
                       gap: 6,
-                      color: "#425B6B",
+                      color: "#65676b",
                     }}
                   >
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -254,9 +253,9 @@ export function PendingReservationsQueue({
                       <strong>{res.so_nguoi_o || 1} người</strong>
                     </div>
                     {conLai > 0 && (
-                      <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 4, borderTop: "1px dashed #E2EBF2" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 4, borderTop: "1px dashed #e4e6eb" }}>
                         <span>Cần thu thêm:</span>
-                        <strong style={{ color: "#4A90C2" }}>{money(conLai)}</strong>
+                        <strong style={{ color: "#1877f2" }}>{money(conLai)}</strong>
                       </div>
                     )}
                   </div>
@@ -268,7 +267,7 @@ export function PendingReservationsQueue({
                     onClick={() => handleOpenConvert(res)}
                     style={{
                       flex: 1,
-                      background: "#4A90C2",
+                      background: "#1877f2",
                       color: "#ffffff",
                       border: "none",
                       borderRadius: 8,
@@ -344,17 +343,17 @@ export function PendingReservationsQueue({
             <div
               style={{
                 padding: "16px 20px",
-                borderBottom: "1px solid #DCEFF8",
+                borderBottom: "1px solid #e7f3ff",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "#EFF8FC",
+                background: "#f0f2f5",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <div
                   style={{
-                    background: "#4A90C2",
+                    background: "#1877f2",
                     color: "#ffffff",
                     width: 34,
                     height: 34,
@@ -370,7 +369,7 @@ export function PendingReservationsQueue({
                   <h2 style={{ fontSize: 16, fontWeight: 700, color: "#234358", margin: 0 }}>
                     Lập hợp đồng thuê phòng
                   </h2>
-                  <p style={{ fontSize: 12, color: "#627D90", margin: "2px 0 0" }}>
+                  <p style={{ fontSize: 12, color: "#65676b", margin: "2px 0 0" }}>
                     {selectedRes.ten_phong?.toLowerCase().startsWith("phòng") ? selectedRes.ten_phong : `Phòng ${selectedRes.ten_phong || selectedRes.ma_phong}`} • Khách thuê: {selectedRes.ho_ten_khach}
                   </p>
                 </div>
@@ -432,13 +431,13 @@ export function PendingReservationsQueue({
               {/* Bảng đối trừ cọc tự động */}
               <div
                 style={{
-                  background: "#EFF8FC",
-                  border: "1px solid #DCEFF8",
+                  background: "#f0f2f5",
+                  border: "1px solid #e7f3ff",
                   borderRadius: 10,
                   padding: 12,
                   marginBottom: 14,
                   fontSize: 12.5,
-                  color: "#425B6B",
+                  color: "#65676b",
                 }}
               >
                 <div style={{ fontWeight: 700, color: "#234358", marginBottom: 6 }}>
@@ -456,7 +455,7 @@ export function PendingReservationsQueue({
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    borderTop: "1px dashed #CBDCE8",
+                    borderTop: "1px dashed #ced0d4",
                     paddingTop: 6,
                     fontSize: 13.5,
                     color: "#234358",
@@ -464,7 +463,7 @@ export function PendingReservationsQueue({
                   }}
                 >
                   <span>Khách cần đóng thêm khi nhận phòng:</span>
-                  <span style={{ color: "#4A90C2" }}>{money(selectedCocConLai)}</span>
+                  <span style={{ color: "#1877f2" }}>{money(selectedCocConLai)}</span>
                 </div>
               </div>
 
@@ -531,14 +530,14 @@ export function PendingReservationsQueue({
               {contractState.tempPassword && contractState.username && (
                 <div
                   style={{
-                    background: "#EFF8FC",
-                    border: "1px solid #DCEFF8",
+                    background: "#f0f2f5",
+                    border: "1px solid #e7f3ff",
                     borderRadius: 10,
                     padding: 14,
                     marginBottom: 16,
                   }}
                 >
-                  <div style={{ fontWeight: 700, color: "#26597D", fontSize: 13, marginBottom: 6 }}>
+                  <div style={{ fontWeight: 700, color: "#1877f2", fontSize: 13, marginBottom: 6 }}>
                     ✓ Đã lập hợp đồng &amp; cấp tài khoản ứng dụng cư dân:
                   </div>
                   <div style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap", fontSize: 13 }}>
@@ -553,7 +552,7 @@ export function PendingReservationsQueue({
                       type="button"
                       onClick={handleCopyCredentials}
                       style={{
-                        background: "#4A90C2",
+                        background: "#1877f2",
                         color: "#fff",
                         border: "none",
                         borderRadius: 6,
@@ -571,7 +570,7 @@ export function PendingReservationsQueue({
                     {contractState.maHopDong && (
                       <Link
                         href={`/hop-dong/${contractState.maHopDong}`}
-                        style={{ fontSize: 12, color: "#26597D", fontWeight: 700 }}
+                        style={{ fontSize: 12, color: "#1877f2", fontWeight: 700 }}
                       >
                         Xem chi tiết HĐ →
                       </Link>
@@ -585,7 +584,7 @@ export function PendingReservationsQueue({
                   type="button"
                   onClick={() => setSelectedRes(null)}
                   disabled={contractPending}
-                  style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid #cbdce8", background: "#fff", cursor: "pointer", color: "#425B6B" }}
+                  style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid #ced0d4", background: "#fff", cursor: "pointer", color: "#65676b" }}
                 >
                   Đóng
                 </button>
@@ -596,7 +595,7 @@ export function PendingReservationsQueue({
                     padding: "8px 18px",
                     borderRadius: 8,
                     border: "none",
-                    background: "#4A90C2",
+                    background: "#1877f2",
                     color: "#fff",
                     fontWeight: 600,
                     cursor: contractPending ? "not-allowed" : "pointer",

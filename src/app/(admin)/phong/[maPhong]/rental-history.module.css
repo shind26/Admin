@@ -35,7 +35,7 @@
   font-weight: 700;
   padding: 2px 7px;
   border-radius: 999px;
-  background: #dceff8;
+  background: #e7f3ff;
   color: #244e6e;
   text-transform: none;
   letter-spacing: 0;
@@ -43,7 +43,7 @@
 
 .subTitle {
   font-size: 12px;
-  color: #627d90;
+  color: #65676b;
   margin: 0;
 }
 
@@ -51,14 +51,14 @@
 .tabsRow {
   display: flex;
   gap: 6px;
-  border-bottom: 1px solid #e2ebf2;
+  border-bottom: 1px solid #e4e6eb;
   padding-bottom: 6px;
 }
 
 .tabBtn {
   border: none;
   background: transparent;
-  color: #627d90;
+  color: #65676b;
   font-size: 12.5px;
   font-weight: 600;
   padding: 6px 12px;
@@ -72,12 +72,12 @@
 
 .tabBtn:hover {
   color: #244e6e;
-  background: #eff8fc;
+  background: #f0f2f5;
 }
 
 .tabBtnActive {
   color: #244e6e;
-  background: #dceff8;
+  background: #e7f3ff;
   font-weight: 700;
 }
 
@@ -98,7 +98,7 @@
   bottom: 14px;
   left: 12px;
   width: 2px;
-  background: #cbdce8;
+  background: #ced0d4;
 }
 
 .timelineItem {
@@ -113,10 +113,10 @@
   height: 26px;
   border-radius: 50%;
   background: #ffffff;
-  border: 2px solid #cbdce8;
+  border: 2px solid #ced0d4;
   display: grid;
   place-items: center;
-  color: #627d90;
+  color: #65676b;
   box-shadow: 0 1px 3px rgba(66, 91, 107, 0.08);
   z-index: 2;
 }
@@ -128,35 +128,35 @@
 }
 
 .timelineDotEnded {
-  border-color: #cbdce8;
-  background: #f1f4f8;
-  color: #627d90;
+  border-color: #ced0d4;
+  background: #f0f2f5;
+  color: #65676b;
 }
 
 .timelineDotPending {
-  border-color: #4a90c2;
-  background: #eff8fc;
-  color: #4a90c2;
+  border-color: #1877f2;
+  background: #f0f2f5;
+  color: #1877f2;
 }
 
 /* ── Thẻ chi tiết hợp đồng ── */
 .card {
   background: #ffffff;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   border-radius: 12px;
   padding: 14px 16px;
   transition: all 0.2s ease;
 }
 
 .card:hover {
-  border-color: #76b5d8;
+  border-color: #4599ff;
   box-shadow: 0 3px 12px rgba(74, 144, 194, 0.12);
 }
 
 .cardActive {
-  border-color: #76b5d8;
-  background: #eff8fc;
-  border-left: 4px solid #4a90c2;
+  border-color: #4599ff;
+  background: #f0f2f5;
+  border-left: 4px solid #1877f2;
 }
 
 .cardHeader {
@@ -177,7 +177,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #dceff8;
+  background: #e7f3ff;
   color: #244e6e;
   display: grid;
   place-items: center;
@@ -204,7 +204,7 @@
 
 .tenantRole {
   font-size: 11px;
-  color: #627d90;
+  color: #65676b;
 }
 
 .headerBadges {
@@ -231,14 +231,14 @@
 }
 
 .badgeInfo {
-  background: #dceff8;
+  background: #e7f3ff;
   color: #1d5c8a;
   border: 1px solid #b8ddf0;
 }
 
 .badgeMuted {
-  background: #f1f4f8;
-  color: #627d90;
+  background: #f0f2f5;
+  color: #65676b;
   border: 1px solid #dce4ec;
 }
 
@@ -247,16 +247,16 @@
   font-size: 11.5px;
   font-weight: 600;
   color: #244e6e;
-  background: #eff8fc;
+  background: #f0f2f5;
   padding: 2px 6px;
   border-radius: 4px;
-  border: 1px solid #dceff8;
+  border: 1px solid #e7f3ff;
   text-decoration: none;
 }
 
 .contractCode:hover {
-  background: #dceff8;
-  border-color: #76b5d8;
+  background: #e7f3ff;
+  border-color: #4599ff;
 }
 
 /* ── Lưới thông tin hợp đồng ── */
@@ -266,9 +266,9 @@
   gap: 10px;
   margin-top: 12px;
   padding: 10px 12px;
-  background: #eff8fc;
+  background: #f0f2f5;
   border-radius: 8px;
-  border: 1px solid #dceff8;
+  border: 1px solid #e7f3ff;
 }
 
 .field {
@@ -280,7 +280,7 @@
 .fieldLabel {
   font-size: 11px;
   font-weight: 600;
-  color: #627d90;
+  color: #65676b;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -289,7 +289,7 @@
 .fieldValue {
   font-size: 12.5px;
   font-weight: 600;
-  color: #425b6b;
+  color: #65676b;
 }
 
 .priceCol {
@@ -301,9 +301,9 @@
 .durationTag {
   display: inline-block;
   font-size: 10.5px;
-  color: #627d90;
+  color: #65676b;
   font-weight: 600;
-  background: #dceff8;
+  background: #e7f3ff;
   padding: 1px 5px;
   border-radius: 4px;
   margin-left: 4px;
@@ -324,7 +324,7 @@
   gap: 4px;
   font-size: 12px;
   font-weight: 600;
-  color: #4a90c2;
+  color: #1877f2;
   text-decoration: none;
 }
 
@@ -337,9 +337,9 @@
   padding: 32px 16px;
   text-align: center;
   background: #ffffff;
-  border: 1px dashed #cbdce8;
+  border: 1px dashed #ced0d4;
   border-radius: 12px;
-  color: #627d90;
+  color: #65676b;
   font-size: 13px;
   display: flex;
   flex-direction: column;
@@ -351,7 +351,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #4a90c2;
+  background: #1877f2;
   color: #ffffff;
   font-size: 12px;
   font-weight: 600;
@@ -364,4 +364,37 @@
 
 .btnNewContract:hover {
   background: #3a78a6;
+}
+
+
+.contractList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tenantMetaText {
+  font-size: 12px;
+  color: #65676b;
+  margin-top: 2px;
+}
+
+.contractLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  color: #1877f2;
+  border: 1px solid #ced0d4;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.contractLink:hover {
+  background: #e7f3ff;
+  border-color: #1877f2;
 }

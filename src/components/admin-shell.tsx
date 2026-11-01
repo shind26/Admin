@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { requireAccount } from "@/lib/session";
 import { logout } from "@/app/login/actions";
+import { NotificationBell } from "./notification-bell";
 import styles from "./admin-shell.module.css";
 
 const menuGroups = [
@@ -171,11 +172,14 @@ export function AdminShell({
     <div className={styles.shell}>
       <aside className={`${styles.sidebar} noPrint`} data-no-print="true">
         <div className={styles.brand}>
-          <span className={styles.brandMark}>KG</span>
-          <div>
-            <div className={styles.brandName}>Kiêu Giang</div>
-            <div className={styles.brandSub}>Boarding Management</div>
+          <div className={styles.brandInfo}>
+            <span className={styles.brandMark}>KG</span>
+            <div>
+              <div className={styles.brandName}>Kiêu Giang</div>
+              <div className={styles.brandSub}>Boarding Management</div>
+            </div>
           </div>
+          <NotificationBell />
         </div>
 
         <Suspense fallback={<div className={`${styles.navSkeleton} noPrint`} aria-busy="true" />}>

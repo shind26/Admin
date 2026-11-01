@@ -315,6 +315,18 @@ export async function reserveRoom(
       };
     }
 
+    const { rows: activeContracts } = await client.query(
+      "SELECT 1 FROM public.hop_dong WHERE ma_phong = $1 AND trang_thai IN ('Còn hạn', 'Đang thuê', 'Chờ TL', 'Chờ thanh lý') LIMIT 1",
+      [maPhong],
+    );
+    if (activeContracts.length > 0) {
+      await client.query("ROLLBACK");
+      return {
+        error: "Phòng đang có hợp đồng thuê hiệu lực, không thể đặt cọc giữ chỗ.",
+        success: null,
+      };
+    }
+
     let maKhach = text(formData, "maKhach");
 
     if (tenantMode === "new") {

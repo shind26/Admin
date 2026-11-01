@@ -43,11 +43,11 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Cư dân &amp; Vai trò</th>
+                <th>Khách thuê &amp; Vai trò</th>
                 <th>Liên hệ &amp; CCCD</th>
                 <th>Phòng hiện tại</th>
                 <th>Tài khoản App</th>
-                <th>eKYC &amp; Xe</th>
+                <th>CCCD &amp; Xe máy</th>
                 <th style={{ textAlign: "right" }}>Thao tác</th>
               </tr>
             </thead>
@@ -55,7 +55,7 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
               {tenants.length === 0 ? (
                 <tr>
                   <td colSpan={6} className={styles.empty}>
-                    Không tìm thấy hồ sơ cư dân phù hợp với bộ lọc.
+                    Không tìm thấy hồ sơ khách thuê phù hợp với bộ lọc.
                   </td>
                 </tr>
               ) : (
@@ -235,7 +235,7 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                                 gap: 3,
                               }}
                             >
-                              <ShieldCheck size={12} /> eKYC duyệt
+                              <ShieldCheck size={12} /> Đã duyệt CCCD
                             </span>
                           ) : t.trang_thai_ekyc === "ChoDuyet" ? (
                             <span
@@ -248,10 +248,10 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                                 gap: 3,
                               }}
                             >
-                              <AlertCircle size={12} /> Chờ duyệt ảnh
+                              <AlertCircle size={12} /> Chờ duyệt CCCD
                             </span>
                           ) : (
-                            <span style={{ fontSize: 11, color: "#94a3b8" }}>Chưa eKYC</span>
+                            <span style={{ fontSize: 11, color: "#94a3b8" }}>Chưa có CCCD</span>
                           )}
                         </div>
                         {t.so_phuong_tien > 0 && (

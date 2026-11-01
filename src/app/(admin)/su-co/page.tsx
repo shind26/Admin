@@ -68,7 +68,7 @@ async function IssuesContent({ searchParams }: { searchParams: SearchParams }) {
         <div>
           <h1 className={styles.title}>Sự cố &amp; Sửa chữa</h1>
           <p className={styles.subtitle}>
-            Tiếp nhận sự cố theo phòng, theo dõi tiến độ và chi phí sửa chữa
+            Tiếp nhận sự cố theo phòng, theo dõi tiến độ sửa chữa thiết bị
           </p>
         </div>
       </div>
@@ -148,7 +148,7 @@ async function IssuesContent({ searchParams }: { searchParams: SearchParams }) {
             <tbody>
               {issues.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className={styles.empty}>
+                  <td colSpan={10} className={styles.empty}>
                     Không có phiếu sự cố phù hợp.
                   </td>
                 </tr>

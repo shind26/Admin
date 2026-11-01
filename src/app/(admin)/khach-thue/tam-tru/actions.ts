@@ -7,7 +7,7 @@ import { getCurrentAccount, requireScope } from "@/lib/session";
 
 export type StayFormState = { error: string | null; success: string | null };
 
-const STAY_STATUSES = ["Chờ xác nhận", "Đã duyệt", "Hoàn tất", "Từ chối"];
+export const STAY_STATUSES = ["Chờ duyệt", "Chờ xác nhận", "Đã duyệt", "Hoàn tất", "Từ chối"];
 
 function text(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -49,7 +49,7 @@ export async function createStay(
   const cccd = text(formData, "cccdKhachNgoai");
   const tuNgay = text(formData, "tuNgay");
   const denNgay = text(formData, "denNgay");
-  const trangThai = text(formData, "trangThai") || "Chờ xác nhận";
+  const trangThai = text(formData, "trangThai") || "Chờ duyệt";
   const camKet = formData.get("camKetAnNinh") === "on";
 
   const contractGuard = await assertContractInScope(maHopDong, scope);

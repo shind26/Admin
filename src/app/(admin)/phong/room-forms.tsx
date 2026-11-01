@@ -680,10 +680,10 @@ export function CreateRoomModal({
             >
               <div>
                 <h2 style={{ fontSize: 18, fontWeight: 800, color: "#0f172a", margin: 0 }}>
-                  Thêm Phòng Mới Vào Hệ Thống
+                  Thêm phòng mới
                 </h2>
                 <p style={{ fontSize: 12.5, color: "#64748b", margin: "3px 0 0" }}>
-                  Định danh phòng, thiết lập giá thuê và gán chỉ số công tơ điện nước ban đầu
+                  Điền thông tin phòng và chỉ số điện nước ban đầu
                 </p>
               </div>
               <button

@@ -10,6 +10,7 @@ import {
   getPaidReservationsPendingContract,
   getPendingLiquidationRequests,
   getPendingRoomTransferRequests,
+  getPendingContractExtensions,
 } from "@/lib/queries";
 import { ScopeQuery } from "@/lib/scope";
 import {
@@ -20,6 +21,7 @@ import {
 import { PendingReservationsQueue } from "./pending-reservations";
 import { PendingLiquidationQueue } from "./pending-liquidation";
 import { PendingTransfersQueue } from "./pending-transfers";
+import { PendingExtensionsQueue } from "./pending-extensions";
 import styles from "@/components/business.module.css";
 
 type SearchParams = Promise<{ status?: string; keyword?: string }>;
@@ -58,7 +60,7 @@ async function ContractsContent({
   const status = params.status || "All";
   const keyword = params.keyword || "";
 
-  const [{ contracts, stats }, rooms, tenants, pendingReservations, pendingLiquidations, pendingTransfers] =
+  const [{ contracts, stats }, rooms, tenants, pendingReservations, pendingLiquidations, pendingTransfers, pendingExtensions] =
     await Promise.all([
       getContracts({ status, keyword }, scopeQuery),
       getRoomOptions(scopeQuery),
@@ -66,6 +68,7 @@ async function ContractsContent({
       getPaidReservationsPendingContract(scopeQuery),
       getPendingLiquidationRequests(scopeQuery),
       getPendingRoomTransferRequests(scopeQuery),
+      getPendingContractExtensions(scopeQuery),
     ]);
 
   const emptyRooms = rooms.filter(
@@ -82,6 +85,9 @@ async function ContractsContent({
 
       {/* Hàng đợi các yêu cầu đặt cọc thành công từ Mobile App cần lập hợp đồng ngay */}
       <PendingReservationsQueue reservations={pendingReservations} />
+
+      {/* Hàng đợi các yêu cầu đổi / chuyển phòng từ Mobile App chờ duyệt */}
+      <PendingExtensionsQueue requests={pendingExtensions} />
 
       {/* Hàng đợi các yêu cầu đổi / chuyển phòng từ Mobile App chờ duyệt */}
       <PendingTransfersQueue requests={pendingTransfers} emptyRooms={emptyRooms} />
@@ -170,7 +176,7 @@ async function ContractsContent({
                       <Link
                         href={`/hop-dong/${encodeURIComponent(contract.ma_hop_dong)}`}
                         className={styles.strong}
-                        style={{ color: "#1e40af", textDecoration: "underline" }}
+                        style={{ color: "#1877f2", textDecoration: "underline" }}
                       >
                         {contract.ma_hop_dong}
                       </Link>
@@ -206,7 +212,7 @@ async function ContractsContent({
                               whiteSpace: "nowrap",
                             }}
                           >
-                            ⚡ Yêu cầu trả phòng
+                            Yêu cầu trả phòng
                           </Link>
                         )}
                         {contract.co_yeu_cau_doi_phong && (
@@ -216,7 +222,7 @@ async function ContractsContent({
                               display: "inline-flex",
                               alignItems: "center",
                               gap: 3,
-                              background: "#DCEFF8",
+                              background: "#e7f3ff",
                               color: "#0369A1",
                               border: "1px solid #BAE6FD",
                               borderRadius: 4,
@@ -227,7 +233,7 @@ async function ContractsContent({
                               whiteSpace: "nowrap",
                             }}
                           >
-                            ⚡ Yêu cầu đổi phòng
+                            Yêu cầu đổi phòng
                           </Link>
                         )}
                       </div>

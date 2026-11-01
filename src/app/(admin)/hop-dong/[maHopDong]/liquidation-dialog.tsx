@@ -153,9 +153,9 @@ export function LiquidationDialog({
             display: "inline-flex",
             alignItems: "center",
             gap: 4,
-            background: isPendingRequest ? "#F6E6B4" : "#EFF8FC",
-            color: isPendingRequest ? "#92400E" : "#4A90C2",
-            border: `1px solid ${isPendingRequest ? "#FDE68A" : "#DCEFF8"}`,
+            background: isPendingRequest ? "#F6E6B4" : "#f0f2f5",
+            color: isPendingRequest ? "#92400E" : "#1877f2",
+            border: `1px solid ${isPendingRequest ? "#FDE68A" : "#e7f3ff"}`,
             borderRadius: 6,
             padding: "4px 8px",
             fontSize: 12,
@@ -178,7 +178,7 @@ export function LiquidationDialog({
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            background: "#4A90C2",
+            background: "#1877f2",
             color: "#ffffff",
             border: "none",
             borderRadius: 8,
@@ -202,7 +202,7 @@ export function LiquidationDialog({
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
-          background: "#4A90C2",
+          background: "#1877f2",
           color: "#ffffff",
           border: "none",
           borderRadius: 8,
@@ -249,18 +249,18 @@ export function LiquidationDialog({
               maxHeight: "92vh",
               overflowY: "auto",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              border: "1px solid #DCEFF8",
+              border: "1px solid #e7f3ff",
             }}
           >
-            {/* Header: Sky Blue (#76B5D8 / #4A90C2) */}
+            {/* Header: Sky Blue (#4599ff / #1877f2) */}
             <div
               style={{
                 padding: "16px 20px",
-                borderBottom: "1px solid #DCEFF8",
+                borderBottom: "1px solid #e7f3ff",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "linear-gradient(135deg, #4A90C2 0%, #76B5D8 100%)",
+                background: "linear-gradient(135deg, #1877f2 0%, #4599ff 100%)",
                 borderTopLeftRadius: 16,
                 borderTopRightRadius: 16,
                 color: "#ffffff",
@@ -285,7 +285,7 @@ export function LiquidationDialog({
                   <h2 style={{ fontSize: 16, fontWeight: 800, margin: 0, color: "#ffffff" }}>
                     Biên bản Thanh lý Hợp đồng & Check-out
                   </h2>
-                  <p style={{ fontSize: 12, margin: "2px 0 0", color: "#EFF8FC" }}>
+                  <p style={{ fontSize: 12, margin: "2px 0 0", color: "#f0f2f5" }}>
                     Phòng {maPhong} • Khách thuê: {tenKhach} • HĐ: {maHopDong}
                   </p>
                 </div>
@@ -513,8 +513,8 @@ export function LiquidationDialog({
               {/* Thông tin ngày & điều kiện hoàn cọc (Theo chuẩn nghiệp vụ Mobile App) */}
               <div
                 style={{
-                  background: "#EFF8FC",
-                  border: "1px solid #DCEFF8",
+                  background: "#f0f2f5",
+                  border: "1px solid #e7f3ff",
                   borderRadius: 12,
                   padding: 14,
                   marginBottom: 16,
@@ -522,7 +522,7 @@ export function LiquidationDialog({
               >
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 12 }}>
                   <div>
-                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#425B6B", marginBottom: 5 }}>
+                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#65676b", marginBottom: 5 }}>
                       Ngày trả phòng & bàn giao *
                     </label>
                     <input
@@ -542,7 +542,7 @@ export function LiquidationDialog({
                     />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#425B6B", marginBottom: 5 }}>
+                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#65676b", marginBottom: 5 }}>
                       Tiền đặt cọc ban đầu theo HĐ
                     </label>
                     <div
@@ -550,7 +550,7 @@ export function LiquidationDialog({
                         padding: "8px 12px",
                         background: "#ffffff",
                         borderRadius: 8,
-                        border: "1px solid #DCEFF8",
+                        border: "1px solid #e7f3ff",
                         fontWeight: 700,
                         color: "#0F172A",
                         fontSize: 13,
@@ -589,7 +589,7 @@ export function LiquidationDialog({
                       {isDungHanAuto ? "Đủ điều kiện hoàn cọc" : "Mất cọc theo HĐ"}
                     </span>
                   </div>
-                  <div style={{ fontSize: 12, color: "#425B6B", lineHeight: 1.4 }}>
+                  <div style={{ fontSize: 12, color: "#65676b", lineHeight: 1.4 }}>
                     {isDungHanAuto ? (
                       <span>Cư dân trả phòng trong vòng 30 ngày trước khi hết hạn hoặc sau ngày hết hạn. Đủ điều kiện hoàn trả cọc.</span>
                     ) : (
@@ -597,12 +597,12 @@ export function LiquidationDialog({
                     )}
                   </div>
                   <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: "#425B6B" }}>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: "#65676b" }}>
                       Số tiền cọc áp dụng để hoàn trả:
                     </label>
                     <input
                       type="number"
-                      step={50000}
+                      step="any"
                       min={0}
                       max={tienDatCoc}
                       value={tienCocCoTheHoan}
@@ -628,20 +628,20 @@ export function LiquidationDialog({
               <div
                 style={{
                   background: "#F8FAFC",
-                  border: "1px solid #DCEFF8",
+                  border: "1px solid #e7f3ff",
                   borderRadius: 12,
                   padding: 14,
                   marginBottom: 16,
                 }}
               >
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#4A90C2", marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#1877f2", marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
                   <Zap size={16} /> 1. Chốt chỉ số Điện & Nước cuối phòng
                 </div>
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                   {/* Điện */}
-                  <div style={{ background: "#ffffff", padding: 12, borderRadius: 8, border: "1px solid #DCEFF8" }}>
-                    <div style={{ fontSize: 12.5, fontWeight: 700, color: "#425B6B", marginBottom: 8, display: "flex", alignItems: "center", gap: 5 }}>
+                  <div style={{ background: "#ffffff", padding: 12, borderRadius: 8, border: "1px solid #e7f3ff" }}>
+                    <div style={{ fontSize: 12.5, fontWeight: 700, color: "#65676b", marginBottom: 8, display: "flex", alignItems: "center", gap: 5 }}>
                       <Zap size={14} color="#EAB308" /> Điện tiêu thụ
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
@@ -677,20 +677,20 @@ export function LiquidationDialog({
                       </label>
                       <input
                         type="number"
-                        step={100}
+                        step="any"
                         value={donGiaDien}
                         onChange={(e) => setDonGiaDien(Number(e.target.value) || 0)}
                         style={{ width: "100%", padding: "5px 8px", borderRadius: 6, border: "1px solid #CBD5E1", fontSize: 12 }}
                       />
                     </div>
-                    <div style={{ fontSize: 12, color: "#059669", fontWeight: 600, borderTop: "1px dashed #DCEFF8", paddingTop: 6, marginTop: 6 }}>
+                    <div style={{ fontSize: 12, color: "#059669", fontWeight: 600, borderTop: "1px dashed #e7f3ff", paddingTop: 6, marginTop: 6 }}>
                       Dùng: {dienTieuThu} số = <strong>{money(tienDien)}</strong>
                     </div>
                   </div>
 
                   {/* Nước */}
-                  <div style={{ background: "#ffffff", padding: 12, borderRadius: 8, border: "1px solid #DCEFF8" }}>
-                    <div style={{ fontSize: 12.5, fontWeight: 700, color: "#425B6B", marginBottom: 8, display: "flex", alignItems: "center", gap: 5 }}>
+                  <div style={{ background: "#ffffff", padding: 12, borderRadius: 8, border: "1px solid #e7f3ff" }}>
+                    <div style={{ fontSize: 12.5, fontWeight: 700, color: "#65676b", marginBottom: 8, display: "flex", alignItems: "center", gap: 5 }}>
                       <Droplets size={14} color="#0284C7" /> Nước tiêu thụ
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
@@ -732,7 +732,7 @@ export function LiquidationDialog({
                         style={{ width: "100%", padding: "5px 8px", borderRadius: 6, border: "1px solid #CBD5E1", fontSize: 12 }}
                       />
                     </div>
-                    <div style={{ fontSize: 12, color: "#059669", fontWeight: 600, borderTop: "1px dashed #DCEFF8", paddingTop: 6, marginTop: 6 }}>
+                    <div style={{ fontSize: 12, color: "#059669", fontWeight: 600, borderTop: "1px dashed #e7f3ff", paddingTop: 6, marginTop: 6 }}>
                       Dùng: {nuocTieuThu} m³ = <strong>{money(tienNuoc)}</strong>
                     </div>
                   </div>
@@ -743,13 +743,13 @@ export function LiquidationDialog({
               <div
                 style={{
                   background: "#F8FAFC",
-                  border: "1px solid #DCEFF8",
+                  border: "1px solid #e7f3ff",
                   borderRadius: 12,
                   padding: 14,
                   marginBottom: 16,
                 }}
               >
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#4A90C2", marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#1877f2", marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
                   <Receipt size={16} /> 2. Các khoản khấu trừ khác
                 </div>
 
@@ -774,7 +774,7 @@ export function LiquidationDialog({
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#425B6B", marginBottom: 4 }}>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#65676b", marginBottom: 4 }}>
                       Khấu trừ hư hao tài sản / dọn vệ sinh (nếu có)
                     </label>
                     <input
@@ -788,7 +788,7 @@ export function LiquidationDialog({
                     />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#425B6B", marginBottom: 4 }}>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#65676b", marginBottom: 4 }}>
                       Lý do khấu trừ hư hại
                     </label>
                     <input
@@ -868,7 +868,7 @@ export function LiquidationDialog({
 
               {/* Ghi chú */}
               <div style={{ marginBottom: 16 }}>
-                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#425B6B", marginBottom: 4 }}>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#65676b", marginBottom: 4 }}>
                   Ghi chú bàn giao thêm từ BQL
                 </label>
                 <textarea
@@ -884,8 +884,8 @@ export function LiquidationDialog({
               <div
                 style={{
                   fontSize: 12,
-                  color: "#425B6B",
-                  background: "#F1F4F8",
+                  color: "#65676b",
+                  background: "#f0f2f5",
                   padding: "10px 12px",
                   borderRadius: 8,
                   marginBottom: 16,
@@ -894,7 +894,7 @@ export function LiquidationDialog({
                   gap: 8,
                 }}
               >
-                <ShieldAlert size={16} color="#4A90C2" />
+                <ShieldAlert size={16} color="#1877f2" />
                 Khi xác nhận: Hợp đồng kết thúc, Phòng <strong>{maPhong}</strong> tự động chuyển sang <strong>Trống</strong>, cư dân chuyển sang <strong>Cựu cư dân</strong> và nhận được thông báo nghiệm thu.
               </div>
 
@@ -909,7 +909,7 @@ export function LiquidationDialog({
                     borderRadius: 8,
                     border: "1px solid #CBD5E1",
                     background: "#ffffff",
-                    color: "#425B6B",
+                    color: "#65676b",
                     fontWeight: 600,
                     cursor: "pointer",
                     fontSize: 13,
@@ -924,7 +924,7 @@ export function LiquidationDialog({
                     padding: "9px 20px",
                     borderRadius: 8,
                     border: "none",
-                    background: "#4A90C2",
+                    background: "#1877f2",
                     color: "#ffffff",
                     fontWeight: 700,
                     cursor: pending ? "not-allowed" : "pointer",

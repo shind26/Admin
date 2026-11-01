@@ -24,7 +24,7 @@
   background: #ffffff;
   border-radius: 14px;
   box-shadow: 0 24px 60px rgba(36, 78, 110, 0.2);
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -67,8 +67,8 @@
   justify-content: space-between;
   gap: 16px;
   padding: 18px 20px 14px;
-  border-bottom: 1px solid #e2ebf2;
-  background: #eff8fc;
+  border-bottom: 1px solid #e4e6eb;
+  background: #f0f2f5;
 }
 
 .heading {
@@ -84,7 +84,7 @@
 
 .description {
   font-size: 12.5px;
-  color: #627d90;
+  color: #65676b;
   margin: 4px 0 0;
   line-height: 1.5;
 }
@@ -96,15 +96,15 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  border: 1px solid #cbdce8;
+  border: 1px solid #ced0d4;
   background: #ffffff;
-  color: #627d90;
+  color: #65676b;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .closeButton:hover {
-  background: #dceff8;
+  background: #e7f3ff;
   color: #244e6e;
 }
 
@@ -118,7 +118,7 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 14px 20px 18px;
-  border-top: 1px solid #e2ebf2;
+  border-top: 1px solid #e4e6eb;
   flex-wrap: wrap;
 }
 

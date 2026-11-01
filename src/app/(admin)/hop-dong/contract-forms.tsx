@@ -10,7 +10,7 @@ import {
   UserPlus,
   Trash2,
   ExternalLink,
-  Sparkles,
+  KeyRound,
 } from "lucide-react";
 import {
   createContract,
@@ -431,7 +431,7 @@ export function ContractForm({
           <HandoverItemsEditor
             furnitureList={rooms.find((r) => r.ma_phong === selectedRoom)?.noi_that_san_co}
             title={selectedRoom ? `Biên bản bàn giao tài sản phòng ${selectedRoom}` : "Biên bản bàn giao tài sản lúc nhận phòng"}
-            hint={selectedRoom ? "Hệ thống tự động tải nội thất sẵn có của phòng này. Quản lý có thể kiểm tra thực tế, chỉnh sửa số lượng, tình trạng, hoặc bấm '+ Thêm món' để ghi nhận đồ khách thuê thêm trước khi tạo hợp đồng." : "Chọn phòng ở trên để hệ thống nạp danh sách nội thất bàn giao tương ứng."}
+
           />
         </div>
       )}
@@ -468,7 +468,7 @@ export function ContractForm({
               alignItems: "center",
               gap: 8,
               fontWeight: 700,
-              color: "#1e40af",
+              color: "#1877f2",
               fontSize: 14,
               marginBottom: 6,
             }}
@@ -946,7 +946,7 @@ export function ProvisionOccupantButton({
         {isPending ? (
           <LoaderCircle size={13} className={styles.spinner} />
         ) : (
-          <Sparkles size={13} />
+          <KeyRound size={13} />
         )}
         {isPending ? "Đang cấp..." : "Cấp tài khoản"}
       </button>

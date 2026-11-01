@@ -14,6 +14,8 @@ import {
 } from "../contract-forms";
 import { LiquidationDialog } from "./liquidation-dialog";
 import { RoomTransferDialog } from "../room-transfer-dialog";
+import { PendingExtensionsQueue } from "../pending-extensions";
+import type { PendingContractExtension } from "@/lib/queries";
 import styles from "./contract-detail.module.css";
 
 type Params = Promise<{ maHopDong: string }>;
@@ -37,6 +39,12 @@ function money(value: string | null | undefined) {
 function date(value: string | null | undefined) {
   if (!value) return "—";
   return new Date(value).toLocaleDateString("vi-VN");
+}
+
+function formatRoomName(value: string | number | null | undefined) {
+  if (value === null || value === undefined || value === "") return "—";
+  const str = String(value).trim();
+  return str.toLowerCase().startsWith("phòng") ? str : `Phòng ${str}`;
 }
 
 function text(value: string | number | null | undefined) {
@@ -109,6 +117,32 @@ async function ContractBody({ params }: { params: Params }) {
   }
 
   const { hopDong, nguoiO, phuLuc, hoaDon, bienBanThanhLy, chiSoGanNhat, yeuCauChuyenPhong } = bundle;
+
+  const pendingExtension = phuLuc.find(
+    (pl) =>
+      (pl.trang_thai === "Chờ duyệt" || pl.trang_thai === "ChoDuyet" || pl.trang_thai === "CHO_DUYET") &&
+      !pl.ma_phong_moi,
+  );
+  const pendingExtensionItem: PendingContractExtension | null = pendingExtension
+    ? {
+        ma_phu_luc: pendingExtension.ma_phu_luc,
+        ma_hop_dong: hopDong.ma_hop_dong,
+        ngay_lap: pendingExtension.ngay_lap || "",
+        ngay_gia_han_den: pendingExtension.ngay_gia_han_den || "",
+        gia_thue_moi: Number(pendingExtension.gia_thue_moi) || 0,
+        noi_dung_dieu_chinh: pendingExtension.noi_dung_dieu_chinh,
+        trang_thai: pendingExtension.trang_thai || "Chờ duyệt",
+        ma_phong: hopDong.ma_phong || "",
+        ten_phong: hopDong.phong_ten || hopDong.ma_phong,
+        toa_nha: hopDong.phong_toa,
+        ten_khach: hopDong.khach_ho_ten,
+        so_dt: hopDong.khach_so_dt,
+        cccd: hopDong.khach_cccd,
+        ma_tai_khoan: null,
+        ngay_kt_hien_tai: hopDong.ngay_kt,
+        gia_thue_hien_tai: Number(hopDong.gia_thue_thoa_thuan) || 0,
+      }
+    : null;
   const remaining = daysLeft(hopDong.ngay_kt);
   const trangThaiHienThi =
     remaining !== null &&
@@ -141,7 +175,7 @@ async function ContractBody({ params }: { params: Params }) {
         <div>
           <h1 className={styles.code}>{hopDong.ma_hop_dong}</h1>
           <p className={styles.sub}>
-            Phòng {text(hopDong.phong_ten)} ({text(hopDong.ma_phong)}) •{" "}
+            {formatRoomName(hopDong.phong_ten)} ({text(hopDong.ma_phong)}) •{" "}
             {text(hopDong.phong_toa)}
             {hopDong.phong_tang !== null
               ? ` • Tầng ${hopDong.phong_tang}`
@@ -168,7 +202,7 @@ async function ContractBody({ params }: { params: Params }) {
                   isFromMobileRequest={Boolean(yeuCauChuyenPhong && !["Đã duyệt", "Từ chối", "DA_DUYET", "TU_CHOI"].includes(yeuCauChuyenPhong.trang_thai_tien_do))}
                   triggerButtonText={
                     yeuCauChuyenPhong && !["Đã duyệt", "Từ chối", "DA_DUYET", "TU_CHOI"].includes(yeuCauChuyenPhong.trang_thai_tien_do)
-                      ? "⚡ Duyệt yêu cầu đổi phòng"
+                      ? "Duyệt yêu cầu đổi phòng"
                       : "Đổi phòng"
                   }
                   triggerButtonVariant={
@@ -207,13 +241,18 @@ async function ContractBody({ params }: { params: Params }) {
         </div>
       </div>
 
+      {/* ── Banner: Yêu cầu gia hạn hợp đồng đang chờ duyệt từ Mobile ── */}
+      {pendingExtensionItem && (
+        <PendingExtensionsQueue requests={[pendingExtensionItem]} />
+      )}
+
       {/* ── Banner: Yêu cầu chuyển phòng đang chờ duyệt từ Mobile ── */}
       {yeuCauChuyenPhong && !["Đã duyệt", "Từ chối", "DA_DUYET", "TU_CHOI"].includes(yeuCauChuyenPhong.trang_thai_tien_do) && (
         <div
           style={{
-            background: "#DCEFF8",
-            border: "1px solid #BAE6FD",
-            borderRadius: 14,
+            background: "#e7f3ff",
+            border: "1px solid #cbe5ff",
+            borderRadius: 8,
             padding: "16px 20px",
             marginBottom: 16,
             display: "flex",
@@ -224,14 +263,14 @@ async function ContractBody({ params }: { params: Params }) {
           }}
         >
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#0369A1", fontWeight: 800, fontSize: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#1877f2", fontWeight: 700, fontSize: 13.5 }}>
               <FileCheck size={18} /> CƯ DÂN ĐÃ GỬI YÊU CẦU CHUYỂN PHÒNG (CHỜ DUYỆT)
             </div>
-            <div style={{ fontSize: 12.5, color: "#0F172A", marginTop: 4 }}>
-              Chuyển sang: <strong>Phòng {yeuCauChuyenPhong.ten_phong_moi || yeuCauChuyenPhong.ma_phong_moi}</strong> • Hẹn ngày dọn: <strong>{date(yeuCauChuyenPhong.thoi_gian_hen)}</strong>
+            <div style={{ fontSize: 12.5, color: "#050505", marginTop: 4 }}>
+              Chuyển sang: <strong>{formatRoomName(yeuCauChuyenPhong.ten_phong_moi || yeuCauChuyenPhong.ma_phong_moi)}</strong> • Hẹn ngày dọn: <strong>{date(yeuCauChuyenPhong.thoi_gian_hen)}</strong>
               {yeuCauChuyenPhong.ly_do_chuyen ? ` • Lý do: "${yeuCauChuyenPhong.ly_do_chuyen}"` : ""}
             </div>
-            <div style={{ fontSize: 12, color: "#0369A1", marginTop: 2 }}>
+            <div style={{ fontSize: 12, color: "#65676b", marginTop: 2 }}>
               Vui lòng kiểm tra phòng trống mới, quyết toán chênh lệch tiền cọc và phê duyệt lập phụ lục hợp đồng.
             </div>
           </div>
@@ -305,8 +344,8 @@ async function ContractBody({ params }: { params: Params }) {
       {bienBanThanhLy && (bienBanThanhLy.trang_thai === "DA_DUYET" || hopDong.trang_thai === "Đã kết thúc") && (
         <div
           style={{
-            background: "#EFF8FC",
-            border: "1px solid #DCEFF8",
+            background: "#f0f2f5",
+            border: "1px solid #e7f3ff",
             borderRadius: 14,
             padding: "16px 20px",
             marginBottom: 16,
@@ -327,7 +366,7 @@ async function ContractBody({ params }: { params: Params }) {
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                color: "#4A90C2",
+                color: "#1877f2",
                 fontWeight: 800,
                 fontSize: 14,
               }}
@@ -347,7 +386,7 @@ async function ContractBody({ params }: { params: Params }) {
                 ĐÃ HOÀN TẤT
               </span>
             </div>
-            <span style={{ fontSize: 12, color: "#425B6B", fontWeight: 700 }}>
+            <span style={{ fontSize: 12, color: "#65676b", fontWeight: 700 }}>
               Ngày trả phòng: {date(bienBanThanhLy.ngay_tra_phong)}
             </span>
           </div>
@@ -364,7 +403,7 @@ async function ContractBody({ params }: { params: Params }) {
                 background: "#ffffff",
                 padding: "10px 14px",
                 borderRadius: 8,
-                border: "1px solid #DCEFF8",
+                border: "1px solid #e7f3ff",
               }}
             >
               <div style={{ fontSize: 11.5, color: "#64748B" }}>Số điện chốt cuối</div>
@@ -378,7 +417,7 @@ async function ContractBody({ params }: { params: Params }) {
                 background: "#ffffff",
                 padding: "10px 14px",
                 borderRadius: 8,
-                border: "1px solid #DCEFF8",
+                border: "1px solid #e7f3ff",
               }}
             >
               <div style={{ fontSize: 11.5, color: "#64748B" }}>Số nước chốt cuối</div>
@@ -392,7 +431,7 @@ async function ContractBody({ params }: { params: Params }) {
                 background: "#ffffff",
                 padding: "10px 14px",
                 borderRadius: 8,
-                border: "1px solid #DCEFF8",
+                border: "1px solid #e7f3ff",
               }}
             >
               <div style={{ fontSize: 11.5, color: "#64748B" }}>Tiền cọc đã hoàn lại khách</div>
@@ -407,7 +446,7 @@ async function ContractBody({ params }: { params: Params }) {
                   background: "#ffffff",
                   padding: "10px 14px",
                   borderRadius: 8,
-                  border: "1px solid #DCEFF8",
+                  border: "1px solid #e7f3ff",
                 }}
               >
                 <div style={{ fontSize: 11.5, color: "#64748B" }}>Tiền khách đã trả thêm</div>
@@ -423,11 +462,11 @@ async function ContractBody({ params }: { params: Params }) {
               style={{
                 marginTop: 12,
                 fontSize: 12.5,
-                color: "#425B6B",
+                color: "#65676b",
                 background: "#ffffff",
                 padding: "8px 12px",
                 borderRadius: 8,
-                border: "1px solid #DCEFF8",
+                border: "1px solid #e7f3ff",
               }}
             >
               <strong>Nội dung nghiệm thu bàn giao:</strong> {bienBanThanhLy.ghi_chu}
@@ -449,7 +488,7 @@ async function ContractBody({ params }: { params: Params }) {
             color: "#991B1B",
           }}
         >
-          <strong>Lưu ý:</strong> Yêu cầu trả phòng gần nhất của hợp đồng này đã bị Ban Quản Lý từ chối
+          Yêu cầu trả phòng gần nhất đã bị từ chối
           {bienBanThanhLy.ghi_chu ? `: "${bienBanThanhLy.ghi_chu}"` : "."}
         </div>
       )}
@@ -739,7 +778,7 @@ async function ContractBody({ params }: { params: Params }) {
                   <td>{money(pl.chenh_lech_tien_coc)}</td>
                   <td>{text(pl.noi_dung_dieu_chinh)}</td>
                   <td>
-                    <span style={{ fontWeight: 600, color: pl.trang_thai === "Đã duyệt" ? "#15803d" : "#425b6b" }}>
+                    <span style={{ fontWeight: 600, color: pl.trang_thai === "Đã duyệt" ? "#15803d" : "#65676b" }}>
                       {text(pl.trang_thai)}
                     </span>
                   </td>

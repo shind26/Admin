@@ -20,14 +20,14 @@
 }
 
 .warnIcon {
-  background: #dceff8;
-  color: #4a90c2;
+  background: #e7f3ff;
+  color: #1877f2;
 }
 
 .message {
   font-size: 13.5px;
   line-height: 1.6;
-  color: #425b6b;
+  color: #65676b;
 }
 
 .message strong {
@@ -48,17 +48,17 @@
 
 .cancelButton {
   background: #ffffff;
-  border-color: #cbdce8;
-  color: #425b6b;
+  border-color: #ced0d4;
+  color: #65676b;
 }
 
 .cancelButton:hover {
-  background: #eff8fc;
+  background: #f0f2f5;
   color: #244e6e;
 }
 
 .confirmButton {
-  background: #4a90c2;
+  background: #1877f2;
   color: #ffffff;
 }
 

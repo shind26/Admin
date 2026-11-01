@@ -14,7 +14,6 @@ import {
   Download,
   Loader2,
   Check,
-  Sparkles,
   Trash2,
   Wrench,
   X,
@@ -166,7 +165,7 @@ function AssetModal({
             {mode === "create" && (
               <div className={styles.quickChipsBox}>
                 <div className={styles.quickChipsTitle}>
-                  <Sparkles size={13} /> Chọn nhanh mẫu thiết bị phổ biến (bấm để tự điền thông tin):
+                  <Package size={13} /> Mẫu thiết bị phổ biến:
                 </div>
                 <div className={styles.quickChipsList}>
                   {QUICK_ASSET_CHIPS.map((chip) => (

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { VietnameseFormValidation } from "@/components/vietnamese-form-validation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,7 +21,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="vi" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <VietnameseFormValidation />
+        {children}
+      </body>
     </html>
   );
 }

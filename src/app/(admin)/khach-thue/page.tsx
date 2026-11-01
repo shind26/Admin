@@ -18,8 +18,8 @@ type SearchParams = Promise<{ status?: string; keyword?: string }>;
 const STATUS_OPTIONS = [
   { value: "All", label: "Tất cả trạng thái" },
   { value: "active", label: "Đang cư trú" },
-  { value: "pending", label: "Chờ duyệt eKYC & Xe" },
-  { value: "past", label: "Cựu cư dân (Đã rời đi)" },
+  { value: "pending", label: "Chờ duyệt CCCD & Xe" },
+  { value: "past", label: "Khách đã rời đi" },
   { value: "unassigned", label: "Chưa thuê phòng" },
 ];
 
@@ -67,14 +67,14 @@ async function TenantsContent({
     <AdminShell active="tenant">
       <div className={styles.pageHead}>
         <div>
-          <h1 className={styles.title}>Quản lý Khách thuê &amp; Cư dân</h1>
+          <h1 className={styles.title}>Quản lý Khách thuê</h1>
           <p className={styles.subtitle}>
-            Hồ sơ số cư dân, eKYC ảnh CCCD, phương tiện và tài khoản Mobile App
+            Hồ sơ khách thuê, ảnh CCCD, phương tiện và tài khoản Mobile App
           </p>
         </div>
         <div className={styles.navTabs}>
           <Link href="/khach-thue" className={styles.navTabActive}>
-            Cư dân &amp; Khách thuê
+            Khách đang thuê
           </Link>
           <Link href="/khach-thue/tam-tru" className={styles.navTab}>
             Khách qua đêm (Tạm trú)
@@ -88,7 +88,7 @@ async function TenantsContent({
         style={{ gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}
       >
         <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Tổng cư dân</div>
+          <div className={styles.miniLabel}>Tổng khách thuê</div>
           <div className={styles.miniValue}>{allTenants.length}</div>
         </div>
         <div className={styles.miniCard}>
@@ -98,7 +98,7 @@ async function TenantsContent({
           </div>
         </div>
         <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Chờ duyệt eKYC / Xe</div>
+          <div className={styles.miniLabel}>Chờ duyệt CCCD / Xe</div>
           <div
             className={styles.miniValue}
             style={{ color: pendingCount > 0 ? "#d97706" : "#2b3674" }}
@@ -107,7 +107,7 @@ async function TenantsContent({
           </div>
         </div>
         <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Cựu cư dân</div>
+          <div className={styles.miniLabel}>Khách đã rời đi</div>
           <div className={styles.miniValue} style={{ color: "#64748b" }}>
             {pastCount}
           </div>

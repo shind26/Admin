@@ -115,7 +115,7 @@ export function MeterAnomalyBadge({ reading }: { reading: MeterRow }) {
             width: "fit-content",
           }}
         >
-          <AlertTriangle size={11} color="#b45309" /> Tiêu thụ = 0
+          <AlertTriangle size={11} color="#b45309" /> Không thay đổi (0)
         </span>
       )}
     </div>
@@ -296,31 +296,59 @@ export function ClosingProgressCard({
           marginBottom: 14,
         }}
       >
-        <div style={{ padding: "10px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #f1f5f9" }}>
+        <div style={{ padding: "10px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
           <div style={{ fontSize: 11.5, color: "#64748b" }}>Đã nộp</div>
           <div style={{ fontSize: 17, fontWeight: 800, color: "#0f172a", marginTop: 2 }}>
-            {progress.submitted} / {progress.totalRooms} <span style={{ fontSize: 12, color: "#2563eb", fontWeight: 700 }}>({pctSubmitted}%)</span>
+            {progress.submitted} / {progress.totalRooms}{" "}
+            <span style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>({pctSubmitted}%)</span>
           </div>
         </div>
 
-        <div style={{ padding: "10px 12px", background: "#f0fdf4", borderRadius: 8, border: "1px solid #dcfce7" }}>
-          <div style={{ fontSize: 11.5, color: "#166534" }}>Đã duyệt</div>
-          <div style={{ fontSize: 17, fontWeight: 800, color: "#15803d", marginTop: 2 }}>
+        <div style={{ padding: "10px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
+          <div style={{ fontSize: 11.5, color: "#64748b" }}>Đã duyệt</div>
+          <div style={{ fontSize: 17, fontWeight: 800, color: "#0f172a", marginTop: 2 }}>
             {progress.approved} phòng
           </div>
         </div>
 
-        <div style={{ padding: "10px 12px", background: "#fffbeb", borderRadius: 8, border: "1px solid #fef3c7" }}>
-          <div style={{ fontSize: 11.5, color: "#92400e" }}>Chờ duyệt</div>
-          <div style={{ fontSize: 17, fontWeight: 800, color: "#b45309", marginTop: 2 }}>
+        <div style={{ padding: "10px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
+          <div style={{ fontSize: 11.5, color: "#64748b" }}>Chờ duyệt</div>
+          <div style={{ fontSize: 17, fontWeight: 800, color: "#0f172a", marginTop: 2 }}>
             {progress.pending} phòng
           </div>
         </div>
 
-        <div style={{ padding: "10px 12px", background: "#fef2f2", borderRadius: 8, border: "1px solid #fee2e2" }}>
-          <div style={{ fontSize: 11.5, color: "#991b1b" }}>Chưa gửi ảnh</div>
-          <div style={{ fontSize: 17, fontWeight: 800, color: "#dc2626", marginTop: 2 }}>
-            {progress.unsubmittedRooms.length} phòng
+        <div style={{ padding: "10px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 6 }}>
+            <div>
+              <div style={{ fontSize: 11.5, color: "#64748b" }}>Chưa gửi ảnh</div>
+              <div style={{ fontSize: 17, fontWeight: 800, color: "#0f172a", marginTop: 2 }}>
+                {progress.unsubmittedRooms.length} phòng
+              </div>
+            </div>
+            {progress.unsubmittedRooms.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowUnsubmittedModal(true)}
+                title="Xem danh sách & Nhắc nhở qua Mobile App"
+                style={{
+                  padding: "4px 8px",
+                  borderRadius: 6,
+                  border: "1px solid #cbd5e1",
+                  background: "#ffffff",
+                  color: "#0f172a",
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <Bell size={12} /> Nhắc nộp
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -384,27 +412,7 @@ export function ClosingProgressCard({
           )}
         </div>
 
-        {progress.unsubmittedRooms.length > 0 && (
-          <button
-            type="button"
-            onClick={() => setShowUnsubmittedModal(true)}
-            style={{
-              padding: "6px 12px",
-              borderRadius: 6,
-              border: "1px solid #fecaca",
-              background: "#fff1f2",
-              color: "#be123c",
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 5,
-            }}
-          >
-            <Bell size={13} /> Xem {progress.unsubmittedRooms.length} phòng chưa nộp &amp; Nhắc App
-          </button>
-        )}
+        
       </div>
 
       {/* Modal phòng chưa nộp */}
@@ -1002,7 +1010,7 @@ export function MeterEditorToggle({
           alignItems: "center",
           gap: 4,
           background: "#ffffff",
-          color: "#1e40af",
+          color: "#1877f2",
           border: "1px solid #bfdbfe",
           borderRadius: 6,
           padding: "5px 10px",
@@ -1061,7 +1069,7 @@ export function MeterEditorToggle({
                 <div
                   style={{
                     background: "#dbeafe",
-                    color: "#1e40af",
+                    color: "#1877f2",
                     width: 38,
                     height: 38,
                     borderRadius: 10,
@@ -2283,7 +2291,7 @@ export function CreateMeterModal({
                   }}
                 >
                   <Zap size={16} color="#2563eb" />
-                  <span style={{ fontSize: 13.5, fontWeight: 700, color: "#1e40af" }}>
+                  <span style={{ fontSize: 13.5, fontWeight: 700, color: "#1877f2" }}>
                     Chỉ số Công tơ Điện (kWh)
                   </span>
                 </div>
@@ -2317,7 +2325,7 @@ export function CreateMeterModal({
                     />
                   </div>
                   <div>
-                    <label style={{ fontSize: 11.5, color: "#1e40af", display: "block", marginBottom: 3, fontWeight: 700 }}>
+                    <label style={{ fontSize: 11.5, color: "#1877f2", display: "block", marginBottom: 3, fontWeight: 700 }}>
                       Số mới *
                     </label>
                     <input
@@ -2351,7 +2359,7 @@ export function CreateMeterModal({
                         background: "#dbeafe",
                         fontSize: 13,
                         fontWeight: 800,
-                        color: "#1e40af",
+                        color: "#1877f2",
                         textAlign: "center",
                       }}
                     >
@@ -2496,25 +2504,12 @@ export function CreateMeterModal({
                   }}
                 >
                   <option value="Đã duyệt">
-                    ✅ Đã duyệt (Cập nhật ngay vào phòng &amp; kết chuyển Hóa đơn)
+                    Đã duyệt
                   </option>
                   <option value="Chờ duyệt">
-                    ⏳ Chờ duyệt (Lưu nháp để đối soát lại sau)
+                    Chờ duyệt
                   </option>
                 </select>
-                <div
-                  style={{
-                    background: "#f8fafc",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 8,
-                    padding: "8px 12px",
-                    marginTop: 8,
-                    fontSize: 11.5,
-                    color: "#475569",
-                  }}
-                >
-                  💡 <strong>Cơ chế đồng bộ:</strong> Khi lưu với trạng thái <em>&quot;Đã duyệt&quot;</em>, hệ thống sẽ tự động cập nhật số điện <strong>{dienMoi || dienCu} kWh</strong> và số nước <strong>{nuocMoi || nuocCu} m³</strong> vào trực tiếp thông số phòng để sẵn sàng làm mốc cũ cho kỳ sau.
-                </div>
               </div>
 
               {/* Action buttons */}

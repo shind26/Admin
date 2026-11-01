@@ -8,7 +8,7 @@
   gap: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: #4a90c2;
+  color: #1877f2;
   text-decoration: none;
   transition: color 0.15s ease;
 }
@@ -20,7 +20,7 @@
 
 .headCard {
   background: #ffffff;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   border-radius: 14px;
   padding: 18px 20px;
   display: flex;
@@ -42,7 +42,7 @@
 
 .sub {
   font-size: 12.5px;
-  color: #627d90;
+  color: #65676b;
   margin: 4px 0 0;
 }
 
@@ -60,7 +60,7 @@
   border: 1px solid #b8e2c8;
 }
 .badgeInfo {
-  background: #dceff8;
+  background: #e7f3ff;
   color: #1d5c8a;
   border: 1px solid #b8ddf0;
 }
@@ -70,14 +70,14 @@
   border: 1px solid #ebd391;
 }
 .badgeMuted {
-  background: #f1f4f8;
-  color: #627d90;
+  background: #f0f2f5;
+  color: #65676b;
   border: 1px solid #dce4ec;
 }
 
 .days {
   font-size: 12px;
-  color: #627d90;
+  color: #65676b;
   text-align: right;
 }
 
@@ -85,12 +85,12 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .section {
   background: #ffffff;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   border-radius: 14px;
   padding: 16px 20px;
   box-shadow: 0 1px 3px rgba(66, 91, 107, 0.05);
@@ -102,8 +102,8 @@
   letter-spacing: 0.5px;
   text-transform: uppercase;
   color: #244e6e;
-  background: #dceff8;
-  border-left: 3px solid #4a90c2;
+  background: #e7f3ff;
+  border-left: 3px solid #1877f2;
   padding: 6px 12px;
   border-radius: 6px;
   margin: 0 0 14px;
@@ -119,7 +119,7 @@
 
 .field dt {
   font-size: 11.5px;
-  color: #627d90;
+  color: #65676b;
   margin-bottom: 3px;
 }
 
@@ -127,7 +127,7 @@
   margin: 0;
   font-size: 13.5px;
   font-weight: 600;
-  color: #425b6b;
+  color: #65676b;
 }
 
 .table {
@@ -141,7 +141,7 @@
   font-size: 11px;
   font-weight: 700;
   color: #ffffff;
-  background: #76b5d8;
+  background: #4599ff;
   padding: 8px 10px;
   border-bottom: 1px solid #68a5c7;
   white-space: nowrap;
@@ -149,13 +149,13 @@
 
 .table td {
   padding: 9px 10px;
-  border-bottom: 1px solid #e2ebf2;
-  color: #425b6b;
+  border-bottom: 1px solid #e4e6eb;
+  color: #65676b;
   vertical-align: middle;
 }
 
 .table tbody tr:nth-child(even) {
-  background: #eff8fc;
+  background: #f0f2f5;
 }
 
 .table tbody tr:nth-child(odd) {
@@ -167,13 +167,13 @@
 }
 
 .muted {
-  color: #627d90;
+  color: #65676b;
   font-size: 12.5px;
   margin: 0;
 }
 
 .empty {
-  color: #627d90;
+  color: #65676b;
   font-size: 12.5px;
   margin: 0;
 }
@@ -185,11 +185,11 @@
 }
 
 .signBox {
-  border: 1px dashed #cbdce8;
+  border: 1px dashed #ced0d4;
   border-radius: 10px;
   padding: 12px;
   text-align: center;
-  background: #eff8fc;
+  background: #f0f2f5;
 }
 
 .signLabel {
@@ -209,24 +209,30 @@
 
 .signEmpty {
   font-size: 12px;
-  color: #627d90;
+  color: #65676b;
   padding: 26px 0;
 }
 
 .printBar {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
   align-items: center;
+  margin: 14px 0 16px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid #e4e6eb;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(66, 91, 107, 0.05);
 }
 
 .printButton {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid #cbdce8;
+  border: 1px solid #ced0d4;
   background: #ffffff;
-  color: #425b6b;
+  color: #65676b;
   border-radius: 8px;
   padding: 8px 16px;
   font-size: 12.5px;
@@ -236,21 +242,21 @@
 }
 
 .printButton:hover {
-  background: #eff8fc;
+  background: #f0f2f5;
   color: #244e6e;
-  border-color: #76b5d8;
+  border-color: #4599ff;
 }
 
 .printButtonPrimary {
-  background: #4a90c2;
+  background: #1877f2;
   color: #ffffff;
-  border-color: #4a90c2;
+  border-color: #1877f2;
 }
 
 .printButtonPrimary:hover {
-  background: #3a7ba8;
+  background: #166fe5;
   color: #ffffff;
-  border-color: #3a7ba8;
+  border-color: #166fe5;
 }
 
 .printButtonPdf {
@@ -307,7 +313,7 @@
 /* ── Bản in A4 ── */
 .printDoc {
   background: #ffffff;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   border-radius: 14px;
   padding: 34px 40px;
   font-family: "Times New Roman", Times, serif;

@@ -1375,10 +1375,10 @@ export async function approveRoomTransfer(
       ],
     );
 
-    // 4. Cập nhật phòng trong Hợp đồng
+    // 4. Cập nhật phòng và tiền cọc mới trong Hợp đồng
     await client.query(
-      "UPDATE public.hop_dong SET ma_phong = $1, gia_thue_thoa_thuan = $2 WHERE ma_hop_dong = $3",
-      [maPhongMoi, finalGiaThue, maHopDong],
+      "UPDATE public.hop_dong SET ma_phong = $1, gia_thue_thoa_thuan = $2, tien_dat_coc = COALESCE(tien_dat_coc, 0) + $3 WHERE ma_hop_dong = $4",
+      [maPhongMoi, finalGiaThue, chenhLechTienCoc, maHopDong],
     );
 
     // 5. Cập nhật trạng thái phòng: Phòng cũ -> Trống, Phòng mới -> Đang thuê
@@ -1528,3 +1528,228 @@ export async function rejectRoomTransfer(
   return { error: null, success: "Đã từ chối yêu cầu chuyển phòng." };
 }
 
+
+export type ExtensionActionState = {
+  error: string | null;
+  success: string | null;
+};
+
+/** Phê duyệt phụ lục gia hạn hợp đồng từ Mobile App (1-Click) */
+export async function approveContractExtension(
+  _previous: ExtensionActionState,
+  formData: FormData,
+): Promise<ExtensionActionState> {
+  const account = await getCurrentAccount();
+  if (!account) return { error: "Phiên đăng nhập đã hết hạn.", success: null };
+  const { scope } = await requireScope();
+
+  const maPhuLuc = text(formData, "maPhuLuc");
+  const maHopDong = text(formData, "maHopDong");
+
+  if (!maPhuLuc || !maHopDong) {
+    return { error: "Thiếu thông tin phụ lục hoặc hợp đồng cần duyệt.", success: null };
+  }
+
+  const contractGuard = await assertContractInScope(maHopDong, scope);
+  if (contractGuard) return { error: contractGuard, success: null };
+
+  const client = await getDbPool().connect();
+  try {
+    await client.query("BEGIN");
+
+    const { rows: plRows } = await client.query<{
+      ngay_gia_han_den: string | null;
+      gia_thue_moi: number | null;
+      trang_thai: string;
+      ma_phong_moi: string | null;
+    }>(
+      `SELECT ngay_gia_han_den::text AS ngay_gia_han_den,
+              gia_thue_moi, trang_thai, ma_phong_moi
+       FROM public.phu_luc_hop_dong
+       WHERE ma_phu_luc = $1 FOR UPDATE`,
+      [maPhuLuc],
+    );
+
+    if (plRows.length === 0) {
+      await client.query("ROLLBACK");
+      return { error: "Không tìm thấy phụ lục hợp đồng.", success: null };
+    }
+
+    const pl = plRows[0];
+    if (pl.trang_thai === "Đã duyệt" || pl.trang_thai === "DA_DUYET") {
+      await client.query("ROLLBACK");
+      return { error: null, success: "Phụ lục đã được phê duyệt trước đó." };
+    }
+
+    if (!pl.ngay_gia_han_den) {
+      await client.query("ROLLBACK");
+      return { error: "Phụ lục thiếu ngày kết thúc gia hạn mới.", success: null };
+    }
+
+    const { rows: hdRows } = await client.query<{
+      ma_phong: string;
+      toa_nha: string | null;
+      ten_phong: string | null;
+      ma_tai_khoan: string | null;
+      gia_thue_thoa_thuan: number | null;
+    }>(
+      `SELECT hd.ma_phong, p.toa_nha, COALESCE(p.ten_hien_thi, p.ma_phong) AS ten_phong,
+              kt.ma_tai_khoan, hd.gia_thue_thoa_thuan
+       FROM public.hop_dong hd
+       LEFT JOIN public.phong p ON p.ma_phong = hd.ma_phong
+       LEFT JOIN public.khach_thue kt ON kt.ma_khach = hd.ma_khach_dai_dien
+       WHERE hd.ma_hop_dong = $1 LIMIT 1`,
+      [maHopDong],
+    );
+
+    if (hdRows.length === 0) {
+      await client.query("ROLLBACK");
+      return { error: "Không tìm thấy hợp đồng.", success: null };
+    }
+    const hd = hdRows[0];
+
+    const finalGiaThue = (pl.gia_thue_moi && pl.gia_thue_moi > 0)
+      ? pl.gia_thue_moi
+      : (hd.gia_thue_thoa_thuan ?? 0);
+
+    // 1. Cập nhật phụ lục sang 'Đã duyệt'
+    await client.query(
+      `UPDATE public.phu_luc_hop_dong
+       SET trang_thai = 'Đã duyệt'
+       WHERE ma_phu_luc = $1`,
+      [maPhuLuc],
+    );
+
+    // 2. Kéo dài thời hạn hợp đồng và cập nhật giá mới
+    await client.query(
+      `UPDATE public.hop_dong
+       SET ngay_kt = $1,
+           gia_thue_thoa_thuan = $2,
+           trang_thai = 'Còn hạn'
+       WHERE ma_hop_dong = $3`,
+      [pl.ngay_gia_han_den, finalGiaThue, maHopDong],
+    );
+
+    // 3. Đảm bảo trạng thái phòng là 'Đang thuê'
+    await client.query(
+      `UPDATE public.phong SET trang_thai = 'Đang thuê' WHERE ma_phong = $1`,
+      [hd.ma_phong],
+    );
+
+    // 4. Gửi thông báo đến tài khoản cư dân
+    if (hd.ma_tai_khoan) {
+      const ngayKtFmt = new Date(pl.ngay_gia_han_den).toLocaleDateString("vi-VN");
+      await createNotification(
+        {
+          maTaiKhoan: hd.ma_tai_khoan,
+          maPhong: hd.ma_phong,
+          toaNha: hd.toa_nha,
+          loaiThongBao: "HopDong",
+          tieuDe: "Yêu cầu gia hạn hợp đồng đã được phê duyệt!",
+          noiDung: `Ban Quản Lý đã phê duyệt gia hạn hợp đồng thuê phòng ${hd.ten_phong} đến ngày ${ngayKtFmt}.`,
+          duLieuDinhKem: {
+            ma_hop_dong: maHopDong,
+            ma_phu_luc: maPhuLuc,
+            trang_thai: "DA_DUYET",
+            ngay_gia_han_den: pl.ngay_gia_han_den,
+            gia_thue_moi: finalGiaThue,
+          },
+        },
+        client,
+      );
+    }
+
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Approve contract extension error:", err);
+    return { error: "Không thể phê duyệt gia hạn hợp đồng. Hãy thử lại.", success: null };
+  } finally {
+    client.release();
+  }
+
+  revalidatePath("/hop-dong");
+  revalidatePath(`/hop-dong/${maHopDong}`);
+  return { error: null, success: "Đã phê duyệt gia hạn hợp đồng thành công." };
+}
+
+/** Từ chối phụ lục gia hạn hợp đồng từ Mobile App */
+export async function rejectContractExtension(
+  _previous: ExtensionActionState,
+  formData: FormData,
+): Promise<ExtensionActionState> {
+  const account = await getCurrentAccount();
+  if (!account) return { error: "Phiên đăng nhập đã hết hạn.", success: null };
+  const { scope } = await requireScope();
+
+  const maPhuLuc = text(formData, "maPhuLuc");
+  const maHopDong = text(formData, "maHopDong");
+  const lyDo = text(formData, "lyDo") || "Chưa đạt thỏa thuận điều khoản gia hạn";
+
+  if (!maPhuLuc || !maHopDong) {
+    return { error: "Thiếu thông tin phụ lục cần từ chối.", success: null };
+  }
+
+  const contractGuard = await assertContractInScope(maHopDong, scope);
+  if (contractGuard) return { error: contractGuard, success: null };
+
+  const client = await getDbPool().connect();
+  try {
+    await client.query("BEGIN");
+
+    const { rows: hdRows } = await client.query<{
+      ma_phong: string;
+      toa_nha: string | null;
+      ten_phong: string | null;
+      ma_tai_khoan: string | null;
+    }>(
+      `SELECT hd.ma_phong, p.toa_nha, COALESCE(p.ten_hien_thi, p.ma_phong) AS ten_phong, kt.ma_tai_khoan
+       FROM public.hop_dong hd
+       LEFT JOIN public.phong p ON p.ma_phong = hd.ma_phong
+       LEFT JOIN public.khach_thue kt ON kt.ma_khach = hd.ma_khach_dai_dien
+       WHERE hd.ma_hop_dong = $1 LIMIT 1`,
+      [maHopDong],
+    );
+    const hd = hdRows[0];
+
+    await client.query(
+      `UPDATE public.phu_luc_hop_dong
+       SET trang_thai = 'Từ chối',
+           noi_dung_dieu_chinh = CONCAT(COALESCE(noi_dung_dieu_chinh, ''), ' | [Từ chối: ', $1::text, ']')
+       WHERE ma_phu_luc = $2`,
+      [lyDo, maPhuLuc],
+    );
+
+    if (hd?.ma_tai_khoan) {
+      await createNotification(
+        {
+          maTaiKhoan: hd.ma_tai_khoan,
+          maPhong: hd.ma_phong,
+          toaNha: hd.toa_nha,
+          loaiThongBao: "HopDong",
+          tieuDe: "Yêu cầu gia hạn hợp đồng chưa được chấp thuận",
+          noiDung: `Yêu cầu gia hạn của bạn chưa được Ban Quản Lý chấp thuận: "${lyDo}". Vui lòng liên hệ BQL để trao đổi trực tiếp.`,
+          duLieuDinhKem: {
+            ma_hop_dong: maHopDong,
+            ma_phu_luc: maPhuLuc,
+            trang_thai: "TU_CHOI",
+            ly_do: lyDo,
+          },
+        },
+        client,
+      );
+    }
+
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Reject contract extension error:", err);
+    return { error: "Không thể từ chối yêu cầu. Hãy thử lại.", success: null };
+  } finally {
+    client.release();
+  }
+
+  revalidatePath("/hop-dong");
+  revalidatePath(`/hop-dong/${maHopDong}`);
+  return { error: null, success: "Đã từ chối yêu cầu gia hạn hợp đồng." };
+}

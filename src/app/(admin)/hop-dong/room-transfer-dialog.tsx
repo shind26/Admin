@@ -4,18 +4,13 @@ import { useActionState, useState } from "react";
 import {
   ArrowRightLeft,
   AlertTriangle,
-  Calculator,
   CheckCircle2,
   LoaderCircle,
   X,
   FileCheck,
-  Building,
   Ban,
   Clock,
-  Zap,
-  Droplets,
-  DollarSign,
-  Calendar,
+  Calculator,
 } from "lucide-react";
 import {
   approveRoomTransfer,
@@ -24,6 +19,17 @@ import {
 } from "./actions";
 
 const initialTransferState: RoomTransferState = { error: null, success: null };
+
+function formatDate(d: string | null | undefined): string {
+  if (!d) return "—";
+  try {
+    const dateObj = new Date(d);
+    if (isNaN(dateObj.getTime())) return String(d);
+    return dateObj.toLocaleDateString("vi-VN");
+  } catch {
+    return String(d);
+  }
+}
 
 function money(num: number | string | null | undefined) {
   if (!num) return "0 đ";
@@ -117,15 +123,16 @@ export function RoomTransferDialog({
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: 4,
-            background: isFromMobileRequest ? "#F6E6B4" : "#EFF8FC",
-            color: isFromMobileRequest ? "#92400E" : "#4A90C2",
-            border: `1px solid ${isFromMobileRequest ? "#FDE68A" : "#DCEFF8"}`,
+            gap: 5,
+            background: "#e7f3ff",
+            color: "#1877f2",
+            border: "1px solid #cbe5ff",
             borderRadius: 6,
-            padding: "4px 8px",
+            padding: "5px 10px",
             fontSize: 12,
             fontWeight: 700,
             cursor: "pointer",
+            transition: "all 0.15s ease",
           }}
         >
           <ArrowRightLeft size={13} />
@@ -142,19 +149,20 @@ export function RoomTransferDialog({
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
-          background: isFromMobileRequest ? "#F6E6B4" : "#4A90C2",
-          color: isFromMobileRequest ? "#92400E" : "#ffffff",
-          border: isFromMobileRequest ? "1px solid #FDE68A" : "none",
-          borderRadius: 8,
+          background: "#1877f2",
+          color: "#ffffff",
+          border: "none",
+          borderRadius: 6,
           padding: "8px 14px",
           fontSize: 13,
           fontWeight: 700,
           cursor: "pointer",
-          boxShadow: "0 1px 2px rgba(74, 144, 194, 0.2)",
+          boxShadow: "0 2px 4px rgba(24, 119, 242, 0.25)",
+          transition: "background 0.15s ease",
         }}
       >
-        <ArrowRightLeft size={16} />
-        {triggerButtonText || (isFromMobileRequest ? "⚡ Nghiệm thu & Duyệt đổi phòng" : "Đổi phòng (Lập phụ lục)")}
+        <ArrowRightLeft size={15} />
+        {triggerButtonText || (isFromMobileRequest ? "Nghiệm thu & Duyệt" : "Đổi phòng (Lập phụ lục)")}
       </button>
     );
   };
@@ -168,9 +176,9 @@ export function RoomTransferDialog({
           style={{
             position: "fixed",
             inset: 0,
-            zIndex: 1000,
-            background: "rgba(15, 23, 42, 0.6)",
-            backdropFilter: "blur(4px)",
+            zIndex: 9999,
+            background: "rgba(0, 0, 0, 0.55)",
+            backdropFilter: "blur(2px)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -184,26 +192,25 @@ export function RoomTransferDialog({
           <div
             style={{
               background: "#ffffff",
-              borderRadius: 16,
-              maxWidth: 720,
+              borderRadius: 12,
+              maxWidth: 680,
               width: "100%",
-              maxHeight: "92vh",
+              maxHeight: "90vh",
               overflowY: "auto",
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              border: "1px solid #DCEFF8",
+              boxShadow: "0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1)",
+              border: "1px solid #e4e6eb",
             }}
           >
-            {/* Header with Sky Blue gradient */}
+            {/* Header: Facebook Blue Solid */}
             <div
               style={{
                 padding: "16px 20px",
-                borderBottom: "1px solid #DCEFF8",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "linear-gradient(135deg, #4A90C2 0%, #76B5D8 100%)",
-                borderTopLeftRadius: 16,
-                borderTopRightRadius: 16,
+                background: "#1877f2",
+                borderTopLeftRadius: 12,
+                borderTopRightRadius: 12,
                 color: "#ffffff",
               }}
             >
@@ -212,21 +219,21 @@ export function RoomTransferDialog({
                   style={{
                     background: "rgba(255, 255, 255, 0.2)",
                     color: "#ffffff",
-                    width: 38,
-                    height: 38,
-                    borderRadius: 10,
+                    width: 36,
+                    height: 36,
+                    borderRadius: 8,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <ArrowRightLeft size={22} />
+                  <ArrowRightLeft size={20} />
                 </div>
                 <div>
-                  <h2 style={{ fontSize: 16, fontWeight: 800, margin: 0, color: "#ffffff" }}>
+                  <h2 style={{ fontSize: 16, fontWeight: 700, margin: 0, color: "#ffffff", letterSpacing: "-0.2px" }}>
                     Chuyển đổi phòng & Lập Phụ lục Hợp đồng
                   </h2>
-                  <p style={{ fontSize: 12, margin: "2px 0 0", color: "#EFF8FC" }}>
+                  <p style={{ fontSize: 12.5, margin: "2px 0 0", color: "#e7f3ff" }}>
                     Khách: {tenKhach} • Phòng hiện tại: {tenPhongCu || maPhongCu} • HĐ: {maHopDong}
                   </p>
                 </div>
@@ -242,9 +249,13 @@ export function RoomTransferDialog({
                   color: "#ffffff",
                   opacity: 0.85,
                   padding: 4,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
+                title="Đóng"
               >
-                <X size={22} />
+                <X size={20} />
               </button>
             </div>
 
@@ -252,8 +263,8 @@ export function RoomTransferDialog({
             {isFromMobileRequest && (
               <div
                 style={{
-                  background: "#F6E6B4",
-                  borderBottom: "1px solid #FDE68A",
+                  background: "#f0f7ff",
+                  borderBottom: "1px solid #cbe5ff",
                   padding: "12px 20px",
                   display: "flex",
                   alignItems: "center",
@@ -261,11 +272,11 @@ export function RoomTransferDialog({
                   gap: 12,
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#92400E" }}>
-                  <Clock size={16} />
-                  <span>
-                    <strong>Yêu cầu chuyển phòng từ Mobile:</strong> Chuyển sang{" "}
-                    <strong>{maPhongMoiDuKien}</strong> (Hẹn ngày: <strong>{ngayHenDuKien || ngayChuyen}</strong>)
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 12.5, color: "#1877f2" }}>
+                  <Clock size={16} style={{ marginTop: 2, flexShrink: 0 }} />
+                  <span style={{ color: "#050505", lineHeight: 1.5 }}>
+                    <strong style={{ color: "#1877f2" }}>Yêu cầu từ Mobile:</strong> Chuyển sang{" "}
+                    <strong>{maPhongMoiDuKien}</strong> (Hẹn ngày: <strong>{formatDate(ngayHenDuKien || ngayChuyen)}</strong>)
                     {lyDoChuyen ? ` • Lý do: "${lyDoChuyen}"` : ""}
                   </span>
                 </div>
@@ -274,17 +285,18 @@ export function RoomTransferDialog({
                     type="button"
                     onClick={() => setShowRejectForm(true)}
                     style={{
-                      background: "#FDE8E8",
-                      color: "#991B1B",
-                      border: "1px solid #FCA5A5",
+                      background: "#feecee",
+                      color: "#e41e3f",
+                      border: "1px solid #fdc9cf",
                       borderRadius: 6,
-                      padding: "4px 10px",
-                      fontSize: 11.5,
-                      fontWeight: 700,
+                      padding: "5px 12px",
+                      fontSize: 12,
+                      fontWeight: 600,
                       cursor: "pointer",
-                      display: "flex",
+                      display: "inline-flex",
                       alignItems: "center",
                       gap: 4,
+                      flexShrink: 0,
                     }}
                   >
                     <Ban size={13} /> Từ chối yêu cầu
@@ -299,13 +311,13 @@ export function RoomTransferDialog({
                 action={rejectAction}
                 style={{
                   padding: "16px 20px",
-                  background: "#FDE8E8",
-                  borderBottom: "1px solid #FCA5A5",
+                  background: "#fff5f5",
+                  borderBottom: "1px solid #fecaca",
                 }}
               >
                 <input type="hidden" name="maHopDong" value={maHopDong} />
                 <input type="hidden" name="maYeuCau" value={maYeuCau || ""} />
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#991B1B", marginBottom: 6 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#b91c1c", marginBottom: 6 }}>
                   Xác nhận Từ chối yêu cầu chuyển phòng của cư dân
                 </div>
                 <div style={{ marginBottom: 10 }}>
@@ -320,8 +332,8 @@ export function RoomTransferDialog({
                       width: "100%",
                       padding: "8px 12px",
                       borderRadius: 6,
-                      border: "1px solid #F87171",
-                      fontSize: 12.5,
+                      border: "1px solid #fca5a5",
+                      fontSize: 13,
                       background: "#ffffff",
                     }}
                   />
@@ -332,11 +344,12 @@ export function RoomTransferDialog({
                     onClick={() => setShowRejectForm(false)}
                     style={{
                       background: "#ffffff",
-                      border: "1px solid #CBD5E1",
+                      border: "1px solid #ced0d4",
                       borderRadius: 6,
-                      padding: "6px 12px",
-                      fontSize: 12,
+                      padding: "6px 14px",
+                      fontSize: 12.5,
                       fontWeight: 600,
+                      color: "#65676b",
                       cursor: "pointer",
                     }}
                   >
@@ -346,12 +359,12 @@ export function RoomTransferDialog({
                     type="submit"
                     disabled={rejectPending}
                     style={{
-                      background: "#DC2626",
+                      background: "#e41e3f",
                       color: "#ffffff",
                       border: "none",
                       borderRadius: 6,
-                      padding: "6px 14px",
-                      fontSize: 12,
+                      padding: "6px 16px",
+                      fontSize: 12.5,
                       fontWeight: 700,
                       cursor: rejectPending ? "not-allowed" : "pointer",
                     }}
@@ -366,11 +379,11 @@ export function RoomTransferDialog({
               <div
                 style={{
                   margin: "16px 20px 0",
-                  background: "#FDE8E8",
-                  border: "1px solid #FCA5A5",
-                  color: "#991B1B",
+                  background: "#fef2f2",
+                  border: "1px solid #fecaca",
+                  color: "#b91c1c",
                   padding: "10px 14px",
-                  borderRadius: 8,
+                  borderRadius: 6,
                   fontSize: 13,
                   display: "flex",
                   alignItems: "center",
@@ -384,11 +397,11 @@ export function RoomTransferDialog({
               <div
                 style={{
                   margin: "16px 20px 0",
-                  background: "#E6F4EA",
-                  border: "1px solid #86EFAC",
-                  color: "#166534",
+                  background: "#f0fdf4",
+                  border: "1px solid #bbf7d0",
+                  color: "#15803d",
                   padding: "12px 14px",
-                  borderRadius: 8,
+                  borderRadius: 6,
                   fontSize: 13,
                   fontWeight: 600,
                   display: "flex",
@@ -416,11 +429,11 @@ export function RoomTransferDialog({
               {state.error && (
                 <div
                   style={{
-                    background: "#FDE8E8",
-                    border: "1px solid #FCA5A5",
-                    color: "#991B1B",
+                    background: "#fef2f2",
+                    border: "1px solid #fecaca",
+                    color: "#b91c1c",
                     padding: "10px 14px",
-                    borderRadius: 8,
+                    borderRadius: 6,
                     fontSize: 13,
                     marginBottom: 16,
                     display: "flex",
@@ -435,11 +448,11 @@ export function RoomTransferDialog({
               {state.success && (
                 <div
                   style={{
-                    background: "#E6F4EA",
-                    border: "1px solid #86EFAC",
-                    color: "#166534",
+                    background: "#f0fdf4",
+                    border: "1px solid #bbf7d0",
+                    color: "#15803d",
                     padding: "12px 14px",
-                    borderRadius: 8,
+                    borderRadius: 6,
                     fontSize: 13,
                     marginBottom: 16,
                     display: "flex",
@@ -464,36 +477,35 @@ export function RoomTransferDialog({
                 {/* Phòng cũ */}
                 <div
                   style={{
-                    background: "#EFF8FC",
-                    border: "1px solid #DCEFF8",
-                    borderRadius: 12,
+                    background: "#f0f2f5",
+                    border: "1px solid #e4e6eb",
+                    borderRadius: 8,
                     padding: 14,
                   }}
                 >
-                  <div style={{ fontSize: 11.5, fontWeight: 700, color: "#4A90C2", marginBottom: 6, textTransform: "uppercase" }}>
+                  <div style={{ fontSize: 11.5, fontWeight: 700, color: "#65676b", marginBottom: 6, textTransform: "uppercase" }}>
                     Phòng hiện tại (Phòng cũ)
                   </div>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: "#0F172A", marginBottom: 4 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#050505", marginBottom: 6 }}>
                     {tenPhongCu || maPhongCu}
                   </div>
-                  <div style={{ fontSize: 12.5, color: "#425B6B" }}>
-                    Giá thuê: <strong>{money(giaThueCu)}</strong> / tháng
-                  </div>
-                  <div style={{ fontSize: 12.5, color: "#425B6B", marginTop: 2 }}>
-                    Tiền cọc đang giữ: <strong>{money(tienDatCocCu)}</strong>
+                  <div style={{ fontSize: 13, color: "#65676b", lineHeight: 1.6 }}>
+                    Giá thuê: <strong style={{ color: "#050505" }}>{money(giaThueCu)}</strong> / tháng
+                    <br />
+                    Tiền cọc đang giữ: <strong style={{ color: "#050505" }}>{money(tienDatCocCu)}</strong>
                   </div>
                 </div>
 
                 {/* Phòng mới */}
                 <div
                   style={{
-                    background: "#F8FAFC",
-                    border: "1px solid #DCEFF8",
-                    borderRadius: 12,
+                    background: "#ffffff",
+                    border: "1px solid #ced0d4",
+                    borderRadius: 8,
                     padding: 14,
                   }}
                 >
-                  <div style={{ fontSize: 11.5, fontWeight: 700, color: "#059669", marginBottom: 6, textTransform: "uppercase" }}>
+                  <div style={{ fontSize: 11.5, fontWeight: 700, color: "#1877f2", marginBottom: 6, textTransform: "uppercase" }}>
                     Phòng mới chuyển đến *
                   </div>
                   <select
@@ -502,14 +514,15 @@ export function RoomTransferDialog({
                     required
                     style={{
                       width: "100%",
-                      padding: "8px 10px",
-                      borderRadius: 8,
-                      border: "1px solid #CBD5E1",
+                      height: 38,
+                      padding: "0 10px",
+                      borderRadius: 6,
+                      border: "1px solid #ced0d4",
                       fontSize: 13,
-                      fontWeight: 700,
-                      color: "#0F172A",
+                      fontWeight: 600,
+                      color: "#050505",
                       background: "#ffffff",
-                      marginBottom: 6,
+                      marginBottom: 8,
                     }}
                   >
                     {emptyRooms.length === 0 && (
@@ -521,18 +534,17 @@ export function RoomTransferDialog({
                       </option>
                     ))}
                   </select>
-                  <div style={{ fontSize: 12.5, color: "#425B6B" }}>
-                    Giá thuê mới: <strong>{money(giaThueMoi)}</strong> / tháng
-                  </div>
-                  <div style={{ fontSize: 12.5, color: "#425B6B", marginTop: 2 }}>
-                    Tiền cọc định mức mới: <strong>{money(tienCocPhongMoi)}</strong>
+                  <div style={{ fontSize: 13, color: "#65676b", lineHeight: 1.6 }}>
+                    Giá thuê mới: <strong style={{ color: "#050505" }}>{money(giaThueMoi)}</strong> / tháng
+                    <br />
+                    Tiền cọc định mức mới: <strong style={{ color: "#050505" }}>{money(tienCocPhongMoi)}</strong>
                   </div>
                 </div>
               </div>
 
               {/* Ngày chuyển phòng */}
               <div style={{ marginBottom: 16 }}>
-                <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#425B6B", marginBottom: 5 }}>
+                <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#050505", marginBottom: 5 }}>
                   Ngày hẹn dọn sang phòng mới *
                 </label>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -543,16 +555,17 @@ export function RoomTransferDialog({
                     required
                     style={{
                       width: 220,
-                      padding: "8px 12px",
-                      borderRadius: 8,
-                      border: "1px solid #CBD5E1",
+                      height: 38,
+                      padding: "0 12px",
+                      borderRadius: 6,
+                      border: "1px solid #ced0d4",
                       fontSize: 13,
-                      color: "#0F172A",
+                      color: "#050505",
                       background: "#ffffff",
                     }}
                   />
-                  <span style={{ fontSize: 12, color: "#64748B" }}>
-                    (Quy chuẩn Mobile: Ưu tiên ngày 01 đầu tháng để đồng bộ kỳ tính phí điện nước)
+                  <span style={{ fontSize: 12, color: "#65676b" }}>
+                    (Ưu tiên ngày 01 đầu tháng để đồng bộ kỳ tính phí điện nước)
                   </span>
                 </div>
               </div>
@@ -560,19 +573,19 @@ export function RoomTransferDialog({
               {/* Nghiệm thu & Chốt số phòng cũ */}
               <div
                 style={{
-                  background: "#F8FAFC",
-                  border: "1px solid #DCEFF8",
-                  borderRadius: 12,
+                  background: "#ffffff",
+                  border: "1px solid #e4e6eb",
+                  borderRadius: 8,
                   padding: 14,
                   marginBottom: 16,
                 }}
               >
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#4A90C2", marginBottom: 10 }}>
-                  Nghiệm thu điện nước & cơ sở vật chất phòng cũ (nếu có)
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#050505", marginBottom: 10 }}>
+                  Nghiệm thu điện nước &amp; cơ sở vật chất phòng cũ (nếu có)
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#425B6B", marginBottom: 4 }}>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#65676b", marginBottom: 4 }}>
                       Tiền điện nước phòng cũ phát sinh
                     </label>
                     <input
@@ -582,11 +595,19 @@ export function RoomTransferDialog({
                       value={tienDienNuocCu}
                       onChange={(e) => setTienDienNuocCu(Number(e.target.value) || 0)}
                       placeholder="0"
-                      style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #CBD5E1" }}
+                      style={{
+                        width: "100%",
+                        height: 38,
+                        padding: "0 10px",
+                        borderRadius: 6,
+                        border: "1px solid #ced0d4",
+                        fontSize: 13,
+                        color: "#050505",
+                      }}
                     />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#425B6B", marginBottom: 4 }}>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#65676b", marginBottom: 4 }}>
                       Khấu trừ hư hại tài sản phòng cũ
                     </label>
                     <input
@@ -596,7 +617,15 @@ export function RoomTransferDialog({
                       value={tienHuHaiCu}
                       onChange={(e) => setTienHuHaiCu(Number(e.target.value) || 0)}
                       placeholder="0"
-                      style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #CBD5E1" }}
+                      style={{
+                        width: "100%",
+                        height: 38,
+                        padding: "0 10px",
+                        borderRadius: 6,
+                        border: "1px solid #ced0d4",
+                        fontSize: 13,
+                        color: "#050505",
+                      }}
                     />
                   </div>
                 </div>
@@ -605,51 +634,53 @@ export function RoomTransferDialog({
               {/* Bảng tính toán cọc chuyển tiếp & Chênh lệch */}
               <div
                 style={{
-                  background: "#EFF8FC",
-                  border: "1px solid #DCEFF8",
-                  borderRadius: 12,
+                  background: "#f0f2f5",
+                  border: "1px solid #e4e6eb",
+                  borderRadius: 8,
                   padding: 14,
                   marginBottom: 16,
                 }}
               >
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#4A90C2", marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
-                  <Calculator size={16} /> QUYẾT TOÁN CỌC & BẢO LƯU CHUYỂN PHÒNG
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#1877f2", marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
+                  <Calculator size={15} /> QUYẾT TOÁN CỌC &amp; BẢO LƯU CHUYỂN PHÒNG
                 </div>
-                <div style={{ fontSize: 12.5, display: "flex", flexDirection: "column", gap: 6 }}>
+                <div style={{ fontSize: 13, display: "flex", flexDirection: "column", gap: 6, color: "#050505" }}>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span>Tiền cọc phòng cũ được bảo lưu 100%:</span>
+                    <span style={{ color: "#65676b" }}>Tiền cọc phòng cũ được bảo lưu 100%:</span>
                     <strong>{money(tienDatCocCu)}</strong>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span>Tiền cọc định mức của phòng mới:</span>
+                    <span style={{ color: "#65676b" }}>Tiền cọc định mức của phòng mới:</span>
                     <strong>{money(tienCocPhongMoi)}</strong>
                   </div>
                   <div
                     style={{
-                      borderTop: "1px dashed #CBD5E1",
-                      paddingTop: 6,
+                      borderTop: "1px solid #ced0d4",
+                      paddingTop: 8,
+                      marginTop: 2,
                       display: "flex",
                       justifyContent: "space-between",
-                      color: chenhLechTienCoc > 0 ? "#C2410C" : chenhLechTienCoc < 0 ? "#15803D" : "#425B6B",
+                      fontSize: 13.5,
                       fontWeight: 700,
-                      fontSize: 13,
                     }}
                   >
                     <span>
                       {chenhLechTienCoc > 0
-                        ? "👉 Cư dân cần đóng bổ sung tiền cọc:"
+                        ? "Cư dân cần đóng bổ sung tiền cọc:"
                         : chenhLechTienCoc < 0
-                        ? "👉 BQL hoàn trả lại tiền cọc chênh lệch:"
-                        : "👉 Tiền cọc được giữ nguyên (không chênh lệch):"}
+                        ? "BQL hoàn trả lại tiền cọc chênh lệch:"
+                        : "Tiền cọc được giữ nguyên (không chênh lệch):"}
                     </span>
-                    <span>{money(Math.abs(chenhLechTienCoc))}</span>
+                    <span style={{ color: chenhLechTienCoc > 0 ? "#e41e3f" : chenhLechTienCoc < 0 ? "#15803d" : "#050505" }}>
+                      {money(Math.abs(chenhLechTienCoc))}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Ghi chú */}
-              <div style={{ marginBottom: 16 }}>
-                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#425B6B", marginBottom: 4 }}>
+              <div style={{ marginBottom: 18 }}>
+                <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#050505", marginBottom: 4 }}>
                   Ghi chú nội dung điều chỉnh Phụ lục
                 </label>
                 <input
@@ -657,7 +688,15 @@ export function RoomTransferDialog({
                   value={ghiChu}
                   onChange={(e) => setGhiChu(e.target.value)}
                   placeholder="Khách chuyển sang phòng thoáng hơn, giữ nguyên thời hạn kết thúc hợp đồng..."
-                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #CBD5E1" }}
+                  style={{
+                    width: "100%",
+                    height: 38,
+                    padding: "0 12px",
+                    borderRadius: 6,
+                    border: "1px solid #ced0d4",
+                    fontSize: 13,
+                    color: "#050505",
+                  }}
                 />
               </div>
 
@@ -668,11 +707,11 @@ export function RoomTransferDialog({
                   onClick={() => setOpen(false)}
                   disabled={pending}
                   style={{
-                    padding: "9px 16px",
-                    borderRadius: 8,
-                    border: "1px solid #CBD5E1",
-                    background: "#ffffff",
-                    color: "#425B6B",
+                    padding: "9px 18px",
+                    borderRadius: 6,
+                    border: "none",
+                    background: "#e4e6eb",
+                    color: "#050505",
                     fontWeight: 600,
                     cursor: "pointer",
                     fontSize: 13,
@@ -684,10 +723,10 @@ export function RoomTransferDialog({
                   type="submit"
                   disabled={pending || !selectedRoomCode}
                   style={{
-                    padding: "9px 20px",
-                    borderRadius: 8,
+                    padding: "9px 22px",
+                    borderRadius: 6,
                     border: "none",
-                    background: "#4A90C2",
+                    background: "#1877f2",
                     color: "#ffffff",
                     fontWeight: 700,
                     cursor: pending || !selectedRoomCode ? "not-allowed" : "pointer",
@@ -695,15 +734,16 @@ export function RoomTransferDialog({
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 6,
+                    boxShadow: "0 2px 4px rgba(24, 119, 242, 0.3)",
                   }}
                 >
                   {pending ? (
                     <>
-                      <LoaderCircle size={16} className="animate-spin" /> Đang xử lý...
+                      <LoaderCircle size={15} className="animate-spin" /> Đang xử lý...
                     </>
                   ) : (
                     <>
-                      <FileCheck size={16} /> Xác nhận chuyển phòng & Lập Phụ lục
+                      <FileCheck size={15} /> Xác nhận chuyển phòng &amp; Lập Phụ lục
                     </>
                   )}
                 </button>
@@ -715,4 +755,3 @@ export function RoomTransferDialog({
     </>
   );
 }
-

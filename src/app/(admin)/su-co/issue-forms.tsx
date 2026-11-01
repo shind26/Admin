@@ -53,8 +53,8 @@ export function IssueForm({
           display: "flex",
           flexDirection: "column",
           gap: 14,
-          background: "#eff8fc",
-          border: "1px solid #dceff8",
+          background: "#f0f2f5",
+          border: "1px solid #e7f3ff",
           borderRadius: 12,
           padding: 16,
           boxShadow: "0 2px 8px rgba(74, 144, 194, 0.08)",
@@ -66,11 +66,11 @@ export function IssueForm({
         <div
           style={{
             background: "#ffffff",
-            border: "1px solid #e2ebf2",
+            border: "1px solid #e4e6eb",
             borderRadius: 8,
             padding: "12px 14px",
             fontSize: 13,
-            color: "#425b6b",
+            color: "#65676b",
           }}
         >
           <div
@@ -80,7 +80,7 @@ export function IssueForm({
               alignItems: "center",
               flexWrap: "wrap",
               gap: 8,
-              borderBottom: "1px solid #e2ebf2",
+              borderBottom: "1px solid #e4e6eb",
               paddingBottom: 8,
               marginBottom: 10,
             }}
@@ -89,10 +89,10 @@ export function IssueForm({
               <span style={{ fontWeight: 800, color: "#244e6e", fontSize: 14 }}>
                 {issue.ma_su_co}
               </span>
-              <span style={{ color: "#627d90", marginLeft: 8 }}>
+              <span style={{ color: "#65676b", marginLeft: 8 }}>
                 Phòng: <strong style={{ color: "#244e6e" }}>{issue.ma_phong}</strong>
               </span>
-              <span style={{ color: "#627d90", marginLeft: 10 }}>
+              <span style={{ color: "#65676b", marginLeft: 10 }}>
                 Khách báo: <strong style={{ color: "#244e6e" }}>{issue.ten_khach_bao || "Không xác định"}</strong>
               </span>
             </div>
@@ -102,7 +102,7 @@ export function IssueForm({
                   fontSize: 11.5,
                   padding: "2px 8px",
                   borderRadius: 999,
-                  background: "#dceff8",
+                  background: "#e7f3ff",
                   color: "#1d5c8a",
                   fontWeight: 700,
                 }}
@@ -117,11 +117,11 @@ export function IssueForm({
                   background:
                     issue.muc_do_uu_tien === "Khẩn cấp" || issue.muc_do_uu_tien === "Cao"
                       ? "#fde8e8"
-                      : "#eff8fc",
+                      : "#f0f2f5",
                   color:
                     issue.muc_do_uu_tien === "Khẩn cấp" || issue.muc_do_uu_tien === "Cao"
                       ? "#991b1b"
-                      : "#627d90",
+                      : "#65676b",
                   fontWeight: 700,
                 }}
               >
@@ -131,7 +131,7 @@ export function IssueForm({
           </div>
 
           <div style={{ marginBottom: 6 }}>
-            <span style={{ color: "#627d90", fontSize: 12 }}>Mô tả sự cố:</span>
+            <span style={{ color: "#65676b", fontSize: 12 }}>Mô tả sự cố:</span>
             <div
               style={{
                 marginTop: 2,
@@ -145,8 +145,8 @@ export function IssueForm({
           </div>
 
           {issue.hinh_anh && issue.hinh_anh.length > 0 && (
-            <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px dashed #e2ebf2" }}>
-              <span style={{ color: "#627d90", fontSize: 12, display: "block", marginBottom: 4 }}>
+            <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px dashed #e4e6eb" }}>
+              <span style={{ color: "#65676b", fontSize: 12, display: "block", marginBottom: 4 }}>
                 Ảnh sự cố đính kèm:
               </span>
               <IssueImageGallery images={issue.hinh_anh} />
@@ -158,7 +158,7 @@ export function IssueForm({
         <div
           style={{
             background: "#ffffff",
-            border: "1px solid #cbdce8",
+            border: "1px solid #ced0d4",
             borderRadius: 8,
             padding: "14px 16px",
           }}
@@ -185,7 +185,7 @@ export function IssueForm({
                   currentStatus === "Đã xử lý" || currentStatus === "Đã hoàn thành"
                     ? "#e6f4ea"
                     : currentStatus === "Đang xử lý"
-                    ? "#dceff8"
+                    ? "#e7f3ff"
                     : "#f6e6b4",
                 color:
                   currentStatus === "Đã xử lý" || currentStatus === "Đã hoàn thành"
@@ -224,7 +224,7 @@ export function IssueForm({
                   height: 38,
                   padding: "0 10px",
                   borderRadius: 6,
-                  border: "1px solid #76b5d8",
+                  border: "1px solid #4599ff",
                   fontSize: 13,
                   fontWeight: 600,
                   color: "#244e6e",
@@ -242,7 +242,7 @@ export function IssueForm({
               <div
                 style={{
                   fontSize: 11.5,
-                  color: "#627d90",
+                  color: "#65676b",
                   marginTop: 6,
                   lineHeight: 1.4,
                 }}
@@ -363,16 +363,11 @@ export function IssueForm({
         </select>
       </div>
 
-      <div className={styles.formField}>
-        <label htmlFor={`chiPhiSuaChua-${mode}`}>Chi phí sửa chữa (đ)</label>
-        <input
-          id={`chiPhiSuaChua-${mode}`}
-          name="chiPhiSuaChua"
-          type="number"
-          step="1000"
-          defaultValue={issue?.chi_phi_sua_chua ?? ""}
-        />
-      </div>
+      <input
+        type="hidden"
+        name="chiPhiSuaChua"
+        value={issue?.chi_phi_sua_chua ?? "0"}
+      />
 
       <div className={styles.formField}>
         <label htmlFor={`ngayBaoCao-${mode}`}>Ngày báo cáo</label>
@@ -408,7 +403,7 @@ export function IssueForm({
                   height: 54,
                   objectFit: "cover",
                   borderRadius: 6,
-                  border: "1px solid #cbdce8",
+                  border: "1px solid #ced0d4",
                 }}
               />
             ))}
@@ -532,9 +527,9 @@ export function IssueStatusSelect({
     }
     if (st === "Đang xử lý") {
       return {
-        bg: "#dceff8",
+        bg: "#e7f3ff",
         color: "#1d5c8a",
-        border: "#76b5d8",
+        border: "#4599ff",
       };
     }
     if (st === "Đã hủy") {
@@ -605,7 +600,7 @@ export function IssueStatusSelect({
         value={status}
         disabled={isPending}
         onChange={handleChange}
-        title={`Trạng thái hiện tại: ${status}. Bấm vào mũi tên để chọn trạng thái tiếp theo.`}
+        title={`Trạng thái: ${status}. Bấm để chuyển trạng thái.`}
         style={{
           appearance: "none",
           WebkitAppearance: "none",
@@ -627,7 +622,7 @@ export function IssueStatusSelect({
         }}
       >
         <option value={status} disabled>
-          {status} (Hiện tại)
+          {status}
         </option>
         {nextOptions.map((opt) => (
           <option
@@ -635,12 +630,12 @@ export function IssueStatusSelect({
             value={opt}
             style={{
               backgroundColor: "#ffffff",
-              color: "#244e6e",
+              color: "#1e293b",
               fontWeight: 600,
               fontSize: 13,
             }}
           >
-            ➔ Chuyển sang: {opt}
+            {opt}
           </option>
         ))}
       </select>
@@ -690,11 +685,11 @@ export function IssueImageGallery({ images }: { images?: string[] | null }) {
             title="Bấm để xem ảnh phóng to"
             style={{
               padding: 0,
-              border: "1px solid #cbdce8",
+              border: "1px solid #ced0d4",
               borderRadius: 6,
               overflow: "hidden",
               cursor: "pointer",
-              background: "#eff8fc",
+              background: "#f0f2f5",
               display: "inline-block",
               lineHeight: 0,
               transition: "transform 0.15s, border-color 0.15s",
@@ -718,8 +713,8 @@ export function IssueImageGallery({ images }: { images?: string[] | null }) {
             style={{
               fontSize: 11,
               fontWeight: 700,
-              color: "#4a90c2",
-              background: "#dceff8",
+              color: "#1877f2",
+              background: "#e7f3ff",
               padding: "2px 6px",
               borderRadius: 4,
             }}
@@ -779,7 +774,7 @@ export function IssueImageGallery({ images }: { images?: string[] | null }) {
                 padding: "8px 20px",
                 backgroundColor: "#ffffff",
                 color: "#244e6e",
-                border: "1px solid #cbdce8",
+                border: "1px solid #ced0d4",
                 borderRadius: 8,
                 fontWeight: 700,
                 fontSize: 13,

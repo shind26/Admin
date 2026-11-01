@@ -87,36 +87,7 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
       {/* ── TÍNH NĂNG 2: THEO DÕI TIẾN ĐỘ CHỐT SỐ THEO KỲ ── */}
       <ClosingProgressCard progress={progress} />
 
-      <section className={styles.miniStats}>
-        <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Kỳ ghi chỉ số</div>
-          <div className={styles.miniValue}>{readings.length}</div>
-        </div>
-        <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Chờ duyệt</div>
-          <div
-            className={styles.miniValue}
-            style={{ color: pending > 0 ? "#d97706" : undefined }}
-          >
-            {pending}
-          </div>
-        </div>
-        <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Đã duyệt</div>
-          <div className={styles.miniValue} style={{ color: "#059669" }}>
-            {approved}
-          </div>
-        </div>
-        <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Cảnh báo bất thường</div>
-          <div
-            className={styles.miniValue}
-            style={{ color: anomalyCount > 0 ? "#dc2626" : "#64748b" }}
-          >
-            {anomalyCount}
-          </div>
-        </div>
-      </section>
+
 
       <form className={styles.filterCard} action="/dien-nuoc">
         {period && <input type="hidden" name="period" value={period} />}
@@ -137,7 +108,7 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
                 {option === "All"
                   ? "Tất cả"
                   : option === "Bất thường"
-                    ? "⚠️ Bất thường (Đột biến / = 0)"
+                    ? "⚠️ Chỉ số không thay đổi / Tăng cao"
                     : option}
               </option>
             ))}
@@ -158,22 +129,19 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Kỳ</th>
+                <th>Kỳ ghi</th>
                 <th>Phòng / Khách</th>
                 <th>Ảnh đồng hồ</th>
-                <th>Điện (Cũ → Mới)</th>
-                <th>Điện tiêu thụ</th>
-                <th>Nước (Cũ → Mới)</th>
-                <th>Nước tiêu thụ</th>
-                <th>Ngày gửi</th>
+                <th>Điện (kWh)</th>
+                <th>Nước (m³)</th>
                 <th>Trạng thái &amp; Hóa đơn</th>
-                <th>Thao tác</th>
+                <th style={{ textAlign: "right" }}>Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {readings.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className={styles.empty}>
+                  <td colSpan={7} className={styles.empty}>
                     Không có kỳ ghi chỉ số phù hợp.
                   </td>
                 </tr>
@@ -182,8 +150,8 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
                   <tr key={reading.ma_ky}>
                     <td>
                       <div className={styles.strong}>{reading.thang_nam}</div>
-                      <div className={styles.muted} style={{ fontSize: 11 }}>
-                        {reading.ma_ky}
+                      <div className={styles.muted} style={{ fontSize: 11.5, marginTop: 2 }}>
+                        {formatDate(reading.ngay_ghi_nhan)}
                       </div>
                     </td>
                     <td>
@@ -198,36 +166,31 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
                       <MeterPhotoViewer reading={reading} />
                     </td>
                     <td>
-                      {reading.chi_so_dien_cu ?? "-"} →{" "}
-                      <strong>{reading.chi_so_dien_moi ?? "-"}</strong>
-                    </td>
-                    <td>
-                      <div className={styles.strong} style={{ color: "#d97706" }}>
-                        {reading.dien_tieu_thu} kWh
+                      <div style={{ fontSize: 12.5, color: "#334155" }}>
+                        {reading.chi_so_dien_cu ?? "-"} → <strong>{reading.chi_so_dien_moi ?? "-"}</strong>
                       </div>
-                      {reading.dien_ky_truoc !== null &&
-                        reading.dien_ky_truoc !== undefined && (
-                          <div style={{ fontSize: 11, color: "#94a3b8" }}>
-                            Kỳ trước: {reading.dien_ky_truoc} kWh
-                          </div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#d97706", marginTop: 2 }}>
+                        +{reading.dien_tieu_thu} kWh
+                        {reading.dien_ky_truoc !== null && reading.dien_ky_truoc !== undefined && (
+                          <span style={{ fontSize: 11, color: "#94a3b8", fontWeight: 400, marginLeft: 4 }}>
+                            (kỳ trước: {reading.dien_ky_truoc})
+                          </span>
                         )}
-                    </td>
-                    <td>
-                      {reading.chi_so_nuoc_cu ?? "-"} →{" "}
-                      <strong>{reading.chi_so_nuoc_moi ?? "-"}</strong>
-                    </td>
-                    <td>
-                      <div className={styles.strong} style={{ color: "#0284c7" }}>
-                        {reading.nuoc_tieu_thu} m³
                       </div>
-                      {reading.nuoc_ky_truoc !== null &&
-                        reading.nuoc_ky_truoc !== undefined && (
-                          <div style={{ fontSize: 11, color: "#94a3b8" }}>
-                            Kỳ trước: {reading.nuoc_ky_truoc} m³
-                          </div>
-                        )}
                     </td>
-                    <td>{formatDate(reading.ngay_ghi_nhan)}</td>
+                    <td>
+                      <div style={{ fontSize: 12.5, color: "#334155" }}>
+                        {reading.chi_so_nuoc_cu ?? "-"} → <strong>{reading.chi_so_nuoc_moi ?? "-"}</strong>
+                      </div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#0284c7", marginTop: 2 }}>
+                        +{reading.nuoc_tieu_thu} m³
+                        {reading.nuoc_ky_truoc !== null && reading.nuoc_ky_truoc !== undefined && (
+                          <span style={{ fontSize: 11, color: "#94a3b8", fontWeight: 400, marginLeft: 4 }}>
+                            (kỳ trước: {reading.nuoc_ky_truoc})
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td>
                       <span className={statusClass(reading.trang_thai_duyet)}>
                         {reading.trang_thai_duyet}
@@ -235,10 +198,10 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
                       {/* ── TÍNH NĂNG 3: LIÊN KẾT HÓA ĐƠN ĐÃ TỰ ĐỘNG KẾT CHUYỂN ── */}
                       <MeterInvoiceLink maHoaDon={reading.ma_hoa_don} />
                     </td>
-                    <td>
+                    <td style={{ textAlign: "right" }}>
                       <div
                         className={styles.actionCell}
-                        style={{ display: "flex", gap: 6, alignItems: "center" }}
+                        style={{ display: "inline-flex", gap: 6, alignItems: "center", justifyContent: "flex-end" }}
                       >
                         {reading.trang_thai_duyet === "Chờ duyệt" && (
                           <>

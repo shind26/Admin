@@ -1,18 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Clock,
-  Building,
-  User,
-  Phone,
-  Calendar,
-  AlertCircle,
-  FileText,
-  DollarSign,
-  Receipt,
-  FileCheck,
-} from "lucide-react";
+import { Clock, FileText } from "lucide-react";
 import type { PendingLiquidationRequest } from "@/lib/queries";
 import { LiquidationDialog } from "./[maHopDong]/liquidation-dialog";
 
@@ -38,20 +27,19 @@ export function PendingLiquidationQueue({
   return (
     <section
       style={{
-        marginBottom: 24,
+        marginBottom: 20,
         background: "#ffffff",
-        borderRadius: 14,
-        border: "1px solid #DCEFF8",
-        overflow: "hidden",
-        boxShadow: "0 2px 8px rgba(74, 144, 194, 0.08)",
+        borderRadius: 10,
+        border: "1px solid #e2e8f0",
+        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
       }}
     >
-      {/* Header section with light sky blue theme */}
+      {/* Header */}
       <div
         style={{
-          background: "#EFF8FC",
-          borderBottom: "1px solid #DCEFF8",
-          padding: "14px 20px",
+          background: "#f8fafc",
+          borderBottom: "1px solid #e2e8f0",
+          padding: "12px 18px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -59,227 +47,138 @@ export function PendingLiquidationQueue({
           gap: 10,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div
             style={{
-              background: "#4A90C2",
+              background: "#1877f2",
               color: "#ffffff",
-              width: 32,
-              height: 32,
-              borderRadius: 8,
+              width: 28,
+              height: 28,
+              borderRadius: 6,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Clock size={18} />
+            <Clock size={15} />
           </div>
-          <div>
-            <h2
-              style={{
-                fontSize: 15,
-                fontWeight: 800,
-                color: "#4A90C2",
-                margin: 0,
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              Yêu cầu trả phòng / Thanh lý hợp đồng từ Mobile
-              <span
-                style={{
-                  background: "#F6E6B4",
-                  color: "#92400E",
-                  fontSize: 11.5,
-                  fontWeight: 700,
-                  padding: "2px 8px",
-                  borderRadius: 999,
-                  border: "1px solid #FDE68A",
-                }}
-              >
-                {requests.length} yêu cầu chờ duyệt
-              </span>
-            </h2>
-            <p style={{ fontSize: 12, color: "#425B6B", margin: "2px 0 0" }}>
-              Cư dân đã gửi đơn check-out qua app. BQL cần nghiệm thu tài sản, chốt điện nước và quyết toán hợp đồng.
-            </p>
-          </div>
+          <h2 style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+            Yêu cầu trả phòng & Thanh lý hợp đồng
+          </h2>
+          <span
+            style={{
+              background: "#eff6ff",
+              color: "#1d4ed8",
+              fontSize: 12,
+              fontWeight: 600,
+              padding: "2px 8px",
+              borderRadius: 999,
+              border: "1px solid #bfdbfe",
+            }}
+          >
+            {requests.length} yêu cầu cần duyệt
+          </span>
         </div>
       </div>
 
-      {/* Grid of Pending Requests */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))",
-          gap: 16,
-          padding: 16,
-        }}
-      >
-        {requests.map((req) => {
+      {/* Rows */}
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {requests.map((req, idx) => {
           const isDungHan = req.hinh_thuc === "Đúng hạn";
           return (
             <div
               key={req.ma_thanh_ly}
               style={{
-                background: "#ffffff",
-                border: "1px solid #DCEFF8",
-                borderRadius: 12,
-                padding: 16,
+                padding: "16px 18px",
+                borderTop: idx > 0 ? "1px solid #f1f5f9" : "none",
                 display: "flex",
-                flexDirection: "column",
+                alignItems: "center",
                 justifyContent: "space-between",
-                gap: 12,
-                transition: "all 0.2s ease",
+                flexWrap: "wrap",
+                gap: 16,
               }}
             >
-              <div>
-                {/* Top Info */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                    marginBottom: 10,
-                  }}
-                >
-                  <div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#0F172A" }}>
-                      Phòng {req.ten_phong || req.ma_phong}
-                    </div>
-                    <div style={{ fontSize: 12, color: "#425B6B", display: "flex", alignItems: "center", gap: 4, marginTop: 2 }}>
-                      <Building size={13} /> {req.toa_nha || "Nhà trọ"} • HĐ:{" "}
-                      <Link
-                        href={`/hop-dong/${encodeURIComponent(req.ma_hop_dong)}`}
-                        style={{ color: "#4A90C2", fontWeight: 700, textDecoration: "underline" }}
-                      >
-                        {req.ma_hop_dong}
-                      </Link>
-                    </div>
-                  </div>
+              {/* Cột 1: Thông tin cư dân, phòng và ngày dọn */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1, minWidth: 300 }}>
+                {/* Dòng 1: Tên khách + SĐT + Phòng + HĐ */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", fontSize: 13 }}>
+                  <strong style={{ color: "#0f172a", fontSize: 14 }}>
+                    {req.ten_khach || "Cư dân"}
+                  </strong>
+                  {req.so_dt && (
+                    <span style={{ color: "#64748b" }}>• {req.so_dt}</span>
+                  )}
+                  <span style={{ color: "#0f172a", fontWeight: 600 }}>
+                    • Phòng {req.ten_phong || req.ma_phong} ({req.toa_nha || "Nhà trọ"})
+                  </span>
+                  <span style={{ color: "#64748b" }}>
+                    • HĐ:{" "}
+                    <Link
+                      href={`/hop-dong/${encodeURIComponent(req.ma_hop_dong)}`}
+                      style={{ color: "#1877f2", fontWeight: 600, textDecoration: "underline" }}
+                    >
+                      {req.ma_hop_dong}
+                    </Link>
+                  </span>
                   <span
                     style={{
-                      fontSize: 11.5,
-                      fontWeight: 700,
-                      padding: "3px 8px",
-                      borderRadius: 999,
-                      background: isDungHan ? "#E6F4EA" : "#F6E6B4",
-                      color: isDungHan ? "#166534" : "#92400E",
-                      border: `1px solid ${isDungHan ? "#BBF7D0" : "#FDE68A"}`,
+                      fontSize: 11,
+                      fontWeight: 600,
+                      padding: "2px 6px",
+                      borderRadius: 4,
+                      background: isDungHan ? "#f0fdf4" : "#fffbeb",
+                      color: isDungHan ? "#166534" : "#92400e",
+                      border: `1px solid ${isDungHan ? "#bbf7d0" : "#fef3c7"}`,
                     }}
                   >
                     {req.hinh_thuc}
                   </span>
                 </div>
 
-                {/* Tenant and Dates */}
-                <div
-                  style={{
-                    background: "#EFF8FC",
-                    borderRadius: 8,
-                    padding: "10px 12px",
-                    fontSize: 12.5,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 5,
-                    color: "#425B6B",
-                    marginBottom: 10,
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 700, color: "#0F172A" }}>
-                    <User size={14} color="#4A90C2" /> {req.ten_khach || "Chưa có tên"}
-                    {req.so_dt && (
-                      <span style={{ fontWeight: 500, color: "#64748B", display: "inline-flex", alignItems: "center", gap: 3 }}>
-                        <Phone size={12} /> {req.so_dt}
-                      </span>
-                    )}
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <Calendar size={14} color="#4A90C2" />
-                    <span>
-                      Dự kiến dọn đi: <strong style={{ color: "#0F172A" }}>{date(req.ngay_tra_phong)}</strong>
+                {/* Dòng 2: Ngày trả phòng & Tiền cọc & Nợ */}
+                <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 12.5, color: "#475569", flexWrap: "wrap" }}>
+                  <span>
+                    Dự kiến dọn đi: <strong style={{ color: "#0f172a" }}>{date(req.ngay_tra_phong)}</strong>
+                  </span>
+                  <span style={{ color: "#64748b" }}>
+                    • Hạn HĐ: {date(req.ngay_kt_hop_dong)}
+                  </span>
+                  <span>
+                    • Tiền cọc: <strong style={{ color: "#0f172a" }}>{money(req.tien_dat_coc)}</strong>
+                  </span>
+                  {req.unpaid_total > 0 ? (
+                    <span style={{ color: "#dc2626", fontWeight: 600 }}>
+                      • Còn nợ: {money(req.unpaid_total)}
                     </span>
-                  </div>
-                  <div style={{ fontSize: 11.5, color: "#64748B" }}>
-                    Hạn hợp đồng: {date(req.ngay_kt_hop_dong)} ({req.so_ngay_con_lai} ngày nữa)
-                  </div>
+                  ) : (
+                    <span style={{ color: "#16a34a" }}>• Nợ cũ: 0 đ</span>
+                  )}
                 </div>
 
-                {/* Money & Debts */}
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: 8,
-                    fontSize: 12,
-                    marginBottom: 10,
-                  }}
-                >
-                  <div style={{ background: "#F1F4F8", padding: "6px 10px", borderRadius: 6 }}>
-                    <div style={{ color: "#64748B", fontSize: 11 }}>Tiền cọc ban đầu</div>
-                    <div style={{ fontWeight: 700, color: "#0F172A" }}>{money(req.tien_dat_coc)}</div>
-                  </div>
-                  <div
-                    style={{
-                      background: req.unpaid_total > 0 ? "#FDE8E8" : "#F1F4F8",
-                      padding: "6px 10px",
-                      borderRadius: 6,
-                    }}
-                  >
-                    <div style={{ color: req.unpaid_total > 0 ? "#991B1B" : "#64748B", fontSize: 11 }}>
-                      Nợ hóa đơn cũ
-                    </div>
-                    <div style={{ fontWeight: 700, color: req.unpaid_total > 0 ? "#DC2626" : "#059669" }}>
-                      {money(req.unpaid_total)}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Tenant note */}
+                {/* Dòng 3: Ghi chú nếu có */}
                 {req.ghi_chu && (
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: "#425B6B",
-                      fontStyle: "italic",
-                      background: "#F8FAFC",
-                      padding: "6px 10px",
-                      borderRadius: 6,
-                      borderLeft: "3px solid #76B5D8",
-                    }}
-                  >
-                    &ldquo;{req.ghi_chu}&rdquo;
+                  <div style={{ fontSize: 12, color: "#64748b" }}>
+                    Ghi chú: <span style={{ color: "#334155" }}>&ldquo;{req.ghi_chu}&rdquo;</span>
                   </div>
                 )}
               </div>
 
-              {/* Action Buttons */}
-              <div
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  borderTop: "1px solid #F1F4F8",
-                  paddingTop: 12,
-                }}
-              >
+              {/* Cột 2: Nút thao tác */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                 <Link
                   href={`/hop-dong/${encodeURIComponent(req.ma_hop_dong)}`}
                   style={{
-                    flex: 1,
-                    textAlign: "center",
-                    padding: "7px 10px",
-                    borderRadius: 8,
-                    border: "1px solid #CBD5E1",
-                    color: "#425B6B",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 5,
+                    padding: "7px 13px",
+                    borderRadius: 6,
+                    border: "1px solid #cbd5e1",
+                    background: "#ffffff",
+                    color: "#334155",
                     fontSize: 12.5,
                     fontWeight: 600,
                     textDecoration: "none",
-                    background: "#ffffff",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 4,
                   }}
                 >
                   <FileText size={14} /> Chi tiết HĐ
@@ -298,8 +197,8 @@ export function PendingLiquidationQueue({
                   ngayTraPhongDuKien={req.ngay_tra_phong}
                   ghiChuYeuCau={req.ghi_chu}
                   isPendingRequest={true}
-                  triggerButtonText="Nghiệm thu & Duyệt"
                   triggerButtonVariant="warning"
+                  triggerButtonText="Nghiệm thu & Thanh lý"
                 />
               </div>
             </div>
@@ -309,4 +208,3 @@ export function PendingLiquidationQueue({
     </section>
   );
 }
-

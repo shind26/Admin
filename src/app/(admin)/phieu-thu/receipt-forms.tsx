@@ -85,15 +85,15 @@ export function ReceiptForm({
         <div
           style={{
             gridColumn: "1 / -1",
-            background: "#ecfdf5",
-            padding: "10px 14px",
-            borderRadius: 8,
-            border: "1px solid #a7f3d0",
+            background: "#f8fafc",
+            padding: "8px 12px",
+            borderRadius: 6,
+            border: "1px solid #e2e8f0",
             fontSize: 12.5,
-            color: "#065f46",
+            color: "#475569",
           }}
         >
-          🔒 <strong>Phiếu thu đã xác nhận:</strong> Theo quy chuẩn chứng từ kế toán (Lựa chọn A), phiếu thu đã ghi nhận hợp lệ không thể sửa đổi số tiền. Nếu có sai sót, vui lòng xóa phiếu và lập phiếu mới.
+          Phiếu thu đã xác nhận không thể sửa đổi số tiền.
         </div>
       )}
 
@@ -118,18 +118,12 @@ export function ReceiptForm({
             })}
           </select>
         ) : (
-          <div
-            style={{
-              padding: "8px 12px",
-              background: "#f1f5f9",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 600,
-            }}
-          >
-            {receipt?.ma_hoa_don} — Phòng {receipt?.ma_phong} ({receipt?.ten_khach || "—"})
-            <input type="hidden" name="maHoaDon" value={receipt?.ma_hoa_don ?? ""} />
-          </div>
+          <input
+            id={`maHoaDon-${mode}`}
+            name="maHoaDon"
+            value={receipt?.ma_hoa_don ?? ""}
+            readOnly
+          />
         )}
       </div>
 
@@ -140,26 +134,33 @@ export function ReceiptForm({
           name="soTienThu"
           type="number"
           step="1000"
+          min="1000"
           value={soTienThu}
           onChange={(e) => setSoTienThu(e.target.value)}
-          disabled={isConfirmed}
+          placeholder="Nhập số tiền..."
           required
+          disabled={isConfirmed}
         />
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`ngayThu-${mode}`}>Ngày thu</label>
+        <label htmlFor={`ngayThu-${mode}`}>Ngày thu *</label>
         <input
           id={`ngayThu-${mode}`}
           name="ngayThu"
           type="date"
-          defaultValue={receipt?.ngay_thu?.slice(0, 10) ?? today()}
+          defaultValue={
+            receipt?.ngay_thu
+              ? new Date(receipt.ngay_thu).toISOString().slice(0, 10)
+              : today()
+          }
+          required
           disabled={isConfirmed}
         />
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`hinhThuc-${mode}`}>Hình thức thanh toán</label>
+        <label htmlFor={`hinhThuc-${mode}`}>Hình thức thanh toán *</label>
         <select
           id={`hinhThuc-${mode}`}
           name="hinhThuc"
@@ -175,7 +176,7 @@ export function ReceiptForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`trangThai-${mode}`}>Trạng thái phiếu *</label>
+        <label htmlFor={`trangThai-${mode}`}>Trạng thái *</label>
         <select
           id={`trangThai-${mode}`}
           name="trangThai"
@@ -190,8 +191,20 @@ export function ReceiptForm({
         </select>
       </div>
 
-      <div className={styles.formField}>
-        <label htmlFor={`maTraCuu-${mode}`}>Mã tra cứu / Mã giao dịch ngân hàng</label>
+      <div className={`${styles.formField} ${styles.formFieldWide}`}>
+        <label htmlFor={`ghiChu-${mode}`}>Ghi chú phiếu thu</label>
+        <input
+          id={`ghiChu-${mode}`}
+          name="ghiChu"
+          defaultValue={receipt?.ghi_chu ?? ""}
+          placeholder="Ví dụ: Đóng tiền phòng đợt 1, thanh toán qua ngân hàng..."
+          maxLength={255}
+          disabled={isConfirmed}
+        />
+      </div>
+
+      <div className={`${styles.formField} ${styles.formFieldWide}`}>
+        <label htmlFor={`maTraCuu-${mode}`}>Mã tra cứu giao dịch (nếu có)</label>
         <input
           id={`maTraCuu-${mode}`}
           name="maTraCuu"
@@ -201,10 +214,6 @@ export function ReceiptForm({
           disabled={isConfirmed}
         />
       </div>
-
-      <p className={`${styles.formMessage} ${styles.formHint}`}>
-        💡 Phiếu thu ở trạng thái <strong>&quot;Đã xác nhận&quot;</strong> sẽ tự động cập nhật số tiền đã thu vào hóa đơn và gửi thông báo xác nhận đến đại diện phòng.
-      </p>
 
       {state.error && (
         <p className={`${styles.formMessage} ${styles.formError}`} role="alert">
@@ -268,7 +277,6 @@ export function DeleteReceiptButton({ maPhieuThu }: { maPhieuThu: string }) {
   );
 }
 
-/** Lựa chọn A: Chỉ hiển thị nút Sửa khi phiếu thu chưa được xác nhận */
 export function ReceiptEditorToggle({
   receipt,
   invoices,
@@ -278,7 +286,6 @@ export function ReceiptEditorToggle({
 }) {
   const [open, setOpen] = useState(false);
 
-  // Nếu phiếu đã xác nhận hoặc đã khớp lệnh -> KHÓA SỬA (Lựa chọn A)
   if (receipt.trang_thai === "Đã xác nhận" || receipt.trang_thai === "Đã khớp lệnh") {
     return null;
   }
@@ -302,7 +309,6 @@ export function ReceiptEditorToggle({
   );
 }
 
-/** Nút duyệt nhanh phiếu thu chờ xác nhận (1-click) */
 export function QuickApproveReceiptButton({ maPhieuThu }: { maPhieuThu: string }) {
   const [state, formAction, pending] = useActionState(
     quickApproveReceipt,
@@ -335,7 +341,6 @@ export function QuickApproveReceiptButton({ maPhieuThu }: { maPhieuThu: string }
   );
 }
 
-/** Nút từ chối nhanh phiếu thu (1-click) */
 export function QuickRejectReceiptButton({ maPhieuThu }: { maPhieuThu: string }) {
   const [state, formAction, pending] = useActionState(
     quickRejectReceipt,

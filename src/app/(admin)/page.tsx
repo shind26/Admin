@@ -2,10 +2,9 @@ import Link from "next/link";
 import { Suspense } from "react";
 import {
   Wallet,
-  Coins,
   Receipt,
   PiggyBank,
-  Sparkles,
+  Bell,
   DoorOpen,
   Users,
   TriangleAlert,
@@ -21,7 +20,7 @@ import { requireScope } from "@/lib/session";
 import { getFinancialDashboardData } from "@/lib/queries";
 import { ScopeQuery } from "@/lib/scope";
 import { RevenueTrendBarChart, RevenueBreakdownDonut } from "./dashboard-charts";
-import { UnpaidInvoicesTable, RecentReceiptsTable } from "./dashboard-tables";
+import { RecentReceiptsTable } from "./dashboard-tables";
 import styles from "./dashboard.module.css";
 
 type SearchParams = Promise<{
@@ -29,8 +28,8 @@ type SearchParams = Promise<{
 }>;
 
 function formatMoney(num: number | string | null | undefined): string {
-  if (num === null || num === undefined) return "0 đ";
-  return `${Number(num).toLocaleString("vi-VN")} đ`;
+  if (num === null || num === undefined) return "0\u00A0đ";
+  return `${Number(num).toLocaleString("vi-VN")}\u00A0đ`;
 }
 
 async function DashboardContent({
@@ -47,19 +46,18 @@ async function DashboardContent({
     new ScopeQuery(scope),
   );
   const displayName = account.ho_ten || account.ten_dang_nhap || "Quản trị viên";
-  const { kpi, monthlyTrend, revenueBreakdown, unpaidInvoices, recentReceipts } =
-    data;
+  const { kpi, monthlyTrend, revenueBreakdown, recentReceipts } = data;
 
   return (
     <AdminShell active="home">
       <div className={styles.dashboardContainer}>
-        {/* ── 1. HEADER & QUICK ACTIONS ── */}
+        {/* ── 1. HEADER & THAO TÁC NHANH ── */}
         <section className={styles.dashHeader}>
           <div className={styles.dashTitleCol}>
-            <h1>Xin chào, {displayName}! 👋</h1>
+            <h1>Xin chào, {displayName}!</h1>
             <p className={styles.dashSub}>
-              Trung tâm kiểm soát tài chính, doanh thu &amp; vận hành chuỗi căn hộ Kiều Giang
-              {buildingFilter && ` • Đang lọc theo ${buildingFilter}`}
+              Tổng quan hoạt động kinh doanh nhà trọ Kiều Giang
+              {buildingFilter && ` • Cơ sở: ${buildingFilter}`}
             </p>
           </div>
 
@@ -79,7 +77,7 @@ async function DashboardContent({
           </div>
         </section>
 
-        {/* ── 2. CẢNH BÁO YÊU CẦU CỌC TỪ MOBILE (NẾU CÓ) ── */}
+        {/* ── 2. CẢNH BÁO CỌC GIỮ CHỖ (NẾU CÓ) ── */}
         {kpi.pendingHoldCount > 0 && (
           <section className={styles.pendingQueueAlert}>
             <div className={styles.pendingAlertLeft}>
@@ -94,192 +92,176 @@ async function DashboardContent({
                   placeItems: "center",
                 }}
               >
-                <Sparkles size={20} />
+                <Bell size={20} />
               </div>
               <div className={styles.pendingAlertText}>
-                <h4>Có {kpi.pendingHoldCount} khách đặt cọc qua Mobile App đang chờ ký Hợp đồng!</h4>
-                <p>
-                  Khách đã chuyển cọc thành công vào tài khoản. Ban Quản Lý chỉ cần bấm xác nhận để tạo hợp đồng và cấp User App.
-                </p>
+                <h4>Có {kpi.pendingHoldCount} yêu cầu cọc giữ chỗ mới cần lập hợp đồng</h4>
               </div>
             </div>
             <Link href="/hop-dong" className={styles.btnAlertAction}>
-              Xem hàng đợi cọc <ArrowRight size={13} style={{ display: "inline", verticalAlign: "middle" }} />
+              Xem danh sách cọc <ArrowRight size={13} style={{ display: "inline", verticalAlign: "middle" }} />
             </Link>
           </section>
         )}
 
-        {/* ── 3. HÀNG THỐNG KÊ TÀI CHÍNH CỐT LÕI (4 KPI CARDS) ── */}
+        {/* ── 3. THỐNG KÊ TÀI CHÍNH (3 THẺ) ── */}
         <section className={styles.financialGrid}>
-          {/* Card 1: Thực thu tháng */}
+          {/* Card 1: Tiền đã thu */}
           <article className={styles.kpiCard}>
             <div className={styles.kpiHead}>
-              <span className={styles.kpiLabel}>Thực thu tháng này</span>
+              <span className={styles.kpiLabel}>Tiền đã thu tháng này</span>
               <div className={styles.kpiIconBox} style={{ background: "#ecfdf5", color: "#059669" }}>
                 <Wallet size={20} />
               </div>
             </div>
-            <div className={styles.kpiValue} style={{ color: "#047857" }}>
+            <div className={styles.kpiValue} style={{ color: "#0f172a", whiteSpace: "nowrap" }}>
               {formatMoney(kpi.doanhThuThang)}
             </div>
             <div className={styles.kpiFoot}>
-              {kpi.doanhThuThangTruoc > 0 ? (
-                kpi.chenhLechDoanhThuPct >= 0 ? (
-                  <span className={styles.kpiBadgeUp}>
-                    +{kpi.chenhLechDoanhThuPct}% so với tháng trước
-                  </span>
-                ) : (
-                  <span className={styles.kpiBadgeDown}>
-                    {kpi.chenhLechDoanhThuPct}% so với tháng trước
-                  </span>
-                )
-              ) : (
-                <span>Tổng lũy kế: <strong>{formatMoney(kpi.tongThucThu)}</strong></span>
+              <span style={{ whiteSpace: "nowrap" }}>
+                Tổng đã thu: <strong>{formatMoney(kpi.tongThucThu)}</strong>
+              </span>
+              {kpi.doanhThuThangTruoc > 0 && (
+                <span>
+                  {kpi.chenhLechDoanhThuPct >= 0 ? (
+                    <span className={styles.kpiBadgeUp}>
+                      +{kpi.chenhLechDoanhThuPct}% so với tháng trước
+                    </span>
+                  ) : (
+                    <span className={styles.kpiBadgeDown}>
+                      {kpi.chenhLechDoanhThuPct}% so với tháng trước
+                    </span>
+                  )}
+                </span>
               )}
             </div>
           </article>
 
-          {/* Card 2: Công nợ tồn đọng */}
+          {/* Card 2: Tiền nợ chưa thu (Không có số (1)) */}
           <article className={styles.kpiCard}>
             <div className={styles.kpiHead}>
-              <span className={styles.kpiLabel}>Công nợ còn phải thu</span>
+              <span className={styles.kpiLabel}>Tiền nợ chưa thu</span>
               <div className={styles.kpiIconBox} style={{ background: "#fef2f2", color: "#dc2626" }}>
                 <Receipt size={20} />
               </div>
             </div>
-            <div className={styles.kpiValue} style={{ color: "#b91c1c" }}>
+            <div className={styles.kpiValue} style={{ color: "#0f172a", fontWeight: 800, whiteSpace: "nowrap" }}>
               {formatMoney(kpi.tongNoTonDong)}
             </div>
             <div className={styles.kpiFoot}>
-              <span>
-                Nợ tháng này: <strong>{formatMoney(kpi.noThangNay)}</strong> ({unpaidInvoices.length} phòng nợ)
+              <span style={{ whiteSpace: "nowrap" }}>
+                {kpi.tongNoTonDong <= 0 ? (
+                  <span style={{ color: "#166534", fontWeight: 600 }}>Tất cả đã thanh toán</span>
+                ) : (
+                  <>
+                    Tổng từ <strong style={{ color: "#1c1e21" }}>{kpi.soHoaDonNo || 1} hóa đơn</strong> chưa thanh toán
+                  </>
+                )}
               </span>
             </div>
           </article>
 
-          {/* Card 3: Tỷ lệ thu tiền */}
+          {/* Card 3: Tiền cọc đang giữ */}
           <article className={styles.kpiCard}>
             <div className={styles.kpiHead}>
-              <span className={styles.kpiLabel}>Tỷ lệ thu tiền tháng</span>
-              <div className={styles.kpiIconBox} style={{ background: "#eff6ff", color: "#2563eb" }}>
-                <Coins size={20} />
-              </div>
-            </div>
-            <div className={styles.kpiValue} style={{ color: "#1d4ed8" }}>
-              {kpi.tyLeThuThang}%
-            </div>
-            <div className={styles.progressTrack}>
-              <div
-                className={styles.progressFill}
-                style={{
-                  width: `${kpi.tyLeThuThang}%`,
-                  background: kpi.tyLeThuThang >= 80 ? "#10b981" : "#f59e0b",
-                }}
-              />
-            </div>
-            <div className={styles.kpiFoot}>
-              <span>Phát hành: <strong>{formatMoney(kpi.phatHanhThang)}</strong></span>
-            </div>
-          </article>
-
-          {/* Card 4: Tiền cọc đang giữ */}
-          <article className={styles.kpiCard}>
-            <div className={styles.kpiHead}>
-              <span className={styles.kpiLabel}>Tiền cọc lưu ký</span>
+              <span className={styles.kpiLabel}>Tiền cọc đang giữ</span>
               <div className={styles.kpiIconBox} style={{ background: "#faf5ff", color: "#7c3aed" }}>
                 <PiggyBank size={20} />
               </div>
             </div>
-            <div className={styles.kpiValue} style={{ color: "#6d28d9" }}>
+            <div className={styles.kpiValue} style={{ color: "#0f172a", whiteSpace: "nowrap" }}>
               {formatMoney(kpi.tongTienCoc)}
             </div>
-            <div className={styles.kpiFoot}>
-              <span>
-                Cọc HĐ: <strong>{formatMoney(kpi.tienCocHopDong)}</strong> | Cọc giữ: <strong>{formatMoney(kpi.tienCocGiuCho)}</strong>
-              </span>
+            <div
+              className={styles.kpiFoot}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                alignItems: "flex-start",
+                width: "100%",
+                color: "#65676b",
+              }}
+            >
+              <div style={{ whiteSpace: "nowrap", fontSize: 11.5 }}>
+                Cọc hợp đồng: <strong style={{ color: "#1c1e21" }}>{formatMoney(kpi.tienCocHopDong)}</strong>
+              </div>
+              <div style={{ whiteSpace: "nowrap", fontSize: 11.5 }}>
+                Cọc giữ chỗ: <strong style={{ color: "#1c1e21" }}>{formatMoney(kpi.tienCocGiuCho)}</strong>
+              </div>
             </div>
           </article>
         </section>
 
-        {/* ── 4. BIỂU ĐỒ TRỰC QUAN (BAR & DONUT CHARTS) ── */}
+        {/* ── 4. BIỂU ĐỒ DOANH THU & CÁC KHOẢN THU ── */}
         <section className={styles.chartsGrid}>
-          {/* Biểu đồ cột 6 tháng */}
           <RevenueTrendBarChart data={monthlyTrend} />
-
-          {/* Biểu đồ tròn cơ cấu thu */}
           <RevenueBreakdownDonut data={revenueBreakdown} />
         </section>
 
-        {/* ── 5. BẢNG HÀNH ĐỘNG TÀI CHÍNH (NỢ TIỀN & GIAO DỊCH GẦN ĐÂY) ── */}
-        <section className={styles.tablesGrid}>
-          {/* Bảng phòng nợ tiền */}
-          <UnpaidInvoicesTable invoices={unpaidInvoices} />
-
-          {/* Bảng phiếu thu gần đây */}
+        {/* ── 5. BẢNG PHIẾU THU & TÌNH TRẠNG VẬN HÀNH ── */}
+        <section className={styles.bottomGrid}>
           <RecentReceiptsTable receipts={recentReceipts} />
-        </section>
 
-        {/* ── 6. THỐNG KÊ VẬN HÀNH & CƠ SỞ (OPERATIONS HIGHLIGHTS) ── */}
-        <section className={styles.operationsRow}>
-          <Link href="/phong" className={styles.opCard}>
-            <div className={styles.opLeft}>
-              <div className={styles.opIcon} style={{ background: "#e0f2fe", color: "#0284c7" }}>
-                <DoorOpen size={18} />
+          <div className={styles.opPanelCard}>
+            <div className={styles.tableHeadRow}>
+              <div className={styles.tableTitleGroup}>
+                <div className={styles.iconBadgeBlue}>
+                  <Building2 size={17} />
+                </div>
+                <div>
+                  <h3 className={styles.tableTitle}>Tình trạng vận hành</h3>
+                </div>
               </div>
-              <div>
-                <div className={styles.opLabel}>Tỷ lệ lấp đầy</div>
-                <div className={styles.opValue}>{kpi.tyLeLapDay}%</div>
-              </div>
+              <Link href="/phong" className={styles.viewAllLink}>
+                Xem tất cả phòng <ArrowRight size={13} />
+              </Link>
             </div>
-            <span style={{ fontSize: 11.5, color: "#64748b" }}>
-              {kpi.dangThue}/{kpi.tongPhong} phòng
-            </span>
-          </Link>
 
-          <Link href="/phong?status=Trong" className={styles.opCard}>
-            <div className={styles.opLeft}>
-              <div className={styles.opIcon} style={{ background: "#dcfce7", color: "#16a34a" }}>
-                <Building2 size={18} />
-              </div>
-              <div>
-                <div className={styles.opLabel}>Phòng trống sẵn có</div>
-                <div className={styles.opValue}>{kpi.phongTrong} phòng</div>
-              </div>
-            </div>
-            <span style={{ fontSize: 11.5, color: "#16a34a", fontWeight: 600 }}>
-              Sẵn sàng cho thuê
-            </span>
-          </Link>
+            <div className={styles.opMiniGrid}>
+              <Link href="/phong" className={styles.opMiniCard}>
+                <div className={styles.opIconBox} style={{ background: "#e0f2fe", color: "#0284c7" }}>
+                  <DoorOpen size={18} />
+                </div>
+                <div className={styles.opMiniText}>
+                  <span className={styles.opMiniLabel}>Phòng đang thuê</span>
+                  <strong className={styles.opMiniValue}>{kpi.dangThue}/{kpi.tongPhong} phòng</strong>
+                </div>
+              </Link>
 
-          <Link href="/khach-thue" className={styles.opCard}>
-            <div className={styles.opLeft}>
-              <div className={styles.opIcon} style={{ background: "#f3e8ff", color: "#9333ea" }}>
-                <Users size={18} />
-              </div>
-              <div>
-                <div className={styles.opLabel}>Cư dân đang cư trú</div>
-                <div className={styles.opValue}>{kpi.soCuDan} người</div>
-              </div>
-            </div>
-            <span style={{ fontSize: 11.5, color: "#64748b" }}>
-              Đại diện &amp; ở cùng
-            </span>
-          </Link>
+              <Link href="/phong?status=Trong" className={styles.opMiniCard}>
+                <div className={styles.opIconBox} style={{ background: "#dcfce7", color: "#16a34a" }}>
+                  <Building2 size={18} />
+                </div>
+                <div className={styles.opMiniText}>
+                  <span className={styles.opMiniLabel}>Phòng còn trống</span>
+                  <strong className={styles.opMiniValue}>{kpi.phongTrong} phòng</strong>
+                </div>
+              </Link>
 
-          <Link href="/su-co" className={styles.opCard}>
-            <div className={styles.opLeft}>
-              <div className={styles.opIcon} style={{ background: "#fef3c7", color: "#d97706" }}>
-                <TriangleAlert size={18} />
-              </div>
-              <div>
-                <div className={styles.opLabel}>Sự cố kỹ thuật</div>
-                <div className={styles.opValue}>{kpi.suCo} yêu cầu</div>
-              </div>
+              <Link href="/khach-thue" className={styles.opMiniCard}>
+                <div className={styles.opIconBox} style={{ background: "#f3e8ff", color: "#7c3aed" }}>
+                  <Users size={18} />
+                </div>
+                <div className={styles.opMiniText}>
+                  <span className={styles.opMiniLabel}>Khách đang ở</span>
+                  <strong className={styles.opMiniValue}>{kpi.soCuDan} người</strong>
+                </div>
+              </Link>
+
+              <Link href="/su-co" className={styles.opMiniCard}>
+                <div className={styles.opIconBox} style={{ background: "#fef3c7", color: "#d97706" }}>
+                  <TriangleAlert size={18} />
+                </div>
+                <div className={styles.opMiniText}>
+                  <span className={styles.opMiniLabel}>Báo hỏng / Sự cố</span>
+                  <strong className={styles.opMiniValue} style={{ color: kpi.suCo > 0 ? "#b91c1c" : "#1c1e21" }}>
+                    {kpi.suCo} yêu cầu
+                  </strong>
+                </div>
+              </Link>
             </div>
-            <span style={{ fontSize: 11.5, color: kpi.suCo > 0 ? "#dc2626" : "#16a34a", fontWeight: 600 }}>
-              {kpi.suCo > 0 ? "Cần thợ sửa" : "Ổn định"}
-            </span>
-          </Link>
+          </div>
         </section>
       </div>
     </AdminShell>

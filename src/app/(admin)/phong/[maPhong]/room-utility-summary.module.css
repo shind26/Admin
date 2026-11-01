@@ -32,7 +32,7 @@
 
 .subTitle {
   font-size: 12px;
-  color: #627d90;
+  color: #65676b;
   margin: 0;
 }
 
@@ -45,7 +45,7 @@
 
 .panel {
   background: #ffffff;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   border-radius: 12px;
   padding: 14px 16px;
   display: flex;
@@ -58,7 +58,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #e2ebf2;
+  border-bottom: 1px solid #e4e6eb;
   padding-bottom: 10px;
   margin-bottom: 12px;
 }
@@ -96,9 +96,9 @@
 }
 
 .debtAlertGray {
-  background: #f1f4f8;
-  border: 1px solid #e2ebf2;
-  color: #627d90;
+  background: #f0f2f5;
+  border: 1px solid #e4e6eb;
+  color: #65676b;
 }
 
 .debtAmountRow {
@@ -141,10 +141,10 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 8px 12px;
   font-size: 12px;
-  background: #eff8fc;
+  background: #f0f2f5;
   padding: 10px 12px;
   border-radius: 8px;
-  border: 1px solid #dceff8;
+  border: 1px solid #e7f3ff;
 }
 
 .invoiceField {
@@ -155,14 +155,14 @@
 
 .invoiceFieldLabel {
   font-size: 11px;
-  color: #627d90;
+  color: #65676b;
   font-weight: 500;
 }
 
 .invoiceFieldValue {
   font-size: 12.5px;
   font-weight: 600;
-  color: #425b6b;
+  color: #65676b;
 }
 
 /* ── Bảng chỉ số điện nước ── */
@@ -170,7 +170,7 @@
   overflow-x: auto;
   margin-bottom: 6px;
   border-radius: 8px;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
 }
 
 .table {
@@ -181,7 +181,7 @@
 }
 
 .table th {
-  background: #76b5d8;
+  background: #4599ff;
   color: #ffffff;
   font-weight: 700;
   font-size: 11px;
@@ -193,7 +193,7 @@
 }
 
 .table tbody tr:nth-child(even) {
-  background: #eff8fc;
+  background: #f0f2f5;
 }
 
 .table tbody tr:nth-child(odd) {
@@ -202,9 +202,9 @@
 
 .table td {
   padding: 8px 8px;
-  border-bottom: 1px solid #e2ebf2;
+  border-bottom: 1px solid #e4e6eb;
   vertical-align: middle;
-  color: #425b6b;
+  color: #65676b;
 }
 
 .table tr:last-child td {
@@ -219,7 +219,7 @@
 
 .meterVal {
   font-size: 11.5px;
-  color: #627d90;
+  color: #65676b;
   white-space: nowrap;
 }
 
@@ -240,7 +240,7 @@
 }
 
 .usageWater {
-  background: #dceff8;
+  background: #e7f3ff;
   color: #1d5c8a;
 }
 
@@ -275,8 +275,8 @@
 }
 
 .badgeMuted {
-  background: #f1f4f8;
-  color: #627d90;
+  background: #f0f2f5;
+  color: #65676b;
   border: 1px solid #dce4ec;
 }
 
@@ -284,7 +284,7 @@
 .panelFooter {
   margin-top: 10px;
   padding-top: 8px;
-  border-top: 1px dashed #e2ebf2;
+  border-top: 1px dashed #e4e6eb;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -296,7 +296,7 @@
   gap: 4px;
   font-size: 11.5px;
   font-weight: 600;
-  color: #4a90c2;
+  color: #1877f2;
   text-decoration: none;
   transition: color 0.15s;
 }
@@ -309,7 +309,7 @@
 .emptyBox {
   padding: 24px 12px;
   text-align: center;
-  color: #627d90;
+  color: #65676b;
   font-size: 12.5px;
   display: flex;
   flex-direction: column;

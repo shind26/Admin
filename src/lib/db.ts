@@ -20,9 +20,11 @@ export function getDbPool(): Pool {
     const pool = new Pool({
       connectionString,
       ssl: { rejectUnauthorized: false },
-      max: 5,
-      idleTimeoutMillis: 20000,
-      connectionTimeoutMillis: 10000,
+      max: 20,
+      idleTimeoutMillis: 60000,
+      connectionTimeoutMillis: 30000,
+      keepAlive: true,
+      keepAliveInitialDelayMillis: 10000,
     });
 
     // Bắt sự kiện lỗi khi kết nối nhàn rỗi (idle) bị Supabase PgBouncer ngắt để không làm crash Node process

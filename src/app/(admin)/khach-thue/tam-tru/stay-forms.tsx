@@ -11,7 +11,7 @@ import {
 import type { ContractOption, StayRow } from "@/lib/queries";
 import styles from "@/components/business.module.css";
 
-const STAY_STATUSES = ["Chờ xác nhận", "Đã duyệt", "Hoàn tất", "Từ chối"];
+const STAY_STATUSES = ["Chờ duyệt", "Chờ xác nhận", "Đã duyệt", "Hoàn tất", "Từ chối"];
 const initialState: StayFormState = { error: null, success: null };
 
 function today() {

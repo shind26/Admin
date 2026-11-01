@@ -8,7 +8,7 @@
   gap: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: #4a90c2;
+  color: #1877f2;
   text-decoration: none;
   transition: color 0.15s ease;
 }
@@ -28,7 +28,7 @@
 /* ── Cột ảnh ── */
 .photoPanel {
   background: #ffffff;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(66, 91, 107, 0.05);
@@ -37,7 +37,7 @@
 .photoFrame {
   position: relative;
   aspect-ratio: 4 / 3;
-  background: #eff8fc;
+  background: #f0f2f5;
   display: grid;
   place-items: center;
 }
@@ -54,13 +54,13 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  color: #627d90;
+  color: #65676b;
   font-size: 12.5px;
 }
 
 .photoActions {
   padding: 14px;
-  border-top: 1px solid #e2ebf2;
+  border-top: 1px solid #e4e6eb;
 }
 
 /* ── Cột thông tin ── */
@@ -72,7 +72,7 @@
 
 .headCard {
   background: #ffffff;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   border-radius: 14px;
   padding: 18px 20px;
   display: flex;
@@ -93,7 +93,7 @@
 
 .roomSub {
   font-size: 12.5px;
-  color: #627d90;
+  color: #65676b;
   margin: 4px 0 0;
 }
 
@@ -106,7 +106,7 @@
 
 .section {
   background: #ffffff;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   border-radius: 14px;
   padding: 16px 20px;
   box-shadow: 0 1px 3px rgba(66, 91, 107, 0.05);
@@ -118,8 +118,8 @@
   letter-spacing: 0.5px;
   text-transform: uppercase;
   color: #244e6e;
-  background: #dceff8;
-  border-left: 3px solid #4a90c2;
+  background: #e7f3ff;
+  border-left: 3px solid #1877f2;
   padding: 6px 12px;
   border-radius: 6px;
   margin: 0 0 14px;
@@ -135,7 +135,7 @@
 
 .field dt {
   font-size: 11.5px;
-  color: #627d90;
+  color: #65676b;
   margin-bottom: 3px;
 }
 
@@ -143,7 +143,7 @@
   margin: 0;
   font-size: 13.5px;
   font-weight: 600;
-  color: #425b6b;
+  color: #65676b;
 }
 
 .chips {
@@ -153,7 +153,7 @@
 }
 
 .chip {
-  background: #dceff8;
+  background: #e7f3ff;
   color: #1d5c8a;
   border: 1px solid #b8ddf0;
   border-radius: 999px;
@@ -163,7 +163,7 @@
 }
 
 .chipEmpty {
-  color: #627d90;
+  color: #65676b;
   font-size: 12.5px;
 }
 
@@ -181,7 +181,7 @@
   border: 1px solid #b8e2c8;
 }
 .badgeInfo {
-  background: #dceff8;
+  background: #e7f3ff;
   color: #1d5c8a;
   border: 1px solid #b8ddf0;
 }
@@ -196,8 +196,8 @@
   border: 1px solid #f8b4b4;
 }
 .badgeMuted {
-  background: #f1f4f8;
-  color: #627d90;
+  background: #f0f2f5;
+  color: #65676b;
   border: 1px solid #dce4ec;
 }
 
@@ -227,7 +227,7 @@
   width: 100%;
   border: 0;
   border-radius: 8px;
-  background: #4a90c2;
+  background: #1877f2;
   color: #ffffff;
   padding: 10px 16px;
   font-size: 13px;
@@ -304,7 +304,7 @@
   border-radius: 16px;
   box-shadow: 0 24px 60px rgba(36, 78, 110, 0.2);
   overflow: hidden;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
 }
 
 .modalHead {
@@ -313,8 +313,8 @@
   align-items: flex-start;
   gap: 16px;
   padding: 20px 24px;
-  border-bottom: 1px solid #e2ebf2;
-  background: #eff8fc;
+  border-bottom: 1px solid #e4e6eb;
+  background: #f0f2f5;
 }
 
 .modalTitle {
@@ -326,7 +326,7 @@
 
 .modalSub {
   font-size: 12.5px;
-  color: #627d90;
+  color: #65676b;
   margin: 4px 0 0;
 }
 
@@ -336,16 +336,16 @@
   width: 34px;
   height: 34px;
   flex-shrink: 0;
-  border: 1px solid #cbdce8;
+  border: 1px solid #ced0d4;
   border-radius: 9px;
   background: #ffffff;
-  color: #627d90;
+  color: #65676b;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .modalClose:hover {
-  background: #dceff8;
+  background: #e7f3ff;
   color: #244e6e;
 }
 
@@ -358,4 +358,285 @@
 /* Form trong hộp thoại rộng nên chia 3 cột như thiết kế gốc. */
 .modalBody :global(form) {
   margin-top: 0;
+}
+
+
+/* ── Tabs Navigation & Containers ── */
+.tabsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tabsNav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid #e4e6eb;
+  border-radius: 12px;
+  padding: 6px 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  overflow-x: auto;
+}
+
+.tabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 10px 18px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #65676b;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.tabBtn:hover {
+  color: #050505;
+  background: #f0f2f5;
+}
+
+.tabBtnActive {
+  background: #e7f3ff;
+  color: #1877f2;
+}
+
+.tabBtnActive:hover {
+  background: #dbeafe;
+  color: #1877f2;
+}
+
+.tabBadge {
+  background: #e7f7ed;
+  color: #1f7a37;
+  border: 1px solid #c3eed1;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tabContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Metrics Cards Grid ── */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.metricCard {
+  background: #ffffff;
+  border: 1px solid #e4e6eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.metricLabel {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #65676b;
+}
+
+.metricValue {
+  font-size: 17px;
+  font-weight: 700;
+  color: #050505;
+}
+
+.metricValuePrimary {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1877f2;
+}
+
+.metricValueInfo {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0284c7;
+}
+
+.metricWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconBoxElectric {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1877f2;
+  border: 1px solid #bfdbfe;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.iconBoxWater {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f0f9ff;
+  color: #0284c7;
+  border: 1px solid #bae6fd;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.sectionHeadRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.countBadge {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1f7a37;
+  background: #e7f7ed;
+  border: 1px solid #c3eed1;
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+
+.chipMuted {
+  background: #f0f2f5;
+  color: #050505;
+  border: 1px solid #ced0d4;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.descriptionText {
+  margin: 0;
+  font-size: 13.5px;
+  color: #1c1e21;
+  line-height: 1.7;
+}
+
+/* ── Current Tenant Card ── */
+.currentTenantCard {
+  background: #f0f2f5;
+  border: 1px solid #ced0d4;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tenantInfo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tenantAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #e7f3ff;
+  color: #1877f2;
+  border: 1px solid #b8ddf0;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.tenantName {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #050505;
+}
+
+.tenantMeta {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: #65676b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tagOk,
+.tagWarn,
+.tagDanger {
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tagOk {
+  background: #e7f7ed;
+  color: #1f7a37;
+  border: 1px solid #c3eed1;
+}
+
+.tagWarn {
+  background: #fef6e0;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.tagDanger {
+  background: #feecee;
+  color: #e41e3f;
+  border: 1px solid #fdc9cf;
+}
+
+.tenantActionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  color: #1877f2;
+  border: 1px solid #ced0d4;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.tenantActionLink:hover {
+  background: #e7f3ff;
+  border-color: #1877f2;
+}
+
+.emptyStateBox {
+  padding: 16px;
+  background: #f0f2f5;
+  border-radius: 10px;
+  border: 1px dashed #ced0d4;
+}
+
+.emptyStateText {
+  margin: 0;
+  font-size: 13px;
+  color: #65676b;
 }

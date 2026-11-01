@@ -23,6 +23,7 @@ export type FinancialDashboardData = {
     phatHanhThang: number;
     noThangNay: number;
     tongNoTonDong: number;
+    soHoaDonNo: number;
     tyLeThuThang: number;
     tienCocHopDong: number;
     tienCocGiuCho: number;
@@ -140,7 +141,7 @@ export async function getFinancialDashboardData(
 
   // 3. Revenue stats (Phiếu thu)
   const revQ = cloneScope(scope);
-  const revConds = [`pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh')`];
+  const revConds = [`pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')`];
   const revScope = revQ.condition("p.toa_nha");
   if (revScope) revConds.push(revScope);
   if (buildingFilter && buildingFilter !== ALL_BUILDINGS) {
@@ -158,8 +159,8 @@ export async function getFinancialDashboardData(
     tong_thuc_thu: string;
   }>(
     `SELECT
-       COALESCE(SUM(CASE WHEN to_char(COALESCE(pt.ngay_thu, now()), 'YYYY-MM') = $${curIdx} THEN pt.so_tien_thu ELSE 0 END), 0)::text AS doanh_thu_thang,
-       COALESCE(SUM(CASE WHEN to_char(COALESCE(pt.ngay_thu, now()), 'YYYY-MM') = $${prevIdx} THEN pt.so_tien_thu ELSE 0 END), 0)::text AS doanh_thu_thang_truoc,
+       COALESCE(SUM(CASE WHEN to_char(COALESCE(pt.ngay_thu, now()) AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYYY-MM') = $${curIdx} THEN pt.so_tien_thu ELSE 0 END), 0)::text AS doanh_thu_thang,
+       COALESCE(SUM(CASE WHEN to_char(COALESCE(pt.ngay_thu, now()) AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYYY-MM') = $${prevIdx} THEN pt.so_tien_thu ELSE 0 END), 0)::text AS doanh_thu_thang_truoc,
        COALESCE(SUM(pt.so_tien_thu), 0)::text AS tong_thuc_thu
      FROM public.phieu_thu pt
      LEFT JOIN public.hoa_don hd ON hd.ma_hoa_don = pt.ma_hoa_don
@@ -186,6 +187,7 @@ export async function getFinancialDashboardData(
     phat_hanh_thang: string;
     tong_no_ton_dong: string;
     no_thang_nay: string;
+    so_hoa_don_no: number;
     tong_tien_phong: string;
     tong_tien_dien_nuoc: string;
     tong_tien_dich_vu: string;
@@ -204,7 +206,7 @@ export async function getFinancialDashboardData(
          COALESCE((
            SELECT SUM(pt.so_tien_thu)
            FROM public.phieu_thu pt
-           WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh')
+           WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')
          ), 0) AS da_thu
        FROM public.hoa_don hd
        LEFT JOIN public.hop_dong c ON c.ma_hop_dong = hd.ma_hop_dong
@@ -216,7 +218,8 @@ export async function getFinancialDashboardData(
        COALESCE(SUM(CASE WHEN thang_lap = $${invCurIdx} THEN tong_tien_thuc ELSE 0 END), 0)::text AS phat_hanh_thang,
        COALESCE(SUM(GREATEST(0, tong_tien_thuc - da_thu)), 0)::text AS tong_no_ton_dong,
        COALESCE(SUM(CASE WHEN thang_lap = $${invCurIdx} THEN GREATEST(0, tong_tien_thuc - da_thu) ELSE 0 END), 0)::text AS no_thang_nay,
-       COALESCE(SUM(tien_phong), 0)::text AS tong_tien_phong,
+       COUNT(CASE WHEN (tong_tien_thuc - da_thu) > 0 THEN 1 END)::int AS so_hoa_don_no,
+        COALESCE(SUM(tien_phong), 0)::text AS tong_tien_phong,
        COALESCE(SUM(tien_dien_nuoc), 0)::text AS tong_tien_dien_nuoc,
        COALESCE(SUM(tien_dich_vu_khac), 0)::text AS tong_tien_dich_vu
      FROM inv_calc`,
@@ -273,44 +276,59 @@ export async function getFinancialDashboardData(
     `WITH months AS (
        SELECT to_char(d, 'YYYY-MM') AS month_key
        FROM generate_series(
-         date_trunc('month', now()) - interval '5 months',
-         date_trunc('month', now()),
+         date_trunc('month', (now() AT TIME ZONE 'Asia/Ho_Chi_Minh')) - interval '5 months',
+         date_trunc('month', (now() AT TIME ZONE 'Asia/Ho_Chi_Minh')),
          interval '1 month'
        ) AS d
      ),
      rev AS (
        SELECT
-         to_char(COALESCE(pt.ngay_thu, now()), 'YYYY-MM') AS month_key,
+         to_char(COALESCE(pt.ngay_thu, now()) AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYYY-MM') AS month_key,
          SUM(pt.so_tien_thu) AS da_thu
        FROM public.phieu_thu pt
        LEFT JOIN public.hoa_don hd ON hd.ma_hoa_don = pt.ma_hoa_don
        LEFT JOIN public.hop_dong c ON c.ma_hop_dong = hd.ma_hop_dong
        LEFT JOIN public.phong p ON p.ma_phong = c.ma_phong
-       WHERE pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh')
+       WHERE pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')
          ${trendPWhere}
        GROUP BY month_key
      ),
-     inv AS (
-       SELECT
-         to_char(COALESCE(hd.ngay_lap, now()), 'YYYY-MM') AS month_key,
-         SUM(COALESCE(
-           NULLIF(hd.tong_tien, 0),
-           (COALESCE(hd.tien_phong, 0) + COALESCE(hd.tien_dien_nuoc, 0) + COALESCE(hd.tien_dich_vu_khac, 0) + COALESCE(hd.no_cu, 0))
-         )) AS tong_phat_hanh
-       FROM public.hoa_don hd
-       LEFT JOIN public.hop_dong c ON c.ma_hop_dong = hd.ma_hop_dong
-       LEFT JOIN public.phong p ON p.ma_phong = c.ma_phong
-       WHERE 1=1 ${trendPWhere}
-       GROUP BY month_key
-     )
-     SELECT
-       m.month_key,
-       COALESCE(r.da_thu, 0)::text AS da_thu,
-       GREATEST(0, COALESCE(i.tong_phat_hanh, 0) - COALESCE(r.da_thu, 0))::text AS con_no,
-       COALESCE(i.tong_phat_hanh, COALESCE(r.da_thu, 0))::text AS tong_tien
-     FROM months m
-     LEFT JOIN rev r ON r.month_key = m.month_key
-     LEFT JOIN inv i ON i.month_key = m.month_key
+      inv AS (
+        SELECT
+          to_char(COALESCE(hd.ngay_lap, now()), 'YYYY-MM') AS month_key,
+          SUM(COALESCE(
+            NULLIF(hd.tong_tien, 0),
+            (COALESCE(hd.tien_phong, 0) + COALESCE(hd.tien_dien_nuoc, 0) + COALESCE(hd.tien_dich_vu_khac, 0) + COALESCE(hd.no_cu, 0))
+          )) AS tong_phat_hanh,
+          SUM(
+            CASE
+              WHEN hd.trang_thai IN ('Đã thanh toán', 'Đã hủy') THEN 0
+              ELSE GREATEST(0,
+                COALESCE(
+                  NULLIF(hd.tong_tien, 0),
+                  (COALESCE(hd.tien_phong, 0) + COALESCE(hd.tien_dien_nuoc, 0) + COALESCE(hd.tien_dich_vu_khac, 0) + COALESCE(hd.no_cu, 0))
+                ) - COALESCE((
+                  SELECT SUM(pt.so_tien_thu)
+                  FROM public.phieu_thu pt
+                  WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')
+                ), 0)
+              )
+            END
+          ) AS con_no
+        FROM public.hoa_don hd
+        LEFT JOIN public.hop_dong c ON c.ma_hop_dong = hd.ma_hop_dong
+        LEFT JOIN public.phong p ON p.ma_phong = c.ma_phong
+        WHERE 1=1 ${trendPWhere}
+        GROUP BY month_key
+      )
+      SELECT
+        m.month_key,
+        COALESCE(r.da_thu, 0)::text AS da_thu,
+        COALESCE(i.con_no, 0)::text AS con_no,
+        COALESCE(i.tong_phat_hanh, COALESCE(r.da_thu, 0))::text AS tong_tien
+      FROM months m
+      LEFT JOIN rev r ON r.month_key = m.month_key
+      LEFT JOIN inv i ON i.month_key = m.month_key
      ORDER BY m.month_key ASC`,
     trendQ.params,
   );
@@ -351,7 +369,7 @@ export async function getFinancialDashboardData(
          COALESCE((
            SELECT SUM(pt.so_tien_thu)
            FROM public.phieu_thu pt
-           WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh')
+           WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')
          ), 0) AS da_thu,
          hd.han_dong_tien,
          hd.ngay_lap
@@ -479,6 +497,7 @@ export async function getFinancialDashboardData(
   const phatHanhThang = Number(invoiceRows.rows[0]?.phat_hanh_thang ?? 0);
   const noThangNay = Number(invoiceRows.rows[0]?.no_thang_nay ?? 0);
   const tongNoTonDong = Number(invoiceRows.rows[0]?.tong_no_ton_dong ?? 0);
+  const soHoaDonNo = Number(invoiceRows.rows[0]?.so_hoa_don_no ?? 0);
 
   const tongPhaiThuThang = phatHanhThang > 0 ? phatHanhThang : doanhThuThang + noThangNay;
   const tyLeThuThang =
@@ -517,6 +536,7 @@ export async function getFinancialDashboardData(
       phatHanhThang,
       noThangNay,
       tongNoTonDong,
+      soHoaDonNo,
       tyLeThuThang,
       tienCocHopDong,
       tienCocGiuCho,
@@ -687,7 +707,7 @@ export async function autoExpirePendingHolds(): Promise<number> {
         )
     `);
 
-    // 3. Mở khóa phòng về trạng thái 'Trống' nếu không còn phiếu giữ chỗ hợp lệ hoặc hợp đồng đang hiệu lực
+    // 3. Mở khóa phòng về trạng thái 'Trống' nếu không còn phiếu giữ chỗ hợp lệ và không có hợp đồng đang hiệu lực
     const { rowCount } = await client.query(`
       UPDATE public.phong p
       SET trang_thai = 'Trống'
@@ -702,7 +722,26 @@ export async function autoExpirePendingHolds(): Promise<number> {
         AND NOT EXISTS (
           SELECT 1 FROM public.hop_dong hd
           WHERE hd.ma_phong = p.ma_phong
-            AND hd.trang_thai IN ('Còn hạn', 'Đang thuê')
+            AND hd.trang_thai IN ('Còn hạn', 'Đang thuê', 'Chờ TL', 'Chờ thanh lý')
+        )
+    `);
+
+    // 4. Nếu phòng không còn giữ chỗ nhưng có hợp đồng đang hiệu lực -> Phục hồi về 'Đang thuê'
+    await client.query(`
+      UPDATE public.phong p
+      SET trang_thai = 'Đang thuê'
+      WHERE p.trang_thai IN ('Đã đặt cọc', 'Đã cọc', 'Trống')
+        AND NOT EXISTS (
+          SELECT 1 FROM public.giu_cho gc
+          WHERE gc.ma_phong = p.ma_phong
+            AND gc.trang_thai IN ('DangGiu', 'DaThanhToan', 'ChoThanhToan', 'Đã thanh toán', 'Đang giữ', 'Chờ thanh toán')
+            AND (gc.ngay_het_han IS NULL OR gc.ngay_het_han >= now())
+            AND (gc.expires_at IS NULL OR gc.expires_at >= now())
+        )
+        AND EXISTS (
+          SELECT 1 FROM public.hop_dong hd
+          WHERE hd.ma_phong = p.ma_phong
+            AND hd.trang_thai IN ('Còn hạn', 'Đang thuê', 'Chờ TL', 'Chờ thanh lý')
         )
     `);
 
@@ -969,7 +1008,7 @@ export async function getTenants(
     conditions.push("active_room.ma_phong IS NULL AND past_room.ma_phong IS NOT NULL");
   } else if (filters.status === "pending") {
     conditions.push(
-      `(COALESCE(k.trang_thai_ekyc, 'ChuaXacThuc') = 'ChoDuyet' OR EXISTS(SELECT 1 FROM public.phuong_tien pt WHERE pt.ma_khach = k.ma_khach AND pt.trang_thai = 'ChoDuyet'))`,
+      `(COALESCE(k.trang_thai_ekyc, 'ChuaXacThuc') = 'ChoDuyet' OR EXISTS(SELECT 1 FROM public.phuong_tien pt WHERE pt.ma_khach = k.ma_khach AND pt.trang_thai IN ('ChoDuyet', 'Chờ duyệt')))`,
     );
   } else if (filters.status === "unassigned") {
     conditions.push("active_room.ma_phong IS NULL AND past_room.ma_phong IS NULL");
@@ -1025,7 +1064,7 @@ export async function getTenants(
        JOIN public.phong p ON p.ma_phong = hd.ma_phong
        LEFT JOIN public.chi_tiet_hop_dong_khach_thue ct ON ct.ma_hop_dong = hd.ma_hop_dong AND ct.ma_khach = k.ma_khach
        WHERE (hd.ma_khach_dai_dien = k.ma_khach OR (ct.ma_khach = k.ma_khach AND (ct.trang_thai_luu_tru IS NULL OR ct.trang_thai_luu_tru IN ('Đang ở', 'DangO'))))
-         AND hd.trang_thai IN ('Còn hạn', 'Đang thuê')
+         AND hd.trang_thai IN ('Còn hạn', 'Đang thuê', 'Chờ TL', 'Chờ thanh lý')
        ORDER BY hd.ngay_bd DESC NULLS LAST
        LIMIT 1
      ) active_room ON true
@@ -1338,7 +1377,7 @@ export async function getInvoices(
        hd.ma_hop_dong,
        c.ma_phong,
        k.ho_ten_khach AS ten_khach,
-       hd.tong_tien::text AS tong_tien,
+       COALESCE(NULLIF(hd.tong_tien, 0), (COALESCE(hd.tien_phong, 0) + COALESCE(hd.tien_dien_nuoc, 0) + COALESCE(hd.tien_dich_vu_khac, 0) + COALESCE(hd.no_cu, 0)))::text AS tong_tien,
        hd.tien_phong::text AS tien_phong,
        hd.tien_dien_nuoc::text AS tien_dien_nuoc,
        hd.tien_dich_vu_khac::text AS tien_dich_vu_khac,
@@ -1350,7 +1389,7 @@ export async function getInvoices(
        ) AS chi_tiet_khoan_thu,
        COALESCE((
          SELECT SUM(pt.so_tien_thu) FROM public.phieu_thu pt
-         WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh')
+         WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')
        ), 0)::text AS da_thu,
        hd.ngay_lap::text AS ngay_lap,
        hd.han_dong_tien::text AS han_dong_tien,
@@ -1459,7 +1498,7 @@ export async function getInvoiceDetail(
        k.so_dt,
        k.cccd,
        k.dia_chi_thuong_tru,
-       hd.tong_tien::text AS tong_tien,
+       COALESCE(NULLIF(hd.tong_tien, 0), (COALESCE(hd.tien_phong, 0) + COALESCE(hd.tien_dien_nuoc, 0) + COALESCE(hd.tien_dich_vu_khac, 0) + COALESCE(hd.no_cu, 0)))::text AS tong_tien,
        hd.tien_phong::text AS tien_phong,
        hd.tien_dien_nuoc::text AS tien_dien_nuoc,
        hd.tien_dich_vu_khac::text AS tien_dich_vu_khac,
@@ -1472,7 +1511,7 @@ export async function getInvoiceDetail(
        COALESCE((
          SELECT SUM(pt.so_tien_thu)
          FROM public.phieu_thu pt
-         WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh')
+         WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')
        ), 0)::text AS da_thu
      FROM public.hoa_don hd
      LEFT JOIN public.hop_dong c ON c.ma_hop_dong = hd.ma_hop_dong
@@ -1632,7 +1671,7 @@ export async function getReceipts(
        k.ho_ten_khach AS ten_khach,
        k.so_dt,
        c.ma_hop_dong,
-       hd.tong_tien::text AS tong_tien_hoa_don,
+       COALESCE(NULLIF(hd.tong_tien, 0), (COALESCE(hd.tien_phong, 0) + COALESCE(hd.tien_dien_nuoc, 0) + COALESCE(hd.tien_dich_vu_khac, 0) + COALESCE(hd.no_cu, 0)))::text AS tong_tien_hoa_don,
        hd.loai_giao_dich,
        pt.so_tien_thu::text AS so_tien_thu,
        pt.ngay_thu::text AS ngay_thu,
@@ -2088,6 +2127,7 @@ export type ServiceRow = {
   don_gia: string | null;
   don_vi_tinh: string | null;
   ghi_chu: string | null;
+  dang_ap_dung: boolean;
   /** Số kỳ chỉ số đã áp dụng dịch vụ này (để chặn xóa). */
   so_lan_ap_dung: number;
 };
@@ -2103,6 +2143,7 @@ export async function getServices(): Promise<ServiceRow[]> {
             dv.don_gia::text AS don_gia,
             dv.don_vi_tinh,
             dv.ghi_chu,
+            COALESCE(dv.dang_ap_dung, true) AS dang_ap_dung,
             COALESCE((
               SELECT COUNT(*) FROM public.chi_tiet_dich_vu ct
               WHERE ct.ma_dich_vu = dv.ma_dich_vu
@@ -2399,7 +2440,7 @@ export async function getPendingLiquidationRequests(
        ) AS nuoc_gan_nhat,
        COALESCE((
          SELECT SUM(COALESCE(inv.tong_tien, 0) - COALESCE(
-           (SELECT SUM(pt.so_tien_thu) FROM public.phieu_thu pt WHERE pt.ma_hoa_don = inv.ma_hoa_don AND pt.trang_thai = 'Đã xác nhận'), 0)
+           (SELECT SUM(pt.so_tien_thu) FROM public.phieu_thu pt WHERE pt.ma_hoa_don = inv.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')), 0)
          )
          FROM public.hoa_don inv
          WHERE inv.ma_hop_dong = hd.ma_hop_dong AND inv.trang_thai NOT IN ('Đã thanh toán', 'Đã hủy')
@@ -2547,7 +2588,7 @@ export async function getPendingRoomTransferRequests(
        COALESCE(p_moi.tien_dat_coc, p_moi.gia_thue)::text AS tien_coc_phong_moi,
        COALESCE((
          SELECT SUM(COALESCE(inv.tong_tien, 0) - COALESCE(
-           (SELECT SUM(pt.so_tien_thu) FROM public.phieu_thu pt WHERE pt.ma_hoa_don = inv.ma_hoa_don AND pt.trang_thai = 'Đã xác nhận'), 0)
+           (SELECT SUM(pt.so_tien_thu) FROM public.phieu_thu pt WHERE pt.ma_hoa_don = inv.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')), 0)
          )
          FROM public.hoa_don inv
          WHERE inv.ma_hop_dong = hd.ma_hop_dong AND inv.trang_thai NOT IN ('Đã thanh toán', 'Đã hủy')
@@ -2830,12 +2871,12 @@ export async function getRoomUtilitySummary(
          COALESCE((
            SELECT SUM(pt.so_tien_thu)
            FROM public.phieu_thu pt
-           WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai = 'Đã xác nhận'
+           WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')
          ), 0)::text AS da_thu,
          (COALESCE(hd.tong_tien, 0) - COALESCE((
            SELECT SUM(pt.so_tien_thu)
            FROM public.phieu_thu pt
-           WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai = 'Đã xác nhận'
+           WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')
          ), 0))::text AS con_no,
          hd.trang_thai,
          hd.loai_giao_dich,
@@ -2855,7 +2896,7 @@ export async function getRoomUtilitySummary(
            COALESCE(hd.tong_tien, 0) - COALESCE((
              SELECT SUM(pt.so_tien_thu)
              FROM public.phieu_thu pt
-             WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai = 'Đã xác nhận'
+             WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')
            ), 0)
          ), 0)::text AS tong_no,
          COUNT(hd.ma_hoa_don)::int AS so_hoa_don_chua_thu
@@ -3044,7 +3085,7 @@ export async function getContractDetail(
               hd.tong_tien::text AS tong_tien,
               COALESCE((
                 SELECT SUM(pt.so_tien_thu) FROM public.phieu_thu pt
-                WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai = 'Đã xác nhận'
+                WHERE pt.ma_hoa_don = hd.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')
               ), 0)::text AS da_thu,
               hd.ngay_lap::text AS ngay_lap,
               hd.han_dong_tien::text AS han_dong_tien,
@@ -3134,7 +3175,7 @@ export async function getContractDetail(
          COALESCE(p_moi.tien_dat_coc, p_moi.gia_thue)::text AS tien_coc_phong_moi,
          COALESCE((
            SELECT SUM(COALESCE(inv.tong_tien, 0) - COALESCE(
-             (SELECT SUM(pt.so_tien_thu) FROM public.phieu_thu pt WHERE pt.ma_hoa_don = inv.ma_hoa_don AND pt.trang_thai = 'Đã xác nhận'), 0)
+             (SELECT SUM(pt.so_tien_thu) FROM public.phieu_thu pt WHERE pt.ma_hoa_don = inv.ma_hoa_don AND pt.trang_thai IN ('Đã xác nhận', 'Đã khớp lệnh', 'Đã thanh toán')), 0)
            )
            FROM public.hoa_don inv
            WHERE inv.ma_hop_dong = hd.ma_hop_dong AND inv.trang_thai NOT IN ('Đã thanh toán', 'Đã hủy')
@@ -3190,4 +3231,90 @@ export async function getContractDetail(
     chiSoGanNhat: chiSo.rows[0] ? { dien: Number(chiSo.rows[0].dien), nuoc: Number(chiSo.rows[0].nuoc) } : null,
     yeuCauChuyenPhong,
   };
+}
+
+export type PendingContractExtension = {
+  ma_phu_luc: string;
+  ma_hop_dong: string;
+  ngay_lap: string;
+  ngay_gia_han_den: string;
+  gia_thue_moi: number;
+  noi_dung_dieu_chinh: string | null;
+  trang_thai: string;
+  ma_phong: string;
+  ten_phong: string | null;
+  toa_nha: string | null;
+  ten_khach: string | null;
+  so_dt: string | null;
+  cccd: string | null;
+  ma_tai_khoan: string | null;
+  ngay_kt_hien_tai: string | null;
+  gia_thue_hien_tai: number;
+};
+
+/**
+ * Lấy danh sách các đơn yêu cầu gia hạn hợp đồng gửi từ Mobile App
+ * đang chờ Ban Quản Lý phê duyệt (trang_thai = 'Chờ duyệt' và không đổi phòng).
+ */
+export async function getPendingContractExtensions(
+  scope: ScopeQuery,
+): Promise<PendingContractExtension[]> {
+  const query = cloneScope(scope);
+  const conditions = [
+    `pl.trang_thai::text IN ('Chờ duyệt', 'ChoDuyet', 'CHO_DUYET')`,
+    `pl.ma_phong_moi IS NULL`,
+    `hd.trang_thai IN ('Còn hạn', 'Đang thuê')`,
+  ];
+  const scopeWhere = query.condition("p.toa_nha");
+  if (scopeWhere) conditions.push(scopeWhere);
+
+  const { rows } = await getDbPool().query<{
+    ma_phu_luc: string;
+    ma_hop_dong: string;
+    ngay_lap: string;
+    ngay_gia_han_den: string;
+    gia_thue_moi: string | null;
+    noi_dung_dieu_chinh: string | null;
+    trang_thai: string;
+    ma_phong: string;
+    ten_phong: string | null;
+    toa_nha: string | null;
+    ten_khach: string | null;
+    so_dt: string | null;
+    cccd: string | null;
+    ma_tai_khoan: string | null;
+    ngay_kt_hien_tai: string | null;
+    gia_thue_hien_tai: string | null;
+  }>(
+    `SELECT
+       pl.ma_phu_luc,
+       pl.ma_hop_dong,
+       pl.ngay_lap::text AS ngay_lap,
+       pl.ngay_gia_han_den::text AS ngay_gia_han_den,
+       pl.gia_thue_moi::text AS gia_thue_moi,
+       pl.noi_dung_dieu_chinh,
+       pl.trang_thai::text AS trang_thai,
+       hd.ma_phong,
+       COALESCE(p.ten_hien_thi, p.ma_phong) AS ten_phong,
+       p.toa_nha,
+       k.ho_ten_khach AS ten_khach,
+       k.so_dt,
+       k.cccd,
+       k.ma_tai_khoan,
+       hd.ngay_kt::text AS ngay_kt_hien_tai,
+       hd.gia_thue_thoa_thuan::text AS gia_thue_hien_tai
+     FROM public.phu_luc_hop_dong pl
+     JOIN public.hop_dong hd ON hd.ma_hop_dong = pl.ma_hop_dong
+     LEFT JOIN public.phong p ON p.ma_phong = hd.ma_phong
+     LEFT JOIN public.khach_thue k ON k.ma_khach = hd.ma_khach_dai_dien
+     ${query.where(conditions)}
+     ORDER BY pl.ngay_lap DESC NULLS LAST`,
+    query.params,
+  );
+
+  return rows.map((r) => ({
+    ...r,
+    gia_thue_moi: Number(r.gia_thue_moi || 0),
+    gia_thue_hien_tai: Number(r.gia_thue_hien_tai || 0),
+  }));
 }

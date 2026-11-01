@@ -1,17 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ArrowRightLeft,
-  Building,
-  User,
-  Phone,
-  Calendar,
-  Clock,
-  FileText,
-  DollarSign,
-  AlertTriangle,
-} from "lucide-react";
+import { ArrowRightLeft, FileText } from "lucide-react";
 import type { PendingRoomTransferRequest } from "@/lib/queries";
 import { RoomTransferDialog, type RoomOptionSimple } from "./room-transfer-dialog";
 
@@ -39,20 +29,19 @@ export function PendingTransfersQueue({
   return (
     <section
       style={{
-        marginBottom: 24,
+        marginBottom: 20,
         background: "#ffffff",
-        borderRadius: 14,
-        border: "1px solid #DCEFF8",
-        overflow: "hidden",
-        boxShadow: "0 2px 8px rgba(74, 144, 194, 0.08)",
+        borderRadius: 10,
+        border: "1px solid #e2e8f0",
+        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
       }}
     >
-      {/* Header section with light sky blue theme */}
+      {/* Header */}
       <div
         style={{
-          background: "#EFF8FC",
-          borderBottom: "1px solid #DCEFF8",
-          padding: "14px 20px",
+          background: "#f8fafc",
+          borderBottom: "1px solid #e2e8f0",
+          padding: "12px 18px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -60,235 +49,123 @@ export function PendingTransfersQueue({
           gap: 10,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div
             style={{
-              background: "#4A90C2",
+              background: "#1877f2",
               color: "#ffffff",
-              width: 32,
-              height: 32,
-              borderRadius: 8,
+              width: 28,
+              height: 28,
+              borderRadius: 6,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <ArrowRightLeft size={18} />
+            <ArrowRightLeft size={15} />
           </div>
-          <div>
-            <h2
-              style={{
-                fontSize: 15,
-                fontWeight: 800,
-                color: "#4A90C2",
-                margin: 0,
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              Yêu cầu đổi / chuyển phòng từ Mobile App
-              <span
-                style={{
-                  background: "#F6E6B4",
-                  color: "#92400E",
-                  fontSize: 11.5,
-                  fontWeight: 700,
-                  padding: "2px 8px",
-                  borderRadius: 999,
-                  border: "1px solid #FDE68A",
-                }}
-              >
-                {requests.length} yêu cầu chờ duyệt
-              </span>
-            </h2>
-            <p style={{ fontSize: 12, color: "#425B6B", margin: "2px 0 0" }}>
-              Cư dân đề xuất đổi sang phòng mới. BQL cần kiểm tra phòng trống, lập Phụ lục hợp đồng và bảo lưu tiền cọc.
-            </p>
-          </div>
+          <h2 style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+            Yêu cầu đổi phòng
+          </h2>
+          <span
+            style={{
+              background: "#eff6ff",
+              color: "#1d4ed8",
+              fontSize: 12,
+              fontWeight: 600,
+              padding: "2px 8px",
+              borderRadius: 999,
+              border: "1px solid #bfdbfe",
+            }}
+          >
+            {requests.length} yêu cầu cần duyệt
+          </span>
         </div>
       </div>
 
-      {/* Grid of Pending Requests */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))",
-          gap: 16,
-          padding: 16,
-        }}
-      >
-        {requests.map((req) => (
+      {/* Rows */}
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {requests.map((req, idx) => (
           <div
             key={req.ma_yeu_cau}
             style={{
-              background: "#ffffff",
-              border: "1px solid #DCEFF8",
-              borderRadius: 12,
-              padding: 16,
+              padding: "16px 18px",
+              borderTop: idx > 0 ? "1px solid #f1f5f9" : "none",
               display: "flex",
-              flexDirection: "column",
+              alignItems: "center",
               justifyContent: "space-between",
-              gap: 12,
-              transition: "all 0.2s ease",
+              flexWrap: "wrap",
+              gap: 16,
             }}
           >
-            <div>
-              {/* Room transition banner */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  background: "#EFF8FC",
-                  padding: "10px 12px",
-                  borderRadius: 8,
-                  marginBottom: 10,
-                }}
-              >
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 11, color: "#64748B" }}>Phòng cũ</div>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: "#0F172A" }}>
-                    {req.ten_phong_cu || req.ma_phong_cu}
-                  </div>
-                  <div style={{ fontSize: 11.5, color: "#425B6B" }}>{money(req.gia_phong_cu)}/th</div>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    color: "#4A90C2",
-                  }}
-                >
-                  <ArrowRightLeft size={18} />
-                  <span style={{ fontSize: 10, fontWeight: 700, marginTop: 2 }}>CHUYỂN SANG</span>
-                </div>
-
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 11, color: "#059669" }}>Phòng mới</div>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: "#059669" }}>
-                    {req.ten_phong_moi || req.ma_phong_moi}
-                  </div>
-                  <div style={{ fontSize: 11.5, color: "#059669" }}>{money(req.gia_phong_moi)}/th</div>
-                </div>
+            {/* Cột 1: Thông tin cư dân, phòng đổi và tài chính */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1, minWidth: 300 }}>
+              {/* Dòng 1: Tên khách + HĐ + Tòa */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", fontSize: 13 }}>
+                <strong style={{ color: "#0f172a", fontSize: 14 }}>
+                  {req.ten_khach || "Cư dân"}
+                </strong>
+                {req.so_dt && (
+                  <span style={{ color: "#64748b" }}>• {req.so_dt}</span>
+                )}
+                <span style={{ color: "#64748b" }}>
+                  • HĐ:{" "}
+                  <Link
+                    href={`/hop-dong/${encodeURIComponent(req.ma_hop_dong)}`}
+                    style={{ color: "#1877f2", fontWeight: 600, textDecoration: "underline" }}
+                  >
+                    {req.ma_hop_dong}
+                  </Link>{" "}
+                  ({req.toa_nha || "Nhà trọ"})
+                </span>
               </div>
 
-              {/* Building & Tenant */}
-              <div style={{ fontSize: 12, color: "#425B6B", display: "flex", alignItems: "center", gap: 4, marginBottom: 8 }}>
-                <Building size={13} /> {req.toa_nha || "Nhà trọ"} • HĐ:{" "}
-                <Link
-                  href={`/hop-dong/${encodeURIComponent(req.ma_hop_dong)}`}
-                  style={{ color: "#4A90C2", fontWeight: 700, textDecoration: "underline" }}
-                >
-                  {req.ma_hop_dong}
-                </Link>
+              {/* Dòng 2: Lộ trình phòng */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, flexWrap: "wrap" }}>
+                <span style={{ color: "#475569" }}>
+                  Phòng cũ: <strong>{req.ten_phong_cu || req.ma_phong_cu}</strong> ({money(req.gia_phong_cu)}/th)
+                </span>
+                <span style={{ color: "#1877f2", fontWeight: 700 }}>➔</span>
+                <span style={{ color: "#059669" }}>
+                  Phòng mới: <strong>{req.ten_phong_moi || req.ma_phong_moi}</strong> ({money(req.gia_phong_moi)}/th)
+                </span>
+                <span style={{ color: "#64748b", fontSize: 12 }}>
+                  • Ngày hẹn dọn: <strong>{date(req.thoi_gian_hen)}</strong>
+                </span>
               </div>
 
-              <div
-                style={{
-                  background: "#F8FAFC",
-                  borderRadius: 8,
-                  padding: "8px 12px",
-                  fontSize: 12.5,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 4,
-                  color: "#425B6B",
-                  marginBottom: 10,
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 700, color: "#0F172A" }}>
-                  <User size={14} color="#4A90C2" /> {req.ten_khach || "Chưa có tên"}
-                  {req.so_dt && (
-                    <span style={{ fontWeight: 500, color: "#64748B", display: "inline-flex", alignItems: "center", gap: 3 }}>
-                      <Phone size={12} /> {req.so_dt}
-                    </span>
-                  )}
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <Calendar size={14} color="#4A90C2" />
+              {/* Dòng 3: Lý do & Tiền cọc */}
+              <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 12, color: "#64748b", flexWrap: "wrap" }}>
+                {req.ly_do_chuyen && (
                   <span>
-                    Hẹn ngày dọn: <strong style={{ color: "#0F172A" }}>{date(req.thoi_gian_hen)}</strong>
+                    Lý do: <span style={{ color: "#334155" }}>&ldquo;{req.ly_do_chuyen}&rdquo;</span>
                   </span>
-                </div>
+                )}
+                <span>• Cọc bảo lưu: <strong style={{ color: "#0f172a" }}>{money(req.tien_coc_bao_luu)}</strong></span>
+                {req.unpaid_total > 0 ? (
+                  <span style={{ color: "#dc2626", fontWeight: 600 }}>• Còn nợ: {money(req.unpaid_total)}</span>
+                ) : (
+                  <span style={{ color: "#16a34a" }}>• Nợ cũ: 0 đ</span>
+                )}
               </div>
-
-              {/* Cọc & Chênh lệch */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 8,
-                  fontSize: 12,
-                  marginBottom: 10,
-                }}
-              >
-                <div style={{ background: "#F1F4F8", padding: "6px 10px", borderRadius: 6 }}>
-                  <div style={{ color: "#64748B", fontSize: 11 }}>Cọc bảo lưu</div>
-                  <div style={{ fontWeight: 700, color: "#0F172A" }}>{money(req.tien_coc_bao_luu)}</div>
-                </div>
-                <div
-                  style={{
-                    background: req.unpaid_total > 0 ? "#FDE8E8" : "#F1F4F8",
-                    padding: "6px 10px",
-                    borderRadius: 6,
-                  }}
-                >
-                  <div style={{ color: req.unpaid_total > 0 ? "#991B1B" : "#64748B", fontSize: 11 }}>
-                    Nợ hóa đơn cũ
-                  </div>
-                  <div style={{ fontWeight: 700, color: req.unpaid_total > 0 ? "#DC2626" : "#059669" }}>
-                    {money(req.unpaid_total)}
-                  </div>
-                </div>
-              </div>
-
-              {/* Reason note */}
-              {req.ly_do_chuyen && (
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "#425B6B",
-                    fontStyle: "italic",
-                    background: "#F8FAFC",
-                    padding: "6px 10px",
-                    borderRadius: 6,
-                    borderLeft: "3px solid #76B5D8",
-                  }}
-                >
-                  &ldquo;{req.ly_do_chuyen}&rdquo;
-                </div>
-              )}
             </div>
 
-            {/* Action buttons */}
-            <div
-              style={{
-                display: "flex",
-                gap: 8,
-                borderTop: "1px solid #F1F4F8",
-                paddingTop: 12,
-              }}
-            >
+            {/* Cột 2: Nút thao tác */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
               <Link
                 href={`/hop-dong/${encodeURIComponent(req.ma_hop_dong)}`}
                 style={{
-                  flex: 1,
-                  textAlign: "center",
-                  padding: "7px 10px",
-                  borderRadius: 8,
-                  border: "1px solid #CBD5E1",
-                  color: "#425B6B",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 5,
+                  padding: "7px 13px",
+                  borderRadius: 6,
+                  border: "1px solid #cbd5e1",
+                  background: "#ffffff",
+                  color: "#334155",
                   fontSize: 12.5,
                   fontWeight: 600,
                   textDecoration: "none",
-                  background: "#ffffff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 4,
                 }}
               >
                 <FileText size={14} /> Chi tiết HĐ
@@ -297,7 +174,7 @@ export function PendingTransfersQueue({
               <RoomTransferDialog
                 maHopDong={req.ma_hop_dong}
                 maPhongCu={req.ma_phong_cu}
-                tenPhongCu={req.ten_phong_cu || req.ma_phong_cu}
+                tenPhongCu={req.ten_phong_cu}
                 tenKhach={req.ten_khach || "Cư dân"}
                 giaThueCu={req.gia_phong_cu}
                 tienDatCocCu={req.tien_coc_bao_luu}
@@ -308,7 +185,6 @@ export function PendingTransfersQueue({
                 lyDoChuyen={req.ly_do_chuyen}
                 isFromMobileRequest={true}
                 triggerButtonText="Nghiệm thu & Duyệt"
-                triggerButtonVariant="warning"
               />
             </div>
           </div>
@@ -317,4 +193,3 @@ export function PendingTransfersQueue({
     </section>
   );
 }
-

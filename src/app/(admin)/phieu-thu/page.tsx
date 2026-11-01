@@ -23,6 +23,7 @@ type SearchParams = Promise<{
 
 const STATUS_OPTIONS = [
   "All",
+  "Đã thanh toán",
   "Đã xác nhận",
   "Đã khớp lệnh",
   "Chờ xác nhận",
@@ -40,7 +41,7 @@ function formatDate(value: string | null) {
 }
 
 function statusClass(status: string | null) {
-  if (status === "Đã xác nhận" || status === "Đã khớp lệnh") return styles.badgeOk;
+  if (status === "Đã xác nhận" || status === "Đã khớp lệnh" || status === "Đã thanh toán") return styles.badgeOk;
   if (status === "Từ chối") return styles.badgeMuted;
   return styles.badgeWarn;
 }
@@ -68,7 +69,8 @@ async function ReceiptsContent({
   const confirmed = receipts.filter(
     (receipt) =>
       receipt.trang_thai === "Đã xác nhận" ||
-      receipt.trang_thai === "Đã khớp lệnh",
+      receipt.trang_thai === "Đã khớp lệnh" ||
+      receipt.trang_thai === "Đã thanh toán",
   );
   const pending = receipts.filter(
     (receipt) => receipt.trang_thai === "Chờ xác nhận",
@@ -86,7 +88,7 @@ async function ReceiptsContent({
           <p className={styles.subtitle}>
             {invoiceId
               ? `Đang lọc theo hóa đơn ${invoiceId}`
-              : "Phiếu thu tiền phòng & dịch vụ — Tự động đồng bộ công nợ hóa đơn"}
+              : "Danh sách và quản lý các phiếu thu tiền phòng, dịch vụ"}
           </p>
         </div>
       </div>
@@ -106,7 +108,7 @@ async function ReceiptsContent({
         </div>
         <div className={styles.miniCard}>
           <div className={styles.miniLabel}>Tổng tiền đã thu</div>
-          <div className={styles.miniValue}>
+          <div className={styles.miniValue} style={{ color: "#16a34a", fontWeight: 700 }}>
             {formatMoney(String(totalCollected))}
           </div>
         </div>

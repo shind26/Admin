@@ -86,7 +86,7 @@ export function ReceiptDetailTrigger({
             cursor: "pointer",
             textAlign: "left",
             font: "inherit",
-            color: "#1e40af",
+            color: "#1877f2",
             fontWeight: 700,
             textDecoration: "underline",
           }}

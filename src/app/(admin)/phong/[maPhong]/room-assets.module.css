@@ -30,7 +30,7 @@
 
 .subTitle {
   font-size: 12px;
-  color: #627d90;
+  color: #65676b;
   margin: 0;
 }
 
@@ -53,14 +53,14 @@
   flex-direction: column;
   padding: 8px 12px;
   border-radius: 10px;
-  background: #eff8fc;
-  border: 1px solid #dceff8;
+  background: #f0f2f5;
+  border: 1px solid #e7f3ff;
 }
 
 .statLabel {
   font-size: 11px;
   font-weight: 600;
-  color: #627d90;
+  color: #65676b;
 }
 
 .statValue {
@@ -84,7 +84,7 @@
 
 /* ── Bảng danh mục tài sản ── */
 .tableCard {
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   border-radius: 12px;
   overflow: hidden;
   background: #ffffff;
@@ -103,7 +103,7 @@
 }
 
 .table th {
-  background: #76b5d8;
+  background: #4599ff;
   color: #ffffff;
   font-weight: 700;
   font-size: 11.5px;
@@ -115,7 +115,7 @@
 }
 
 .table tbody tr:nth-child(even) {
-  background: #eff8fc;
+  background: #f0f2f5;
 }
 
 .table tbody tr:nth-child(odd) {
@@ -124,9 +124,9 @@
 
 .table td {
   padding: 12px 14px;
-  border-bottom: 1px solid #e2ebf2;
+  border-bottom: 1px solid #e4e6eb;
   vertical-align: middle;
-  color: #425b6b;
+  color: #65676b;
 }
 
 .table tr:last-child td {
@@ -144,7 +144,7 @@
 
 .assetCode {
   font-size: 11px;
-  color: #627d90;
+  color: #65676b;
   font-family: monospace;
   margin-top: 2px;
 }
@@ -153,12 +153,12 @@
   display: inline-block;
   font-size: 11.5px;
   font-weight: 600;
-  color: #425b6b;
+  color: #65676b;
 }
 
 .serialCode {
   font-size: 11px;
-  color: #627d90;
+  color: #65676b;
   font-family: monospace;
 }
 
@@ -180,7 +180,7 @@
 }
 
 .badgeInfo {
-  background: #dceff8;
+  background: #e7f3ff;
   color: #1d5c8a;
   border: 1px solid #b8ddf0;
 }
@@ -206,7 +206,7 @@
 .emptyState {
   padding: 32px 20px;
   text-align: center;
-  color: #627d90;
+  color: #65676b;
   font-size: 13px;
 }
 
@@ -228,9 +228,9 @@
 }
 
 .btnPrimary {
-  background: #4a90c2;
+  background: #1877f2;
   color: #ffffff;
-  border: 1px solid #4a90c2;
+  border: 1px solid #1877f2;
 }
 
 .btnPrimary:hover:not(:disabled) {
@@ -239,24 +239,24 @@
 
 .btnSecondary {
   background: #ffffff;
-  color: #425b6b;
-  border: 1px solid #cbdce8;
+  color: #65676b;
+  border: 1px solid #ced0d4;
 }
 
 .btnSecondary:hover:not(:disabled) {
-  background: #eff8fc;
-  border-color: #76b5d8;
+  background: #f0f2f5;
+  border-color: #4599ff;
 }
 
 .btnGhost {
   background: transparent;
-  color: #4a90c2;
+  color: #1877f2;
   border: none;
   padding: 4px 8px;
 }
 
 .btnGhost:hover {
-  background: #eff8fc;
+  background: #f0f2f5;
 }
 
 .btnDangerSmall {
@@ -312,7 +312,7 @@
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 20px 50px rgba(36, 78, 110, 0.2);
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -327,8 +327,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid #e2ebf2;
-  background: #eff8fc;
+  border-bottom: 1px solid #e4e6eb;
+  background: #f0f2f5;
 }
 
 .modalTitle {
@@ -339,20 +339,20 @@
 }
 
 .modalClose {
-  border: 1px solid #cbdce8;
+  border: 1px solid #ced0d4;
   background: #ffffff;
   border-radius: 8px;
   width: 32px;
   height: 32px;
   display: grid;
   place-items: center;
-  color: #627d90;
+  color: #65676b;
   cursor: pointer;
 }
 
 .modalClose:hover {
   color: #244e6e;
-  background: #dceff8;
+  background: #e7f3ff;
 }
 
 .modalBody {
@@ -384,11 +384,11 @@
 .formField textarea {
   width: 100%;
   height: 38px;
-  border: 1px solid #cbdce8;
+  border: 1px solid #ced0d4;
   border-radius: 8px;
   padding: 0 10px;
   font-size: 13px;
-  color: #425b6b;
+  color: #65676b;
   background: #ffffff;
 }
 
@@ -401,7 +401,7 @@
 .formField input:focus,
 .formField select:focus,
 .formField textarea:focus {
-  border-color: #4a90c2;
+  border-color: #1877f2;
   outline: none;
   box-shadow: 0 0 0 3px rgba(74, 144, 194, 0.15);
 }
@@ -409,7 +409,7 @@
 .formHint {
   display: block;
   font-size: 11px;
-  color: #627d90;
+  color: #65676b;
   margin-top: 4px;
 }
 
@@ -447,7 +447,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: #dceff8;
+  background: #e7f3ff;
   border-radius: 8px;
   margin-bottom: 18px;
 }
@@ -464,19 +464,19 @@
 .handoverTypeSelect select {
   height: 34px;
   padding: 0 10px;
-  border: 1px solid #76b5d8;
+  border: 1px solid #4599ff;
   border-radius: 6px;
   background: #ffffff;
   font-weight: 600;
-  color: #425b6b;
+  color: #65676b;
 }
 
 .printDoc {
   background: #ffffff;
   padding: 24px;
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   border-radius: 10px;
-  color: #425b6b;
+  color: #65676b;
   line-height: 1.5;
 }
 
@@ -496,13 +496,13 @@
 .docNationMotto {
   font-size: 12px;
   font-weight: 700;
-  color: #425b6b;
+  color: #65676b;
 }
 
 .docDivider {
   display: inline-block;
   width: 140px;
-  border-bottom: 1.5px solid #4a90c2;
+  border-bottom: 1.5px solid #1877f2;
   margin-top: 4px;
 }
 
@@ -519,7 +519,7 @@
   text-align: center;
   font-size: 12px;
   font-style: italic;
-  color: #627d90;
+  color: #65676b;
   margin-bottom: 18px;
 }
 
@@ -540,12 +540,12 @@
 
 .docTable th,
 .docTable td {
-  border: 1px solid #cbdce8;
+  border: 1px solid #ced0d4;
   padding: 6px 8px;
 }
 
 .docTable th {
-  background: #dceff8;
+  background: #e7f3ff;
   color: #244e6e;
   font-weight: 700;
   text-align: center;
@@ -553,7 +553,7 @@
 
 .docTerms {
   font-size: 11.5px;
-  color: #425b6b;
+  color: #65676b;
   line-height: 1.6;
   margin: 16px 0;
   font-style: italic;
@@ -580,7 +580,7 @@
 .signatureHint {
   font-size: 11px;
   font-style: italic;
-  color: #627d90;
+  color: #65676b;
   margin-top: 2px;
 }
 
@@ -590,20 +590,20 @@
 
 /* ── Nút nạp gói & chip chọn nhanh ── */
 .btnPreset {
-  background: #eff8fc;
+  background: #f0f2f5;
   color: #244e6e;
-  border: 1px solid #dceff8;
+  border: 1px solid #e7f3ff;
 }
 
 .btnPreset:hover:not(:disabled) {
-  background: #dceff8;
-  border-color: #76b5d8;
+  background: #e7f3ff;
+  border-color: #4599ff;
 }
 
 .quickChipsBox {
   grid-column: 1 / -1;
-  background: #eff8fc;
-  border: 1px dashed #cbdce8;
+  background: #f0f2f5;
+  border: 1px dashed #ced0d4;
   border-radius: 10px;
   padding: 10px 12px;
   display: flex;
@@ -628,26 +628,26 @@
 
 .quickChipBtn {
   background: #ffffff;
-  border: 1px solid #cbdce8;
+  border: 1px solid #ced0d4;
   border-radius: 6px;
   padding: 4px 8px;
   font-size: 11.5px;
-  color: #425b6b;
+  color: #65676b;
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .quickChipBtn:hover {
-  background: #dceff8;
-  border-color: #76b5d8;
+  background: #e7f3ff;
+  border-color: #4599ff;
   color: #244e6e;
 }
 
 .presetBanner {
-  background: #eff8fc;
-  border: 1px solid #dceff8;
-  border-left: 4px solid #4a90c2;
+  background: #f0f2f5;
+  border: 1px solid #e7f3ff;
+  border-left: 4px solid #1877f2;
   border-radius: 8px;
   padding: 12px 16px;
   display: flex;
@@ -659,7 +659,7 @@
 
 .presetBannerText {
   font-size: 13px;
-  color: #425b6b;
+  color: #65676b;
 }
 
 .presetBannerText strong {
@@ -674,7 +674,7 @@
 }
 
 .presetCard {
-  border: 1px solid #e2ebf2;
+  border: 1px solid #e4e6eb;
   border-radius: 8px;
   padding: 10px 12px;
   display: flex;
@@ -687,13 +687,13 @@
 }
 
 .presetCard:hover {
-  background: #eff8fc;
-  border-color: #76b5d8;
+  background: #f0f2f5;
+  border-color: #4599ff;
 }
 
 .presetCardActive {
-  background: #dceff8;
-  border-color: #4a90c2;
+  background: #e7f3ff;
+  border-color: #1877f2;
 }
 
 .presetCardTitle {
@@ -707,7 +707,7 @@
 
 .presetCardDesc {
   font-size: 11.5px;
-  color: #627d90;
+  color: #65676b;
   line-height: 1.4;
 }
 

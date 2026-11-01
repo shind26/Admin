@@ -4,8 +4,8 @@ import { useState } from "react";
 import styles from "./dashboard.module.css";
 
 function formatMoney(num: number | string | null | undefined): string {
-  if (num === null || num === undefined) return "0 đ";
-  return `${Number(num).toLocaleString("vi-VN")} đ`;
+  if (num === null || num === undefined) return "0\u00A0đ";
+  return `${Number(num).toLocaleString("vi-VN")}\u00A0đ`;
 }
 
 function formatCompactMoney(num: number): string {
@@ -62,9 +62,6 @@ export function RevenueTrendBarChart({ data }: { data: TrendItem[] }) {
       <div className={styles.chartHeader}>
         <div>
           <h3 className={styles.chartTitle}>Doanh thu &amp; Công nợ 6 tháng gần nhất</h3>
-          <p className={styles.chartSub}>
-            So sánh thực tế số tiền Đã thu vs. Còn nợ theo từng tháng
-          </p>
         </div>
         <div className={styles.chartLegend}>
           <span className={styles.legendItem}>
@@ -86,8 +83,8 @@ export function RevenueTrendBarChart({ data }: { data: TrendItem[] }) {
         >
           <defs>
             <linearGradient id="gradCollected" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#4a90c2" />
-              <stop offset="100%" stopColor="#76b5d8" />
+              <stop offset="0%" stopColor="#1877f2" />
+              <stop offset="100%" stopColor="#4599ff" />
             </linearGradient>
             <linearGradient id="gradDebt" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#f59e0b" />
@@ -229,7 +226,7 @@ export function RevenueTrendBarChart({ data }: { data: TrendItem[] }) {
             </div>
             <div className={styles.tooltipDivider} />
             <div className={styles.tooltipRow}>
-              <span>Tổng phát hành:</span>
+              <span>Tổng cộng:</span>
               <strong>{formatMoney(data[hoveredIdx].tongTien)}</strong>
             </div>
           </div>
@@ -273,8 +270,7 @@ export function RevenueBreakdownDonut({ data }: { data: BreakdownData }) {
     <div className={styles.chartCard}>
       <div className={styles.chartHeader}>
         <div>
-          <h3 className={styles.chartTitle}>Cơ cấu nguồn thu</h3>
-          <p className={styles.chartSub}>Tỷ trọng các khoản thu theo hóa đơn phát hành</p>
+          <h3 className={styles.chartTitle}>Các khoản thu</h3>
         </div>
       </div>
 
@@ -292,14 +288,14 @@ export function RevenueBreakdownDonut({ data }: { data: BreakdownData }) {
               strokeWidth="24"
             />
 
-            {/* Segment: Tiền phòng (Xanh da trời đậm #4A90C2) */}
+            {/* Segment: Tiền phòng (Xanh da trời đậm #1877f2) */}
             {pctPhong > 0 && (
               <circle
                 cx="90"
                 cy="90"
                 r={r}
                 fill="transparent"
-                stroke="#4a90c2"
+                stroke="#1877f2"
                 strokeWidth="24"
                 strokeDasharray={`${dashPhong} ${c - dashPhong}`}
                 strokeDashoffset={offsetPhong}
@@ -309,14 +305,14 @@ export function RevenueBreakdownDonut({ data }: { data: BreakdownData }) {
               />
             )}
 
-            {/* Segment: Điện nước (Xanh da trời vừa #76B5D8) */}
+            {/* Segment: Điện nước (Xanh da trời vừa #4599ff) */}
             {pctDienNuoc > 0 && (
               <circle
                 cx="90"
                 cy="90"
                 r={r}
                 fill="transparent"
-                stroke="#76b5d8"
+                stroke="#4599ff"
                 strokeWidth="24"
                 strokeDasharray={`${dashDienNuoc} ${c - dashDienNuoc}`}
                 strokeDashoffset={offsetDienNuoc}
@@ -354,23 +350,23 @@ export function RevenueBreakdownDonut({ data }: { data: BreakdownData }) {
         {/* Legend List */}
         <div className={styles.donutLegendList}>
           <div className={styles.donutLegendRow}>
-            <div className={styles.legendColorBox} style={{ background: "#4a90c2" }} />
+            <div className={styles.legendColorBox} style={{ background: "#1877f2" }} />
             <div className={styles.legendTextCol}>
               <div className={styles.legendCategory}>Tiền phòng</div>
               <div className={styles.legendAmount}>{formatMoney(tienPhong)}</div>
             </div>
-            <div className={styles.legendPercentBadge} style={{ color: "#26597d", background: "#dceff8" }}>
+            <div className={styles.legendPercentBadge} style={{ color: "#1877f2", background: "#e7f3ff" }}>
               {pctPhong}%
             </div>
           </div>
 
           <div className={styles.donutLegendRow}>
-            <div className={styles.legendColorBox} style={{ background: "#76b5d8" }} />
+            <div className={styles.legendColorBox} style={{ background: "#4599ff" }} />
             <div className={styles.legendTextCol}>
               <div className={styles.legendCategory}>Điện &amp; Nước</div>
               <div className={styles.legendAmount}>{formatMoney(tienDienNuoc)}</div>
             </div>
-            <div className={styles.legendPercentBadge} style={{ color: "#26597d", background: "#eff8fc" }}>
+            <div className={styles.legendPercentBadge} style={{ color: "#1877f2", background: "#f0f2f5" }}>
               {pctDienNuoc}%
             </div>
           </div>

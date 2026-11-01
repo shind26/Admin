@@ -25,8 +25,8 @@ function money(formData: FormData, key: string) {
 async function requireAdmin(): Promise<string | null> {
   const account = await getCurrentAccount();
   if (!account) return "Phiên đăng nhập đã hết hạn.";
-  if (account.vai_tro !== "Admin")
-    return "Chỉ tài khoản Admin mới được sửa bảng giá dịch vụ.";
+  if (account.vai_tro !== "Admin" && account.vai_tro !== "QuanLy")
+    return "Chỉ tài khoản Admin hoặc Quản lý mới được sửa bảng giá dịch vụ.";
   return null;
 }
 
@@ -41,6 +41,8 @@ export async function createService(
   const tenDichVu = text(formData, "tenDichVu");
   const donViTinh = text(formData, "donViTinh");
   const donGia = money(formData, "donGia");
+  const rawDangApDung = text(formData, "dangApDung");
+  const dangApDung = rawDangApDung !== "false";
 
   if (!tenDichVu) return { error: "Vui lòng nhập tên dịch vụ.", success: null };
   if (!donViTinh) return { error: "Vui lòng nhập đơn vị tính.", success: null };
@@ -57,14 +59,15 @@ export async function createService(
       return { error: "Dịch vụ này đã tồn tại.", success: null };
 
     await getDbPool().query(
-      `INSERT INTO public.dich_vu (ma_dich_vu, ten_dich_vu, don_gia, don_vi_tinh, ghi_chu)
-       VALUES ($1,$2,$3,$4,$5)`,
+      `INSERT INTO public.dich_vu (ma_dich_vu, ten_dich_vu, don_gia, don_vi_tinh, ghi_chu, dang_ap_dung)
+       VALUES ($1,$2,$3,$4,$5,$6)`,
       [
         "DV" + crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase(),
         tenDichVu,
         donGia,
         donViTinh,
         text(formData, "ghiChu") || null,
+        dangApDung,
       ],
     );
   } catch {
@@ -87,6 +90,8 @@ export async function updateService(
   const tenDichVu = text(formData, "tenDichVu");
   const donViTinh = text(formData, "donViTinh");
   const donGia = money(formData, "donGia");
+  const rawDangApDung = text(formData, "dangApDung");
+  const dangApDung = rawDangApDung !== "false";
 
   if (!maDichVu) return { error: "Thiếu mã dịch vụ.", success: null };
   if (!tenDichVu) return { error: "Vui lòng nhập tên dịch vụ.", success: null };
@@ -105,7 +110,7 @@ export async function updateService(
 
     const { rowCount } = await getDbPool().query(
       `UPDATE public.dich_vu
-       SET ten_dich_vu = $2, don_gia = $3, don_vi_tinh = $4, ghi_chu = $5
+       SET ten_dich_vu = $2, don_gia = $3, don_vi_tinh = $4, ghi_chu = $5, dang_ap_dung = $6
        WHERE ma_dich_vu = $1`,
       [
         maDichVu,
@@ -113,11 +118,13 @@ export async function updateService(
         donGia,
         donViTinh,
         text(formData, "ghiChu") || null,
+        dangApDung,
       ],
     );
     if (rowCount === 0)
       return { error: "Không tìm thấy dịch vụ.", success: null };
-  } catch {
+  } catch (err) {
+    console.error("updateService error:", err);
     return { error: "Không thể cập nhật dịch vụ. Hãy thử lại.", success: null };
   }
 
@@ -162,4 +169,32 @@ export async function deleteService(
 
   revalidatePath("/dich-vu");
   return { error: null, success: "Đã xóa dịch vụ." };
+}
+
+
+/** Bật/tắt trạng thái áp dụng của dịch vụ (1-click) */
+export async function toggleServiceStatus(
+  maDichVu: string,
+): Promise<{ error: string | null; success: string | null }> {
+  const denied = await requireAdmin();
+  if (denied) return { error: denied, success: null };
+
+  if (!maDichVu) return { error: "Thiếu mã dịch vụ.", success: null };
+
+  try {
+    const { rows } = await getDbPool().query<{ dang_ap_dung: boolean }>(
+      `UPDATE public.dich_vu
+       SET dang_ap_dung = NOT COALESCE(dang_ap_dung, true)
+       WHERE ma_dich_vu = $1
+       RETURNING dang_ap_dung`,
+      [maDichVu],
+    );
+    if (rows.length === 0) return { error: "Không tìm thấy dịch vụ.", success: null };
+  } catch (err) {
+    console.error("Toggle service error:", err);
+    return { error: "Không thể đổi trạng thái dịch vụ.", success: null };
+  }
+
+  revalidatePath("/dich-vu");
+  return { error: null, success: "Cập nhật trạng thái áp dụng thành công." };
 }

@@ -24,7 +24,7 @@ export function HandoverItemsEditor({
   furnitureList,
   name = "handoverItemsJson",
   title = "Biên bản bàn giao tài sản lúc nhận phòng",
-  hint = "Kiểm tra và chỉnh sửa số lượng, tình trạng từng món hoặc thêm đồ khách thuê trước khi tạo hợp đồng.",
+  hint = "",
 }: {
   furnitureList?: string[] | null;
   name?: string;
