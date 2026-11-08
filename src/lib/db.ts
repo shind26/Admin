@@ -10,10 +10,11 @@ export function getDbPool(): Pool {
     throw new Error("Thiếu DATABASE_URL trong .env.local.");
   }
 
-  // Supabase Pooler: cổng 6543 là Transaction mode (ngắt kết nối khi socket nhàn rỗi).
-  // Tự động chuyển sang 5432 (Session mode) theo đúng khuyến nghị để pool hoạt động bền bỉ.
-  if (connectionString.includes(".pooler.supabase.com:6543")) {
-    connectionString = connectionString.replace(":6543", ":5432");
+  // Supabase Pooler: Cổng 6543 là Transaction mode (chuẩn khuyến nghị của Supabase cho môi trường Serverless / Vercel).
+  // Cổng 5432 (Session mode) bị Supabase giới hạn tối đa 15 kết nối (EMAXCONNSESSION) khiến Vercel bị sập khi nhiều truy vấn chạy đồng thời.
+  // Tự động chuyển sang cổng 6543 nếu đang dùng 5432 trên pooler.
+  if (connectionString.includes(".pooler.supabase.com:5432")) {
+    connectionString = connectionString.replace(":5432", ":6543");
   }
 
   if (!globalForDb.dbPool) {
