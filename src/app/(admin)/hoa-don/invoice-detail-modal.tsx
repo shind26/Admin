@@ -63,9 +63,9 @@ export function InvoiceDetailTrigger({
             cursor: "pointer",
             textAlign: "left",
             font: "inherit",
-            color: "#1877f2",
+            color: "var(--primary)",
             fontWeight: 700,
-            textDecoration: "underline",
+            textDecoration: "none",
           }}
           title="Bấm để xem chi tiết hóa đơn"
         >
@@ -106,7 +106,7 @@ export function InvoiceDetailTrigger({
                     alignItems: "center",
                     justifyContent: "center",
                     padding: "60px 0",
-                    color: "#64748b",
+                    color: "var(--text-muted)",
                     gap: 12,
                   }}
                 >
@@ -117,9 +117,10 @@ export function InvoiceDetailTrigger({
                 <div
                   style={{
                     padding: 24,
-                    background: "#fef2f2",
-                    color: "#991b1b",
-                    borderRadius: 8,
+                    background: "var(--status-danger-bg)",
+                    color: "var(--status-danger-text)",
+                    border: "1px solid var(--status-danger-border)",
+                    borderRadius: "var(--radius-md)",
                     textAlign: "center",
                   }}
                 >

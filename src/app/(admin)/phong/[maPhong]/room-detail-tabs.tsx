@@ -1,9 +1,14 @@
 "use client";
 
 import { useState } from "react";
-
-import { Droplets, Home, Users, Zap } from "lucide-react";
-import type { RoomRentalHistoryRow, RoomReservationDetail, RoomUtilitySummary, TenantOption } from "@/lib/queries";
+import { Droplets, Home, Pencil, Users, Zap } from "lucide-react";
+import type {
+  RoomRentalHistoryRow,
+  RoomReservationDetail,
+  RoomUtilitySummary,
+  TenantOption,
+} from "@/lib/queries";
+import { RoomForm, type RoomFormData } from "../room-forms";
 import { RoomRentalHistory } from "./rental-history";
 import { RoomUtilitySummaryCard } from "./room-utility-summary";
 import { RoomReservationManager } from "./room-reservation";
@@ -39,6 +44,16 @@ type RoomDetailTabsProps = {
   utilitySummary: RoomUtilitySummary;
   reservation: RoomReservationDetail | null;
   tenants: TenantOption[];
+  buildings: string[];
+  roomTypes: {
+    ma_loai_phong: string;
+    ten_loai_phong: string;
+    don_gia_co_ban?: string;
+    tien_ich?: string[] | null;
+  }[];
+  editableBuilding: boolean;
+  formData: RoomFormData;
+  initialTab?: "info" | "tenants" | "utilities" | "edit";
 };
 
 export function RoomDetailTabs({
@@ -47,10 +62,19 @@ export function RoomDetailTabs({
   utilitySummary,
   reservation,
   tenants,
+  buildings,
+  roomTypes,
+  editableBuilding,
+  formData,
+  initialTab = "info",
 }: RoomDetailTabsProps) {
-  const [activeTab, setActiveTab] = useState<"info" | "tenants" | "utilities">("info");
+  const [activeTab, setActiveTab] = useState<"info" | "tenants" | "utilities" | "edit">(initialTab);
+  const [prevInitialTab, setPrevInitialTab] = useState(initialTab);
 
-  const hasActiveTenant = !!room.khach_thue;
+  if (prevInitialTab !== initialTab) {
+    setPrevInitialTab(initialTab);
+    setActiveTab(initialTab);
+  }
 
   return (
     <div className={styles.tabsContainer}>
@@ -72,7 +96,6 @@ export function RoomDetailTabs({
         >
           <Users size={15} />
           Khách thuê &amp; Hợp đồng
-          {hasActiveTenant && <span className={styles.tabBadge}>Đang ở</span>}
         </button>
 
         <button
@@ -82,6 +105,15 @@ export function RoomDetailTabs({
         >
           <Zap size={15} />
           Điện &amp; Nước
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab("edit")}
+          className={`${styles.tabBtn} ${activeTab === "edit" ? styles.tabBtnActive : ""}`}
+        >
+          <Pencil size={15} />
+          Sửa thông tin phòng
         </button>
       </nav>
 
@@ -105,77 +137,69 @@ export function RoomDetailTabs({
               </div>
             </div>
             <div className={styles.metricCard}>
-              <div className={styles.metricLabel}>Vị trí</div>
-              <div className={styles.metricValue}>
-                {room.toa_nha || "—"}
-                {room.tang !== null ? ` • Tầng ${room.tang}` : ""}
+              <div className={styles.metricLabel}>Loại phòng</div>
+              <div className={styles.metricValueSmall}>
+                {room.ten_loai_phong || "Tiêu chuẩn"}
               </div>
             </div>
           </div>
 
-          {/* Nội thất sẵn có */}
-          <section className={styles.section}>
-            <div className={styles.sectionHeadRow}>
-              <h2 className={styles.sectionTitle}>Nội thất bàn giao</h2>
-              <span className={styles.countBadge}>
-                {room.noi_that_san_co?.length ?? 0} món
-              </span>
-            </div>
-
+          {/* Nội thất sẵn có (Bàn giao) */}
+          <div className={styles.detailCard}>
+            <div className={styles.metricLabel}>Nội thất sẵn có (Bàn giao)</div>
             {room.noi_that_san_co && room.noi_that_san_co.length > 0 ? (
-              <div className={styles.chips}>
+              <div className={styles.chipsGrid}>
                 {room.noi_that_san_co.map((item) => (
-                  <span key={item} className={styles.chip}>
+                  <span key={item} className={styles.chipItem}>
+                    <span className={styles.chipDot} />
                     {item}
                   </span>
                 ))}
               </div>
             ) : (
               <p className={styles.chipEmpty}>
-                Chưa ghi nhận danh mục nội thất sẵn có cho phòng này.
+                Chưa thiết lập danh mục nội thất sẵn có cho phòng này.
               </p>
             )}
-          </section>
+          </div>
 
-          {/* Tiện ích chung theo loại phòng */}
-          {room.loai_phong_tien_ich && room.loai_phong_tien_ich.length > 0 && (
-            <section className={styles.section}>
-              <div className={styles.sectionHeadRow}>
-                <h2 className={styles.sectionTitle}>Tiện ích loại phòng</h2>
-                <span className={styles.muted}>
-                  {room.ten_loai_phong || "Tiêu chuẩn"}
-                </span>
-              </div>
-              <div className={styles.chips}>
+          {/* Tiện ích chung kế thừa */}
+          <div className={styles.detailCard}>
+            <div className={styles.metricLabel}>Tiện ích tòa nhà</div>
+            {room.loai_phong_tien_ich && room.loai_phong_tien_ich.length > 0 ? (
+              <div className={styles.chipsGrid}>
                 {room.loai_phong_tien_ich.map((item) => (
-                  <span key={item} className={styles.chipMuted}>
+                  <span key={item} className={styles.chipItemAccent}>
+                    <span className={styles.chipDotUtility} />
                     {item}
                   </span>
                 ))}
               </div>
-            </section>
-          )}
+            ) : (
+              <p className={styles.chipEmpty}>Loại phòng chưa ghi nhận tiện ích chung.</p>
+            )}
+          </div>
 
-          {/* Mô tả chi tiết */}
-          {room.mo_ta_ngan && (
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Mô tả phòng</h2>
-              <p className={styles.descriptionText}>{room.mo_ta_ngan}</p>
-            </section>
-          )}
+          {/* Mô tả phòng nếu có */}
+          <div className={styles.detailCard}>
+            <div className={styles.metricLabel}>Mô tả chi tiết</div>
+            <p className={room.mo_ta_ngan ? styles.descriptionText : styles.chipEmpty}>
+              {room.mo_ta_ngan || "Chưa có mô tả chi tiết cho phòng này."}
+            </p>
+          </div>
         </div>
       )}
 
       {/* ── TAB 2: KHÁCH THUÊ & HỢP ĐỒNG ── */}
       {activeTab === "tenants" && (
         <div className={styles.tabContent}>
-          {/* Thông tin hợp đồng & Lịch sử */}
+          {/* Lịch sử thuê phòng (Đang ở & Quá khứ) */}
           <section className={styles.section}>
             <RoomRentalHistory maPhong={room.ma_phong} history={rentalHistory} />
           </section>
 
-          {/* Quản lý Đặt cọc & Giữ chỗ (khi phòng trống hoặc có khách đặt cọc) */}
-          {(room.trang_thai === "Trống" || reservation) && (
+          {/* Quản lý Đặt cọc giữ chỗ & Khóa tạm phòng */}
+          {room.trang_thai !== "Đang thuê" && (
             <RoomReservationManager
               maPhong={room.ma_phong}
               tenPhong={room.ten_hien_thi || room.ma_phong}
@@ -218,7 +242,7 @@ export function RoomDetailTabs({
                 </div>
                 <div>
                   <div className={styles.metricLabel}>Chỉ số nước hiện tại</div>
-                  <div className={styles.metricValueInfo}>
+                  <div className={styles.metricValuePrimary}>
                     {room.chi_so_nuoc
                       ? `${Number(room.chi_so_nuoc).toLocaleString("vi-VN")} m³`
                       : "0 m³"}
@@ -231,6 +255,27 @@ export function RoomDetailTabs({
           {/* Bảng tổng hợp hóa đơn & tiêu thụ điện nước các tháng */}
           <section className={styles.section}>
             <RoomUtilitySummaryCard maPhong={room.ma_phong} summary={utilitySummary} />
+          </section>
+        </div>
+      )}
+
+      {/* ── TAB 4: SỬA THÔNG TIN PHÒNG ── */}
+      {activeTab === "edit" && (
+        <div className={styles.tabContent}>
+          <section className={styles.section} style={{ padding: "18px 22px" }}>
+            <div style={{ marginBottom: 18, borderBottom: "1px solid var(--border)", paddingBottom: 12 }}>
+              <h2 className={styles.sectionTitle} style={{ margin: 0, fontSize: 16 }}>
+                Chỉnh sửa phòng {room.ten_hien_thi || room.ma_phong}
+              </h2>
+            </div>
+            <RoomForm
+              mode="edit"
+              room={formData}
+              buildings={buildings}
+              roomTypes={roomTypes}
+              defaultBuilding={room.toa_nha ?? ""}
+              editableBuilding={editableBuilding}
+            />
           </section>
         </div>
       )}

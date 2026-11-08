@@ -48,17 +48,17 @@ export function PendingExtensionsQueue({
     <section
       style={{
         marginBottom: 20,
-        background: "#ffffff",
+        background: "var(--bg-surface)",
         borderRadius: 10,
-        border: "1px solid #bbf7d0",
+        border: "1px solid var(--status-success-border)",
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
       }}
     >
       {/* Header */}
       <div
         style={{
-          background: "#f0fdf4",
-          borderBottom: "1px solid #bbf7d0",
+          background: "var(--status-success-bg)",
+          borderBottom: "1px solid var(--status-success-border)",
           padding: "12px 18px",
           display: "flex",
           justifyContent: "space-between",
@@ -70,8 +70,8 @@ export function PendingExtensionsQueue({
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div
             style={{
-              background: "#16a34a",
-              color: "#ffffff",
+              background: "var(--status-success-text)",
+              color: "var(--bg-surface)",
               width: 28,
               height: 28,
               borderRadius: 6,
@@ -82,45 +82,45 @@ export function PendingExtensionsQueue({
           >
             <CalendarCheck size={15} />
           </div>
-          <h2 style={{ fontSize: 14, fontWeight: 700, color: "#166534", margin: 0 }}>
+          <h2 style={{ fontSize: 14, fontWeight: 700, color: "var(--status-success-text)", margin: 0 }}>
             Yêu cầu gia hạn hợp đồng từ Cư dân
           </h2>
           <span
             style={{
-              background: "#dcfce7",
-              color: "#15803d",
+              background: "var(--status-success-bg)",
+              color: "var(--status-success-text)",
               fontSize: 11.5,
               fontWeight: 800,
               padding: "2px 8px",
               borderRadius: 12,
-              border: "1px solid #86efac",
+              border: "1px solid var(--status-success-border)",
             }}
           >
             {requests.length} yêu cầu chờ duyệt
           </span>
         </div>
-        <span style={{ fontSize: 12, color: "#15803d" }}>
-          Cư dân gửi từ Mobile App • BQL xem xét và duyệt gia hạn
+        <span style={{ fontSize: 12, color: "var(--status-success-text)" }}>
+          Cư dân gửi từ Mobile App — BQL xem xét và duyệt gia hạn
         </span>
       </div>
 
       {approveState.success && (
-        <div style={{ padding: "8px 18px", background: "#dcfce7", color: "#15803d", fontSize: 13, fontWeight: 600 }}>
+        <div style={{ padding: "8px 18px", background: "var(--status-success-bg)", color: "var(--status-success-text)", fontSize: 13, fontWeight: 600 }}>
           {approveState.success}
         </div>
       )}
       {approveState.error && (
-        <div style={{ padding: "8px 18px", background: "#fee2e2", color: "#991b1b", fontSize: 13, fontWeight: 600 }}>
+        <div style={{ padding: "8px 18px", background: "var(--status-danger-bg)", color: "var(--status-danger-text)", fontSize: 13, fontWeight: 600 }}>
           {approveState.error}
         </div>
       )}
       {rejectState.success && (
-        <div style={{ padding: "8px 18px", background: "#fef3c7", color: "#92400e", fontSize: 13, fontWeight: 600 }}>
+        <div style={{ padding: "8px 18px", background: "var(--status-warning-bg)", color: "var(--status-warning-text)", fontSize: 13, fontWeight: 600 }}>
           {rejectState.success}
         </div>
       )}
       {rejectState.error && (
-        <div style={{ padding: "8px 18px", background: "#fee2e2", color: "#991b1b", fontSize: 13, fontWeight: 600 }}>
+        <div style={{ padding: "8px 18px", background: "var(--status-danger-bg)", color: "var(--status-danger-text)", fontSize: 13, fontWeight: 600 }}>
           {rejectState.error}
         </div>
       )}
@@ -131,10 +131,10 @@ export function PendingExtensionsQueue({
           <div
             key={r.ma_phu_luc}
             style={{
-              border: "1px solid #e2e8f0",
+              border: "1px solid var(--border)",
               borderRadius: 8,
               padding: "12px 16px",
-              background: "#fafafa",
+              background: "var(--bg-subtle)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
@@ -144,18 +144,18 @@ export function PendingExtensionsQueue({
           >
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                <span style={{ fontWeight: 800, color: "#0f172a", fontSize: 14 }}>
+                <span style={{ fontWeight: 800, color: "var(--text-main)", fontSize: 14 }}>
                   Phòng {r.ten_phong || r.ma_phong}
                 </span>
-                <span style={{ color: "#64748b", fontSize: 12.5 }}>• {r.toa_nha}</span>
-                <span style={{ color: "#64748b", fontSize: 12.5 }}>
-                  • Cư dân: <strong>{r.ten_khach || "—"}</strong> ({r.so_dt || "—"})
+                <span style={{ color: "var(--text-muted)", fontSize: 12.5 }}>{r.toa_nha}</span>
+                <span style={{ color: "var(--text-muted)", fontSize: 12.5 }}>
+                  Cư dân: <strong>{r.ten_khach || "—"}</strong> ({r.so_dt || "—"})
                 </span>
                 <Link
                   href={`/hop-dong/${r.ma_hop_dong}`}
                   style={{
                     fontSize: 11.5,
-                    color: "#2563eb",
+                    color: "var(--primary)",
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 3,
@@ -166,15 +166,15 @@ export function PendingExtensionsQueue({
                 </Link>
               </div>
 
-              <div style={{ fontSize: 12.5, color: "#334155", marginTop: 4 }}>
+              <div style={{ fontSize: 12.5, color: "var(--text-main)", marginTop: 4 }}>
                 Hạn cũ: <strong>{date(r.ngay_kt_hien_tai)}</strong> → Xin gia hạn đến:{" "}
-                <strong style={{ color: "#16a34a", fontSize: 13 }}>{date(r.ngay_gia_han_den)}</strong>
-                {" • "}
+                <strong style={{ color: "var(--status-success-text)", fontSize: 13 }}>{date(r.ngay_gia_han_den)}</strong>
+                {"    "}
                 Giá mới: <strong>{money(r.gia_thue_moi || r.gia_thue_hien_tai)}/tháng</strong>
               </div>
 
               {r.noi_dung_dieu_chinh && (
-                <div style={{ fontSize: 11.5, color: "#64748b", marginTop: 2, fontStyle: "italic" }}>
+                <div style={{ fontSize: 11.5, color: "var(--text-muted)", marginTop: 2, fontStyle: "italic" }}>
                   &ldquo;{r.noi_dung_dieu_chinh}&rdquo;
                 </div>
               )}
@@ -195,7 +195,7 @@ export function PendingExtensionsQueue({
                     style={{
                       padding: "4px 8px",
                       borderRadius: 4,
-                      border: "1px solid #cbd5e1",
+                      border: "1px solid var(--border)",
                       fontSize: 12,
                       width: 180,
                     }}
@@ -204,8 +204,8 @@ export function PendingExtensionsQueue({
                     type="submit"
                     disabled={rejectPending}
                     style={{
-                      background: "#ef4444",
-                      color: "#fff",
+                      background: "var(--status-danger-text)",
+                      color: "var(--bg-surface)",
                       border: "none",
                       padding: "5px 10px",
                       borderRadius: 6,
@@ -220,8 +220,8 @@ export function PendingExtensionsQueue({
                     type="button"
                     onClick={() => setRejectingId(null)}
                     style={{
-                      background: "#e2e8f0",
-                      color: "#475569",
+                      background: "var(--border)",
+                      color: "var(--text-muted)",
                       border: "none",
                       padding: "5px 8px",
                       borderRadius: 6,
@@ -241,8 +241,8 @@ export function PendingExtensionsQueue({
                       type="submit"
                       disabled={approvePending}
                       style={{
-                        background: "#16a34a",
-                        color: "#ffffff",
+                        background: "var(--status-success-text)",
+                        color: "var(--bg-surface)",
                         border: "none",
                         padding: "6px 14px",
                         borderRadius: 6,
@@ -271,9 +271,9 @@ export function PendingExtensionsQueue({
                       setRejectReason("");
                     }}
                     style={{
-                      background: "#fee2e2",
-                      color: "#991b1b",
-                      border: "1px solid #fecaca",
+                      background: "var(--status-danger-bg)",
+                      color: "var(--status-danger-text)",
+                      border: "1px solid var(--status-danger-border)",
                       padding: "5px 12px",
                       borderRadius: 6,
                       fontSize: 12,

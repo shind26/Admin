@@ -46,16 +46,16 @@ export function RevenueTrendBarChart({ data }: { data: TrendItem[] }) {
 
   const chartHeight = 220;
   const chartWidth = 520;
-  const paddingLeft = 60;
-  const paddingRight = 20;
-  const paddingTop = 25;
-  const paddingBottom = 35;
+  const paddingLeft = 56;
+  const paddingRight = 16;
+  const paddingTop = 20;
+  const paddingBottom = 32;
 
   const innerWidth = chartWidth - paddingLeft - paddingRight;
   const innerHeight = chartHeight - paddingTop - paddingBottom;
 
   const barGroupWidth = innerWidth / data.length;
-  const barWidth = Math.min(22, (barGroupWidth - 14) / 2);
+  const barWidth = Math.min(20, (barGroupWidth - 12) / 2);
 
   return (
     <div className={styles.chartCard}>
@@ -81,17 +81,6 @@ export function RevenueTrendBarChart({ data }: { data: TrendItem[] }) {
           className={styles.chartSvg}
           preserveAspectRatio="xMidYMid meet"
         >
-          <defs>
-            <linearGradient id="gradCollected" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#1877f2" />
-              <stop offset="100%" stopColor="#4599ff" />
-            </linearGradient>
-            <linearGradient id="gradDebt" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#f59e0b" />
-              <stop offset="100%" stopColor="#d97706" />
-            </linearGradient>
-          </defs>
-
           {/* Grid lines & Y-axis labels */}
           {[0, 1, 2, 3, 4].map((stepIdx) => {
             const val = (ceiling / 4) * stepIdx;
@@ -103,17 +92,17 @@ export function RevenueTrendBarChart({ data }: { data: TrendItem[] }) {
                   y1={y}
                   x2={chartWidth - paddingRight}
                   y2={y}
-                  stroke="#e2e8f0"
-                  strokeDasharray={stepIdx === 0 ? "none" : "3,3"}
-                  strokeWidth={stepIdx === 0 ? "1.5" : "1"}
+                  stroke="var(--border)"
+                  strokeDasharray={stepIdx === 0 ? "none" : "2,2"}
+                  strokeWidth="1"
                 />
                 <text
                   x={paddingLeft - 8}
                   y={y + 4}
                   textAnchor="end"
-                  fontSize="11"
-                  fill="#64748b"
-                  fontFamily="system-ui, sans-serif"
+                  fontSize="10.5"
+                  fill="var(--text-muted)"
+                  fontFamily="inherit"
                 >
                   {formatCompactMoney(val)}
                 </text>
@@ -121,24 +110,25 @@ export function RevenueTrendBarChart({ data }: { data: TrendItem[] }) {
             );
           })}
 
-          {/* Bars */}
+          {/* Bar Groups */}
           {data.map((item, idx) => {
-            const groupX = paddingLeft + idx * barGroupWidth;
-            const center = groupX + barGroupWidth / 2;
+            const groupCenterX = paddingLeft + (idx + 0.5) * barGroupWidth;
 
-            const collectedHeight = Math.max(
-              item.daThu > 0 ? 4 : 0,
+            // Chiều cao cột Đã thu
+            const hCollected = Math.max(
+              item.daThu > 0 ? 3 : 0,
               (item.daThu / ceiling) * innerHeight,
             );
-            const collectedY = paddingTop + innerHeight - collectedHeight;
-            const collectedX = center - barWidth - 2;
+            const yCollected = paddingTop + innerHeight - hCollected;
+            const xCollected = groupCenterX - barWidth - 1.5;
 
-            const debtHeight = Math.max(
-              item.conNo > 0 ? 4 : 0,
+            // Chiều cao cột Còn nợ
+            const hDebt = Math.max(
+              item.conNo > 0 ? 3 : 0,
               (item.conNo / ceiling) * innerHeight,
             );
-            const debtY = paddingTop + innerHeight - debtHeight;
-            const debtX = center + 2;
+            const yDebt = paddingTop + innerHeight - hDebt;
+            const xDebt = groupCenterX + 1.5;
 
             const isHovered = hoveredIdx === idx;
 
@@ -149,52 +139,50 @@ export function RevenueTrendBarChart({ data }: { data: TrendItem[] }) {
                 onMouseLeave={() => setHoveredIdx(null)}
                 style={{ cursor: "pointer" }}
               >
-                {/* Background hover highlight */}
+                {/* Highlight background khi hover */}
                 {isHovered && (
                   <rect
-                    x={groupX + 4}
+                    x={paddingLeft + idx * barGroupWidth + 2}
                     y={paddingTop}
-                    width={barGroupWidth - 8}
+                    width={barGroupWidth - 4}
                     height={innerHeight}
-                    fill="#f1f5f9"
-                    opacity="0.6"
-                    rx="6"
+                    fill="var(--bg-subtle)"
+                    rx="4"
+                    opacity="0.8"
                   />
                 )}
 
-                {/* Bar: Đã thu */}
+                {/* Cột Đã thu (Solid Primary) */}
                 <rect
-                  x={collectedX}
-                  y={collectedY}
+                  x={xCollected}
+                  y={yCollected}
                   width={barWidth}
-                  height={collectedHeight}
-                  fill="url(#gradCollected)"
-                  rx="4"
-                  opacity={hoveredIdx !== null && !isHovered ? 0.6 : 1}
-                  className={styles.barTransition}
+                  height={hCollected}
+                  fill="var(--primary)"
+                  rx="3"
+                  opacity={isHovered ? 1 : 0.9}
                 />
 
-                {/* Bar: Còn nợ */}
+                {/* Cột Còn nợ (Solid Amber) */}
                 <rect
-                  x={debtX}
-                  y={debtY}
+                  x={xDebt}
+                  y={yDebt}
                   width={barWidth}
-                  height={debtHeight}
-                  fill="url(#gradDebt)"
-                  rx="4"
-                  opacity={hoveredIdx !== null && !isHovered ? 0.6 : 1}
-                  className={styles.barTransition}
+                  height={hDebt}
+                  fill="var(--status-warning-text)"
+                  rx="3"
+                  opacity={isHovered ? 1 : 0.85}
                 />
 
-                {/* X-axis Month Label */}
+                {/* Label tháng dưới đáy */}
                 <text
-                  x={center}
+                  x={groupCenterX}
                   y={chartHeight - 12}
                   textAnchor="middle"
-                  fontSize="12"
-                  fontWeight={isHovered ? 700 : 500}
-                  fill={isHovered ? "#0f172a" : "#64748b"}
-                  fontFamily="system-ui, sans-serif"
+                  fontSize="11"
+                  fontWeight={isHovered ? "600" : "500"}
+                  fill={isHovered ? "var(--text-main)" : "var(--text-muted)"}
+                  fontFamily="inherit"
                 >
                   {item.label}
                 </text>
@@ -209,24 +197,28 @@ export function RevenueTrendBarChart({ data }: { data: TrendItem[] }) {
             className={styles.tooltipBox}
             style={{
               left: `${((paddingLeft + (hoveredIdx + 0.5) * barGroupWidth) / chartWidth) * 100}%`,
+              transform:
+                hoveredIdx === 0
+                  ? "translateX(0%)"
+                  : hoveredIdx >= data.length - 2
+                  ? "translateX(-100%)"
+                  : "translateX(-50%)",
+              top: 12,
             }}
           >
-            <div className={styles.tooltipTitle}>{data[hoveredIdx].label}</div>
-            <div className={styles.tooltipRow}>
-              <span className={styles.tooltipDotOk} />
+            <div style={{ fontWeight: 600, color: "var(--text-main)", marginBottom: 4 }}>
+              {data[hoveredIdx].label}
+            </div>
+            <div style={{ display: "flex", gap: 6, color: "var(--text-secondary)", marginBottom: 2 }}>
               <span>Đã thu:</span>
-              <strong>{formatMoney(data[hoveredIdx].daThu)}</strong>
+              <strong style={{ color: "var(--primary-text)" }}>{formatMoney(data[hoveredIdx].daThu)}</strong>
             </div>
-            <div className={styles.tooltipRow}>
-              <span className={styles.tooltipDotWarn} />
+            <div style={{ display: "flex", gap: 6, color: "var(--text-secondary)", marginBottom: 4 }}>
               <span>Còn nợ:</span>
-              <strong style={{ color: "#d97706" }}>
-                {formatMoney(data[hoveredIdx].conNo)}
-              </strong>
+              <strong style={{ color: "var(--status-warning-text)" }}>{formatMoney(data[hoveredIdx].conNo)}</strong>
             </div>
-            <div className={styles.tooltipDivider} />
-            <div className={styles.tooltipRow}>
-              <span>Tổng cộng:</span>
+            <div style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: 4, display: "flex", gap: 6, color: "var(--text-main)" }}>
+              <span>Tổng:</span>
               <strong>{formatMoney(data[hoveredIdx].tongTien)}</strong>
             </div>
           </div>
@@ -254,9 +246,9 @@ export function RevenueBreakdownDonut({ data }: { data: BreakdownData }) {
   const pctDienNuoc = Math.round((tienDienNuoc / total) * 1000) / 10;
   const pctDichVu = Math.max(0, Math.round((100 - pctPhong - pctDienNuoc) * 10) / 10);
 
-  // Tính toán stroke-dasharray và stroke-dashoffset cho vòng tròn SVG (bán kính R = 64)
+  // Bán kính R = 64
   const r = 64;
-  const c = 2 * Math.PI * r; // Chu vi ~ 402.12
+  const c = 2 * Math.PI * r;
 
   const dashPhong = (pctPhong / 100) * c;
   const dashDienNuoc = (pctDienNuoc / 100) * c;
@@ -274,116 +266,111 @@ export function RevenueBreakdownDonut({ data }: { data: BreakdownData }) {
         </div>
       </div>
 
-      <div className={styles.donutLayout}>
+      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 20, alignItems: "center" }}>
         {/* SVG Donut */}
-        <div className={styles.donutSvgContainer}>
-          <svg viewBox="0 0 180 180" className={styles.donutSvg}>
+        <div style={{ position: "relative", width: 140, height: 140, margin: "0 auto" }}>
+          <svg viewBox="0 0 180 180" style={{ width: 140, height: 140 }}>
             {/* Background Circle */}
             <circle
               cx="90"
               cy="90"
               r={r}
               fill="transparent"
-              stroke="#f1f5f9"
-              strokeWidth="24"
+              stroke="var(--bg-subtle)"
+              strokeWidth="20"
             />
 
-            {/* Segment: Tiền phòng (Xanh da trời đậm #1877f2) */}
+            {/* Segment: Tiền phòng (Primary) */}
             {pctPhong > 0 && (
               <circle
                 cx="90"
                 cy="90"
                 r={r}
                 fill="transparent"
-                stroke="#1877f2"
-                strokeWidth="24"
+                stroke="var(--primary)"
+                strokeWidth="20"
                 strokeDasharray={`${dashPhong} ${c - dashPhong}`}
                 strokeDashoffset={offsetPhong}
                 transform="rotate(-90 90 90)"
-                strokeLinecap="round"
-                className={styles.donutSegment}
               />
             )}
 
-            {/* Segment: Điện nước (Xanh da trời vừa #4599ff) */}
+            {/* Segment: Điện nước (Neutral Slate) */}
             {pctDienNuoc > 0 && (
               <circle
                 cx="90"
                 cy="90"
                 r={r}
                 fill="transparent"
-                stroke="#4599ff"
-                strokeWidth="24"
+                stroke="var(--text-muted)"
+                strokeWidth="20"
                 strokeDasharray={`${dashDienNuoc} ${c - dashDienNuoc}`}
                 strokeDashoffset={offsetDienNuoc}
                 transform="rotate(-90 90 90)"
-                strokeLinecap="round"
-                className={styles.donutSegment}
               />
             )}
 
-            {/* Segment: Dịch vụ khác (Điểm nhấn cam vàng) */}
+            {/* Segment: Dịch vụ khác (Amber) */}
             {pctDichVu > 0 && (
               <circle
                 cx="90"
                 cy="90"
                 r={r}
                 fill="transparent"
-                stroke="#f59e0b"
-                strokeWidth="24"
+                stroke="var(--status-warning-text)"
+                strokeWidth="20"
                 strokeDasharray={`${dashDichVu} ${c - dashDichVu}`}
                 strokeDashoffset={offsetDichVu}
                 transform="rotate(-90 90 90)"
-                strokeLinecap="round"
-                className={styles.donutSegment}
               />
             )}
           </svg>
 
           {/* Donut Center Info */}
-          <div className={styles.donutCenter}>
-            <span className={styles.donutCenterLabel}>Tổng tiền</span>
-            <span className={styles.donutCenterVal}>{formatCompactMoney(tong)}</span>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <span style={{ fontSize: 10.5, color: "var(--text-muted)", textTransform: "uppercase" }}>Tổng</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-main)" }}>
+              {formatCompactMoney(tong)}
+            </span>
           </div>
         </div>
 
         {/* Legend List */}
-        <div className={styles.donutLegendList}>
-          <div className={styles.donutLegendRow}>
-            <div className={styles.legendColorBox} style={{ background: "#1877f2" }} />
-            <div className={styles.legendTextCol}>
-              <div className={styles.legendCategory}>Tiền phòng</div>
-              <div className={styles.legendAmount}>{formatMoney(tienPhong)}</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, fontSize: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ width: 8, height: 8, borderRadius: 2, background: "var(--primary)" }} />
+              <span style={{ color: "var(--text-secondary)" }}>Tiền phòng</span>
             </div>
-            <div className={styles.legendPercentBadge} style={{ color: "#1877f2", background: "#e7f3ff" }}>
-              {pctPhong}%
-            </div>
+            <strong style={{ color: "var(--text-main)" }}>{formatMoney(tienPhong)}</strong>
           </div>
 
-          <div className={styles.donutLegendRow}>
-            <div className={styles.legendColorBox} style={{ background: "#4599ff" }} />
-            <div className={styles.legendTextCol}>
-              <div className={styles.legendCategory}>Điện &amp; Nước</div>
-              <div className={styles.legendAmount}>{formatMoney(tienDienNuoc)}</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, fontSize: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ width: 8, height: 8, borderRadius: 2, background: "var(--text-muted)" }} />
+              <span style={{ color: "var(--text-secondary)" }}>Điện &amp; Nước</span>
             </div>
-            <div className={styles.legendPercentBadge} style={{ color: "#1877f2", background: "#f0f2f5" }}>
-              {pctDienNuoc}%
-            </div>
+            <strong style={{ color: "var(--text-main)" }}>{formatMoney(tienDienNuoc)}</strong>
           </div>
 
-          <div className={styles.donutLegendRow}>
-            <div className={styles.legendColorBox} style={{ background: "#f59e0b" }} />
-            <div className={styles.legendTextCol}>
-              <div className={styles.legendCategory}>Dịch vụ khác (xe, wifi, rác)</div>
-              <div className={styles.legendAmount}>{formatMoney(tienDichVu)}</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, fontSize: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ width: 8, height: 8, borderRadius: 2, background: "var(--status-warning-text)" }} />
+              <span style={{ color: "var(--text-secondary)" }}>Dịch vụ khác</span>
             </div>
-            <div className={styles.legendPercentBadge} style={{ color: "#854d0e", background: "#f6e6b4" }}>
-              {pctDichVu}%
-            </div>
+            <strong style={{ color: "var(--text-main)" }}>{formatMoney(tienDichVu)}</strong>
           </div>
         </div>
       </div>
     </div>
   );
 }
-

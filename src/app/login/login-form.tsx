@@ -47,7 +47,7 @@ export function LoginForm() {
             id="password"
             name="password"
             type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
+            placeholder="********"
             autoComplete="current-password"
             required
           />

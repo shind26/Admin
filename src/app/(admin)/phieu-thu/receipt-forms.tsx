@@ -85,12 +85,12 @@ export function ReceiptForm({
         <div
           style={{
             gridColumn: "1 / -1",
-            background: "#f8fafc",
+            background: "var(--bg-subtle)",
             padding: "8px 12px",
-            borderRadius: 6,
-            border: "1px solid #e2e8f0",
+            borderRadius: "var(--radius-sm)",
+            border: "1px solid var(--border)",
             fontSize: 12.5,
-            color: "#475569",
+            color: "var(--text-muted)",
           }}
         >
           Phiếu thu đã xác nhận không thể sửa đổi số tiền.
@@ -326,10 +326,10 @@ export function QuickApproveReceiptButton({ maPhieuThu }: { maPhieuThu: string }
           style={{
             padding: "4px 9px",
             fontSize: "11.5px",
-            borderRadius: "6px",
+            borderRadius: "var(--radius-sm)",
             fontWeight: 600,
             cursor: "pointer",
-            border: "1px solid #86efac",
+            border: "1px solid var(--status-success-border)",
           }}
           title="Duyệt xác nhận thanh toán phiếu thu này"
         >
@@ -365,10 +365,10 @@ export function QuickRejectReceiptButton({ maPhieuThu }: { maPhieuThu: string })
           style={{
             padding: "4px 9px",
             fontSize: "11.5px",
-            borderRadius: "6px",
+            borderRadius: "var(--radius-sm)",
             fontWeight: 600,
             cursor: "pointer",
-            border: "1px solid #fca5a5",
+            border: "1px solid var(--status-danger-border)",
           }}
           title="Từ chối phiếu thu này"
         >

@@ -1,49 +1,157 @@
 :root {
-  /* ── BẢNG MÀU CHỦ ĐẠO (FACEBOOK DESIGN SYSTEM) ── */
-  --color-primary-dark: #1877f2;        /* Xanh Facebook chính */
-  --color-primary-hover: #166fe5;       /* Xanh Facebook hover */
-  --color-table-header: #1877f2;        /* Header bảng xanh Facebook */
-  --color-section-header: #e7f3ff;      /* Nền xanh nhạt Facebook (selected / active) */
-  --color-section-text: #1877f2;        /* Chữ xanh Facebook */
-  --color-row-zebra: #fafbfa;           /* Nền xen kẽ dòng bảng */
-  --color-row-hover: #f0f2f5;           /* Hover dòng bảng */
-  --color-bg-main: #ffffff;             /* Trắng nền thẻ card, container */
-  --color-text-main: #1c1e21;           /* Chữ nội dung chính (Facebook body) */
-  --color-text-title: #050505;          /* Chữ tiêu đề đậm nét (Facebook dark) */
-  --color-text-muted: #65676b;          /* Chữ phụ, caption (Facebook muted) */
-  --color-border: #e4e6eb;              /* Đường viền xám Facebook */
-  --color-border-dark: #ced0d4;         /* Viền input, border đậm */
-  --color-bg-subtle: #f0f2f5;           /* Nền xám nhạt Facebook toàn trang */
-  --color-accent-gold: #fef6e0;         /* Vàng cam cảnh báo */
-  --color-accent-gold-text: #b45309;    /* Chữ cảnh báo */
-  --color-status-success: #e7f7ed;      /* Xanh lá Facebook */
-  --color-status-success-text: #1f7a37; /* Chữ xanh lá */
-  --color-status-error: #feecee;        /* Đỏ Facebook */
-  --color-status-error-text: #e41e3f;   /* Chữ đỏ */
+  /* ── DESIGN SYSTEM TOKENS (LIGHT MODE) ── */
+  --bg-canvas: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f1f5f9;
+  --bg-hover: #f8fafc;
+  --bg-active: #e2e8f0;
 
-  --background: var(--color-bg-subtle);
-  --foreground: var(--color-text-main);
+  --border: #e2e8f0;
+  --border-subtle: #f1f5f9;
+  --border-strong: #cbd5e1;
+
+  --text-main: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-subtle: #eff6ff;
+  --primary-text: #1d4ed8;
+  --primary-contrast: #ffffff;
+
+  --status-success-bg: #f0fdf4;
+  --status-success-text: #15803d;
+  --status-success-border: #bbf7d0;
+
+  --status-warning-bg: #fffbeb;
+  --status-warning-text: #b45309;
+  --status-warning-border: #fde68a;
+
+  --status-danger-bg: #fef2f2;
+  --status-danger-text: #b91c1c;
+  --status-danger-border: #fecaca;
+
+  --status-info-bg: #f0f9ff;
+  --status-info-text: #0369a1;
+  --status-info-border: #bae6fd;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+
+  /* Tương thích ngược với các biến cũ */
+  --color-primary-dark: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-table-header: var(--bg-subtle);
+  --color-section-header: var(--primary-subtle);
+  --color-section-text: var(--primary-text);
+  --color-row-zebra: #fafafa;
+  --color-row-hover: var(--bg-subtle);
+  --color-bg-main: var(--bg-surface);
+  --color-text-main: var(--text-main);
+  --color-text-title: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-border-dark: var(--border-strong);
+  --color-bg-subtle: var(--bg-canvas);
+  --color-accent-gold: var(--status-warning-bg);
+  --color-accent-gold-text: var(--status-warning-text);
+  --color-status-success: var(--status-success-bg);
+  --color-status-success-text: var(--status-success-text);
+  --color-status-error: var(--status-danger-bg);
+  --color-status-error-text: var(--status-danger-text);
+
+  --background: var(--bg-canvas);
+  --foreground: var(--text-main);
+}
+
+[data-theme="dark"] {
+  /* ── DESIGN SYSTEM TOKENS (DARK MODE - CHARCOAL/SLATE) ── */
+  --bg-canvas: #0f172a;
+  --bg-surface: #1e293b;
+  --bg-subtle: #243044;
+  --bg-hover: #293548;
+  --bg-active: #334155;
+
+  --border: #334155;
+  --border-subtle: #273449;
+  --border-strong: #475569;
+
+  --text-main: #f8fafc;
+  --text-secondary: #e2e8f0;
+  --text-muted: #94a3b8;
+
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --primary-subtle: #1e3a8a33;
+  --primary-text: #60a5fa;
+  --primary-contrast: #ffffff;
+
+  --status-success-bg: #064e3b33;
+  --status-success-text: #4ade80;
+  --status-success-border: #065f46;
+
+  --status-warning-bg: #78350f33;
+  --status-warning-text: #fcd34d;
+  --status-warning-border: #92400e;
+
+  --status-danger-bg: #7f1d1d33;
+  --status-danger-text: #f87171;
+  --status-danger-border: #991b1b;
+
+  --status-info-bg: #0c4a6e33;
+  --status-info-text: #7dd3fc;
+  --status-info-border: #075985;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+
+  --color-primary-dark: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-table-header: var(--bg-subtle);
+  --color-section-header: var(--primary-subtle);
+  --color-section-text: var(--primary-text);
+  --color-row-zebra: #1b2434;
+  --color-row-hover: var(--bg-hover);
+  --color-bg-main: var(--bg-surface);
+  --color-text-main: var(--text-main);
+  --color-text-title: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-border-dark: var(--border-strong);
+  --color-bg-subtle: var(--bg-canvas);
+  --color-accent-gold: var(--status-warning-bg);
+  --color-accent-gold-text: var(--status-warning-text);
+  --color-status-success: var(--status-success-bg);
+  --color-status-success-text: var(--status-success-text);
+  --color-status-error: var(--status-danger-bg);
+  --color-status-error-text: var(--status-danger-text);
+
+  --background: var(--bg-canvas);
+  --foreground: var(--text-main);
 }
 
 html {
   height: 100%;
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
 body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  color: var(--color-text-main);
-  background: var(--color-bg-subtle);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--text-main);
+  background: var(--bg-canvas);
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  overflow-x: clip;
 }
 
 * {
@@ -57,29 +165,38 @@ a {
   text-decoration: none;
 }
 
-/* Custom scrollbar matching Facebook style */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Thanh cuộn tinh tế, tự thích ứng màu */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f0f2f5;
+  background: var(--bg-canvas);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #bcc0c4;
-  border-radius: 999px;
+  background: var(--border-strong);
+  border-radius: var(--radius-pill);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #8a8d91;
+  background: var(--text-muted);
 }
 
 /* Quy tắc in ấn toàn cục */
 @media print {
   body {
     background: #ffffff !important;
+    color: #000000 !important;
     margin: 0 !important;
     padding: 0 !important;
   }

@@ -16,6 +16,7 @@ import {
 import { requireAccount } from "@/lib/session";
 import { logout } from "@/app/login/actions";
 import { NotificationBell } from "./notification-bell";
+import { AdminShellLayout } from "./admin-shell-layout";
 import styles from "./admin-shell.module.css";
 
 const menuGroups = [
@@ -108,19 +109,23 @@ async function SidebarNav({ active }: { active: ActiveKey }) {
   return (
     <nav className={styles.nav}>
       {groups.map((group) => (
-        <div key={group.label}>
+        <div key={group.label} className={styles.groupBlock}>
           <span className={styles.menuLabel}>{group.label}</span>
-          {group.items.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={
-                item.match === active ? styles.navActive : styles.navLink
-              }
-            >
-              <item.icon size={16} /> {item.label}
-            </Link>
-          ))}
+          <div className={styles.groupItems}>
+            {group.items.map((item) => {
+              const isActive = item.match === active;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={isActive ? styles.navActive : styles.navLink}
+                >
+                  <item.icon size={15} className={styles.navIcon} />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       ))}
     </nav>
@@ -144,7 +149,7 @@ async function SidebarUser() {
           {displayName}
         </div>
         <div className={styles.userRole}>
-          {roleLabel} • {account.co_so_van_hanh}
+          {roleLabel} {account.co_so_van_hanh ? `  ${account.co_so_van_hanh}` : ""}
         </div>
       </div>
       <form action={logout} className={styles.logoutForm}>
@@ -154,7 +159,7 @@ async function SidebarUser() {
           title="Đăng xuất"
           aria-label="Đăng xuất"
         >
-          <LogOut size={15} />
+          <LogOut size={14} />
         </button>
       </form>
     </div>
@@ -169,30 +174,25 @@ export function AdminShell({
   children: ReactNode;
 }) {
   return (
-    <div className={styles.shell}>
-      <aside className={`${styles.sidebar} noPrint`} data-no-print="true">
-        <div className={styles.brand}>
-          <div className={styles.brandInfo}>
-            <span className={styles.brandMark}>KG</span>
-            <div>
-              <div className={styles.brandName}>Kiêu Giang</div>
-              <div className={styles.brandSub}>Boarding Management</div>
-            </div>
-          </div>
-          <NotificationBell />
-        </div>
-
-        <Suspense fallback={<div className={`${styles.navSkeleton} noPrint`} aria-busy="true" />}>
+    <AdminShellLayout
+      bellContent={<NotificationBell />}
+      sidebarContent={
+        <Suspense
+          fallback={
+            <div className={`${styles.navSkeleton} noPrint`} aria-busy="true" />
+          }
+        >
           <SidebarNav active={active} />
         </Suspense>
-
+      }
+      userContent={
         <Suspense fallback={null}>
           <SidebarUser />
         </Suspense>
-      </aside>
-
-      <div className={styles.main}>{children}</div>
-    </div>
+      }
+    >
+      {children}
+    </AdminShellLayout>
   );
 }
 

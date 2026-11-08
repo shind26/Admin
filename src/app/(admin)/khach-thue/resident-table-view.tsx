@@ -62,11 +62,11 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                             borderRadius: 10,
                             background:
                               t.trang_thai_cu_dan === "DangO"
-                                ? "linear-gradient(135deg, #4f46e5, #4338ca)"
+                                ? "linear-gradient(135deg, var(--primary), var(--primary))"
                                 : t.trang_thai_cu_dan === "CuuCuDan"
-                                ? "#64748b"
-                                : "#e2e8f0",
-                            color: t.trang_thai_cu_dan === "ChuaThue" ? "#475569" : "#fff",
+                                ? "var(--text-muted)"
+                                : "var(--border)",
+                            color: t.trang_thai_cu_dan === "ChuaThue" ? "var(--text-muted)" : "var(--bg-surface)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -81,7 +81,7 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                           <div
                             style={{
                               fontWeight: 700,
-                              color: "#1e293b",
+                              color: "var(--text-main)",
                               cursor: "pointer",
                               display: "flex",
                               alignItems: "center",
@@ -100,7 +100,7 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                               marginTop: 2,
                             }}
                           >
-                            <span style={{ fontSize: 11, color: "#64748b", fontFamily: "monospace" }}>
+                            <span style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "monospace" }}>
                               {t.ma_khach}
                             </span>
                             {t.vai_tro_phong && (
@@ -112,16 +112,16 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                                   borderRadius: 4,
                                   background:
                                     t.vai_tro_phong === "Đại diện HĐ"
-                                      ? "#e0e7ff"
+                                      ? "var(--primary-subtle)"
                                       : t.vai_tro_phong === "Người ở cùng"
-                                      ? "#f0fdf4"
-                                      : "#f1f5f9",
+                                      ? "var(--status-success-bg)"
+                                      : "var(--bg-subtle)",
                                   color:
                                     t.vai_tro_phong === "Đại diện HĐ"
-                                      ? "#3730a3"
+                                      ? "var(--primary)"
                                       : t.vai_tro_phong === "Người ở cùng"
-                                      ? "#166534"
-                                      : "#475569",
+                                      ? "var(--status-success-text)"
+                                      : "var(--text-muted)",
                                 }}
                               >
                                 {t.vai_tro_phong}
@@ -134,8 +134,8 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
 
                     {/* Liên hệ & CCCD */}
                     <td>
-                      <div style={{ fontWeight: 600, color: "#1e293b" }}>{t.so_dt}</div>
-                      <div style={{ fontSize: 11.5, color: "#64748b" }}>CCCD: {t.cccd}</div>
+                      <div style={{ fontWeight: 600, color: "var(--text-main)" }}>{t.so_dt}</div>
+                      <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>CCCD: {t.cccd}</div>
                     </td>
 
                     {/* Phòng hiện tại */}
@@ -147,9 +147,9 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                             display: "inline-flex",
                             alignItems: "center",
                             gap: 4,
-                            background: "#ecfdf5",
-                            color: "#065f46",
-                            border: "1px solid #a7f3d0",
+                            background: "var(--status-success-bg)",
+                            color: "var(--status-success-text)",
+                            border: "1px solid var(--status-success-border)",
                             padding: "3px 8px",
                             borderRadius: 6,
                             fontSize: 12,
@@ -160,9 +160,9 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                           <DoorOpen size={13} /> {t.ma_phong_hien_tai}
                         </Link>
                       ) : t.trang_thai_cu_dan === "CuuCuDan" ? (
-                        <span style={{ fontSize: 12, color: "#64748b" }}>Cựu cư dân</span>
+                        <span style={{ fontSize: 12, color: "var(--text-muted)" }}>Cựu cư dân</span>
                       ) : (
-                        <span style={{ fontSize: 12, color: "#94a3b8" }}>Chưa có phòng</span>
+                        <span style={{ fontSize: 12, color: "var(--text-muted)" }}>Chưa có phòng</span>
                       )}
                     </td>
 
@@ -178,9 +178,9 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                                 gap: 4,
                                 padding: "2px 7px",
                                 borderRadius: 6,
-                                background: "#fffbeb",
-                                color: "#92400e",
-                                border: "1px solid #fde68a",
+                                background: "var(--status-warning-bg)",
+                                color: "var(--status-warning-text)",
+                                border: "1px solid var(--status-warning-border)",
                                 fontSize: 11,
                                 fontWeight: 600,
                               }}
@@ -195,9 +195,9 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                                 gap: 4,
                                 padding: "2px 7px",
                                 borderRadius: 6,
-                                background: "#ecfdf5",
-                                color: "#065f46",
-                                border: "1px solid #a7f3d0",
+                                background: "var(--status-success-bg)",
+                                color: "var(--status-success-text)",
+                                border: "1px solid var(--status-success-border)",
                                 fontSize: 11,
                                 fontWeight: 600,
                               }}
@@ -207,7 +207,7 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                           )}
                         </div>
                       ) : (
-                        <span style={{ fontSize: 11.5, color: "#94a3b8" }}>Chưa cấp App</span>
+                        <span style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Chưa cấp App</span>
                       )}
                     </td>
 
@@ -220,7 +220,7 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                               style={{
                                 fontSize: 11,
                                 fontWeight: 600,
-                                color: "#059669",
+                                color: "var(--status-success-text)",
                                 display: "inline-flex",
                                 alignItems: "center",
                                 gap: 3,
@@ -233,7 +233,7 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                               style={{
                                 fontSize: 11,
                                 fontWeight: 600,
-                                color: "#d97706",
+                                color: "var(--status-warning-text)",
                                 display: "inline-flex",
                                 alignItems: "center",
                                 gap: 3,
@@ -242,14 +242,14 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                               <AlertCircle size={12} /> Chờ duyệt CCCD
                             </span>
                           ) : (
-                            <span style={{ fontSize: 11, color: "#94a3b8" }}>Chưa có CCCD</span>
+                            <span style={{ fontSize: 11, color: "var(--text-muted)" }}>Chưa có CCCD</span>
                           )}
                         </div>
                         {t.so_phuong_tien > 0 && (
                           <div
                             style={{
                               fontSize: 11,
-                              color: t.so_xe_cho_duyet > 0 ? "#d97706" : "#4f46e5",
+                              color: t.so_xe_cho_duyet > 0 ? "var(--status-warning-text)" : "var(--primary)",
                               display: "inline-flex",
                               alignItems: "center",
                               gap: 3,
@@ -260,8 +260,8 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                             {t.so_xe_cho_duyet > 0 && (
                               <span
                                 style={{
-                                  background: "#fef3c7",
-                                  color: "#b45309",
+                                  background: "var(--status-warning-bg)",
+                                  color: "var(--status-warning-text)",
                                   padding: "0 4px",
                                   borderRadius: 4,
                                   fontSize: 10,
@@ -295,9 +295,9 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                             gap: 4,
                             padding: "5px 10px",
                             borderRadius: 6,
-                            border: "1px solid #c7d2fe",
-                            background: "#eef2ff",
-                            color: "#4338ca",
+                            border: "1px solid var(--primary-subtle)",
+                            background: "var(--primary-subtle)",
+                            color: "var(--primary)",
                             fontSize: 12,
                             fontWeight: 600,
                             cursor: "pointer",

@@ -54,8 +54,8 @@ export function IssueForm({
           display: "flex",
           flexDirection: "column",
           gap: 14,
-          background: "#f0f2f5",
-          border: "1px solid #e7f3ff",
+          background: "var(--bg-subtle)",
+          border: "1px solid var(--primary-subtle)",
           borderRadius: 12,
           padding: 16,
           boxShadow: "0 2px 8px rgba(74, 144, 194, 0.08)",
@@ -66,12 +66,12 @@ export function IssueForm({
         {/* Khung tóm tắt thông tin sự cố (Read-only) */}
         <div
           style={{
-            background: "#ffffff",
-            border: "1px solid #e4e6eb",
+            background: "var(--bg-surface)",
+            border: "1px solid var(--border)",
             borderRadius: 8,
             padding: "12px 14px",
             fontSize: 13,
-            color: "#65676b",
+            color: "var(--text-muted)",
           }}
         >
           <div
@@ -81,20 +81,20 @@ export function IssueForm({
               alignItems: "center",
               flexWrap: "wrap",
               gap: 8,
-              borderBottom: "1px solid #e4e6eb",
+              borderBottom: "1px solid var(--border)",
               paddingBottom: 8,
               marginBottom: 10,
             }}
           >
             <div>
-              <span style={{ fontWeight: 800, color: "#244e6e", fontSize: 14 }}>
+              <span style={{ fontWeight: 800, color: "var(--text-main)", fontSize: 14 }}>
                 {issue.ma_su_co}
               </span>
-              <span style={{ color: "#65676b", marginLeft: 8 }}>
-                Phòng: <strong style={{ color: "#244e6e" }}>{issue.ma_phong}</strong>
+              <span style={{ color: "var(--text-muted)", marginLeft: 8 }}>
+                Phòng: <strong style={{ color: "var(--text-main)" }}>{issue.ma_phong}</strong>
               </span>
-              <span style={{ color: "#65676b", marginLeft: 10 }}>
-                Khách báo: <strong style={{ color: "#244e6e" }}>{issue.ten_khach_bao || "Không xác định"}</strong>
+              <span style={{ color: "var(--text-muted)", marginLeft: 10 }}>
+                Khách báo: <strong style={{ color: "var(--text-main)" }}>{issue.ten_khach_bao || "Không xác định"}</strong>
               </span>
             </div>
             <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
@@ -103,8 +103,8 @@ export function IssueForm({
                   fontSize: 11.5,
                   padding: "2px 8px",
                   borderRadius: 999,
-                  background: "#e7f3ff",
-                  color: "#1d5c8a",
+                  background: "var(--primary-subtle)",
+                  color: "var(--primary)",
                   fontWeight: 700,
                 }}
               >
@@ -117,12 +117,12 @@ export function IssueForm({
                   borderRadius: 999,
                   background:
                     issue.muc_do_uu_tien === "Khẩn cấp" || issue.muc_do_uu_tien === "Cao"
-                      ? "#fde8e8"
-                      : "#f0f2f5",
+                      ? "var(--status-danger-bg)"
+                      : "var(--bg-subtle)",
                   color:
                     issue.muc_do_uu_tien === "Khẩn cấp" || issue.muc_do_uu_tien === "Cao"
-                      ? "#991b1b"
-                      : "#65676b",
+                      ? "var(--status-danger-text)"
+                      : "var(--text-muted)",
                   fontWeight: 700,
                 }}
               >
@@ -132,12 +132,12 @@ export function IssueForm({
           </div>
 
           <div style={{ marginBottom: 6 }}>
-            <span style={{ color: "#65676b", fontSize: 12 }}>Mô tả sự cố:</span>
+            <span style={{ color: "var(--text-muted)", fontSize: 12 }}>Mô tả sự cố:</span>
             <div
               style={{
                 marginTop: 2,
                 fontWeight: 600,
-                color: "#244e6e",
+                color: "var(--text-main)",
                 lineHeight: 1.5,
               }}
             >
@@ -146,8 +146,8 @@ export function IssueForm({
           </div>
 
           {issue.hinh_anh && issue.hinh_anh.length > 0 && (
-            <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px dashed #e4e6eb" }}>
-              <span style={{ color: "#65676b", fontSize: 12, display: "block", marginBottom: 4 }}>
+            <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px dashed var(--border)" }}>
+              <span style={{ color: "var(--text-muted)", fontSize: 12, display: "block", marginBottom: 4 }}>
                 Ảnh sự cố đính kèm:
               </span>
               <IssueImageGallery images={issue.hinh_anh} />
@@ -158,8 +158,8 @@ export function IssueForm({
         {/* Khung chuyển đổi trạng thái (Thao tác duy nhất được phép) */}
         <div
           style={{
-            background: "#ffffff",
-            border: "1px solid #ced0d4",
+            background: "var(--bg-surface)",
+            border: "1px solid var(--border-strong)",
             borderRadius: 8,
             padding: "14px 16px",
           }}
@@ -170,7 +170,7 @@ export function IssueForm({
               style={{
                 fontSize: 13,
                 fontWeight: 700,
-                color: "#244e6e",
+                color: "var(--text-main)",
                 whiteSpace: "nowrap",
               }}
             >
@@ -184,16 +184,16 @@ export function IssueForm({
                 borderRadius: 999,
                 background:
                   currentStatus === "Đã xử lý" || currentStatus === "Đã hoàn thành"
-                    ? "#e6f4ea"
+                    ? "var(--status-success-bg)"
                     : currentStatus === "Đang xử lý"
-                    ? "#e7f3ff"
-                    : "#f6e6b4",
+                    ? "var(--primary-subtle)"
+                    : "var(--status-warning-bg)",
                 color:
                   currentStatus === "Đã xử lý" || currentStatus === "Đã hoàn thành"
-                    ? "#166534"
+                    ? "var(--status-success-text)"
                     : currentStatus === "Đang xử lý"
-                    ? "#1d5c8a"
-                    : "#854d0e",
+                    ? "var(--primary)"
+                    : "var(--status-warning-text)",
               }}
             >
               Hiện tại: {currentStatus}
@@ -205,9 +205,9 @@ export function IssueForm({
               style={{
                 fontSize: 12.5,
                 fontWeight: 600,
-                color: "#166534",
-                background: "#e6f4ea",
-                border: "1px solid #b8e2c8",
+                color: "var(--status-success-text)",
+                background: "var(--status-success-bg)",
+                border: "1px solid var(--status-success-border)",
                 borderRadius: 6,
                 padding: "8px 12px",
               }}
@@ -225,11 +225,11 @@ export function IssueForm({
                   height: 38,
                   padding: "0 10px",
                   borderRadius: 6,
-                  border: "1px solid #4599ff",
+                  border: "1px solid var(--primary-hover)",
                   fontSize: 13,
                   fontWeight: 600,
-                  color: "#244e6e",
-                  background: "#ffffff",
+                  color: "var(--text-main)",
+                  background: "var(--bg-surface)",
                   outline: "none",
                 }}
               >
@@ -243,7 +243,7 @@ export function IssueForm({
               <div
                 style={{
                   fontSize: 11.5,
-                  color: "#65676b",
+                  color: "var(--text-muted)",
                   marginTop: 6,
                   lineHeight: 1.4,
                 }}
@@ -407,7 +407,7 @@ export function IssueForm({
                   height: 54,
                   objectFit: "cover",
                   borderRadius: 6,
-                  border: "1px solid #ced0d4",
+                  border: "1px solid var(--border-strong)",
                 }}
               />
             ))}
@@ -524,30 +524,30 @@ export function IssueStatusSelect({
   const getColorStyle = (st: string) => {
     if (st === "Đã hoàn thành" || st === "Đã xử lý") {
       return {
-        bg: "#e6f4ea",
-        color: "#166534",
-        border: "#b8e2c8",
+        bg: "var(--status-success-bg)",
+        color: "var(--status-success-text)",
+        border: "var(--status-success-border)",
       };
     }
     if (st === "Đang xử lý") {
       return {
-        bg: "#e7f3ff",
-        color: "#1d5c8a",
-        border: "#4599ff",
+        bg: "var(--primary-subtle)",
+        color: "var(--primary)",
+        border: "var(--primary-hover)",
       };
     }
     if (st === "Đã hủy") {
       return {
-        bg: "#fde8e8",
-        color: "#991b1b",
-        border: "#f8b4b4",
+        bg: "var(--status-danger-bg)",
+        color: "var(--status-danger-text)",
+        border: "var(--status-danger-border)",
       };
     }
     // "Chờ xử lý" (mặc định)
     return {
-      bg: "#f6e6b4",
-      color: "#854d0e",
-      border: "#ebd391",
+      bg: "var(--status-warning-bg)",
+      color: "var(--status-warning-text)",
+      border: "var(--status-warning-border)",
     };
   };
 
@@ -633,8 +633,8 @@ export function IssueStatusSelect({
             key={opt}
             value={opt}
             style={{
-              backgroundColor: "#ffffff",
-              color: "#1e293b",
+              backgroundColor: "var(--bg-surface)",
+              color: "var(--text-main)",
               fontWeight: 600,
               fontSize: 13,
             }}
@@ -675,7 +675,7 @@ export function IssueImageGallery({ images }: { images?: string[] | null }) {
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
 
   if (!images || images.length === 0) {
-    return <span style={{ color: "#9cb0c0", fontSize: 13 }}>—</span>;
+    return <span style={{ color: "var(--text-muted)", fontSize: 13 }}>—</span>;
   }
 
   return (
@@ -689,11 +689,11 @@ export function IssueImageGallery({ images }: { images?: string[] | null }) {
             title="Bấm để xem ảnh phóng to"
             style={{
               padding: 0,
-              border: "1px solid #ced0d4",
+              border: "1px solid var(--border-strong)",
               borderRadius: 6,
               overflow: "hidden",
               cursor: "pointer",
-              background: "#f0f2f5",
+              background: "var(--bg-subtle)",
               display: "inline-block",
               lineHeight: 0,
               transition: "transform 0.15s, border-color 0.15s",
@@ -717,8 +717,8 @@ export function IssueImageGallery({ images }: { images?: string[] | null }) {
             style={{
               fontSize: 11,
               fontWeight: 700,
-              color: "#1877f2",
-              background: "#e7f3ff",
+              color: "var(--primary)",
+              background: "var(--primary-subtle)",
               padding: "2px 6px",
               borderRadius: 4,
             }}
@@ -776,9 +776,9 @@ export function IssueImageGallery({ images }: { images?: string[] | null }) {
               style={{
                 marginTop: 12,
                 padding: "8px 20px",
-                backgroundColor: "#ffffff",
-                color: "#244e6e",
-                border: "1px solid #ced0d4",
+                backgroundColor: "var(--bg-surface)",
+                color: "var(--text-main)",
+                border: "1px solid var(--border-strong)",
                 borderRadius: 8,
                 fontWeight: 700,
                 fontSize: 13,

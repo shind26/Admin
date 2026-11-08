@@ -273,10 +273,10 @@ export function ResidentDrawer({
               display: "flex",
               alignItems: "center",
               gap: 8,
-              background: actionMessage.ok ? "#ecfdf5" : "#fef2f2",
-              color: actionMessage.ok ? "#065f46" : "#991b1b",
+              background: actionMessage.ok ? "var(--status-success-bg)" : "var(--status-danger-bg)",
+              color: actionMessage.ok ? "var(--status-success-text)" : "var(--status-danger-text)",
               borderBottom: "1px solid",
-              borderColor: actionMessage.ok ? "#a7f3d0" : "#fecaca",
+              borderColor: actionMessage.ok ? "var(--status-success-border)" : "var(--status-danger-border)",
             }}
           >
             {actionMessage.ok ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
@@ -320,7 +320,7 @@ export function ResidentDrawer({
               {/* Định danh CCCD */}
               <div className={styles.sectionBox}>
                 <h3 className={styles.sectionTitle}>
-                  <ShieldCheck size={16} color="#4f46e5" /> Thông tin Định danh &amp; CCCD
+                  <ShieldCheck size={16} color="var(--primary)" /> Thông tin Định danh &amp; CCCD
                 </h3>
                 <div className={styles.infoGrid}>
                   <div className={styles.infoField}>
@@ -332,7 +332,7 @@ export function ResidentDrawer({
                     <span className={styles.infoValue}>
                       <a
                         href={`tel:${tenant.so_dt}`}
-                        style={{ color: "#4f46e5", textDecoration: "none" }}
+                        style={{ color: "var(--primary)", textDecoration: "none" }}
                       >
                         {tenant.so_dt || "—"}
                       </a>
@@ -380,7 +380,7 @@ export function ResidentDrawer({
                   }}
                 >
                   <h3 className={styles.sectionTitle} style={{ margin: 0 }}>
-                    <Eye size={16} color="#4f46e5" /> Xác thực ảnh CCCD (Mobile App)
+                    <Eye size={16} color="var(--primary)" /> Xác thực ảnh CCCD (Mobile App)
                   </h3>
                   <div>
                     {ekycStatus === "DaXacThuc" ? (
@@ -478,7 +478,7 @@ export function ResidentDrawer({
               {/* Người liên hệ khẩn cấp */}
               <div className={styles.sectionBox}>
                 <h3 className={styles.sectionTitle}>
-                  <PhoneCall size={16} color="#e11d48" /> Người liên hệ khẩn cấp
+                  <PhoneCall size={16} color="var(--status-danger-text)" /> Người liên hệ khẩn cấp
                 </h3>
                 {emergency?.ho_ten || emergency?.so_dt ? (
                   <div className={styles.infoGrid}>
@@ -495,7 +495,7 @@ export function ResidentDrawer({
                       <span className={styles.infoValue}>
                         <a
                           href={`tel:${emergency.so_dt}`}
-                          style={{ color: "#e11d48", fontWeight: 700 }}
+                          style={{ color: "var(--status-danger-text)", fontWeight: 700 }}
                         >
                           {emergency.so_dt}
                         </a>
@@ -503,7 +503,7 @@ export function ResidentDrawer({
                     </div>
                   </div>
                 ) : (
-                  <p style={{ margin: 0, fontSize: 13, color: "#94a3b8" }}>
+                  <p style={{ margin: 0, fontSize: 13, color: "var(--text-muted)" }}>
                     Khách chưa khai báo người liên hệ khẩn cấp.
                   </p>
                 )}
@@ -517,7 +517,7 @@ export function ResidentDrawer({
                     style={{
                       margin: 0,
                       fontSize: 13,
-                      color: "#334155",
+                      color: "var(--text-main)",
                       whiteSpace: "pre-wrap",
                     }}
                   >
@@ -540,14 +540,14 @@ export function ResidentDrawer({
                 }}
               >
                 <h3 className={styles.sectionTitle} style={{ margin: 0 }}>
-                  <Car size={16} color="#4f46e5" /> Danh sách xe gửi tại tòa nhà ({vehicles.length})
+                  <Car size={16} color="var(--primary)" /> Danh sách xe gửi tại tòa nhà ({vehicles.length})
                 </h3>
                 <button
                   type="button"
                   onClick={() => setShowAddVehicle(!showAddVehicle)}
                   style={{
-                    background: "#4f46e5",
-                    color: "#ffffff",
+                    background: "var(--primary)",
+                    color: "var(--bg-surface)",
                     border: "none",
                     borderRadius: 6,
                     padding: "6px 12px",
@@ -568,14 +568,14 @@ export function ResidentDrawer({
                 <form
                   onSubmit={handleAddVehicle}
                   style={{
-                    background: "#ffffff",
-                    border: "1px solid #cbd5e1",
+                    background: "var(--bg-surface)",
+                    border: "1px solid var(--border)",
                     borderRadius: 8,
                     padding: 14,
                     marginBottom: 14,
                   }}
                 >
-                  <h4 style={{ margin: "0 0 10px", fontSize: 13, color: "#1e293b" }}>
+                  <h4 style={{ margin: "0 0 10px", fontSize: 13, color: "var(--text-main)" }}>
                     Đăng ký phương tiện mới
                   </h4>
                   <div
@@ -587,7 +587,7 @@ export function ResidentDrawer({
                     }}
                   >
                     <div>
-                      <label style={{ display: "block", fontSize: 11.5, color: "#64748b" }}>
+                      <label style={{ display: "block", fontSize: 11.5, color: "var(--text-muted)" }}>
                         Loại xe
                       </label>
                       <select
@@ -597,7 +597,7 @@ export function ResidentDrawer({
                           width: "100%",
                           height: 36,
                           borderRadius: 6,
-                          border: "1px solid #cbd5e1",
+                          border: "1px solid var(--border)",
                           fontSize: 13,
                           padding: "0 8px",
                         }}
@@ -611,7 +611,7 @@ export function ResidentDrawer({
                       </select>
                     </div>
                     <div>
-                      <label style={{ display: "block", fontSize: 11.5, color: "#64748b" }}>
+                      <label style={{ display: "block", fontSize: 11.5, color: "var(--text-muted)" }}>
                         Biển số xe *
                       </label>
                       <input
@@ -624,7 +624,7 @@ export function ResidentDrawer({
                           width: "100%",
                           height: 36,
                           borderRadius: 6,
-                          border: "1px solid #cbd5e1",
+                          border: "1px solid var(--border)",
                           fontSize: 13,
                           padding: "0 8px",
                         }}
@@ -633,7 +633,7 @@ export function ResidentDrawer({
                     </div>
                   </div>
                   <div style={{ marginBottom: 12 }}>
-                    <label style={{ display: "block", fontSize: 11.5, color: "#64748b" }}>
+                    <label style={{ display: "block", fontSize: 11.5, color: "var(--text-muted)" }}>
                       Mã thẻ từ thang máy / gửi xe (nếu có)
                     </label>
                     <input
@@ -645,7 +645,7 @@ export function ResidentDrawer({
                         width: "100%",
                         height: 36,
                         borderRadius: 6,
-                        border: "1px solid #cbd5e1",
+                        border: "1px solid var(--border)",
                         fontSize: 13,
                         padding: "0 8px",
                       }}
@@ -659,8 +659,8 @@ export function ResidentDrawer({
                       style={{
                         padding: "6px 12px",
                         borderRadius: 6,
-                        border: "1px solid #cbd5e1",
-                        background: "#f1f5f9",
+                        border: "1px solid var(--border)",
+                        background: "var(--bg-subtle)",
                         fontSize: 12,
                         cursor: "pointer",
                       }}
@@ -674,8 +674,8 @@ export function ResidentDrawer({
                         padding: "6px 14px",
                         borderRadius: 6,
                         border: "none",
-                        background: "#4f46e5",
-                        color: "#fff",
+                        background: "var(--primary)",
+                        color: "var(--bg-surface)",
                         fontSize: 12,
                         fontWeight: 600,
                         cursor: "pointer",
@@ -710,7 +710,7 @@ export function ResidentDrawer({
                         <td style={{ fontFamily: "monospace", fontSize: 14, fontWeight: 700 }}>
                           {v.bien_so_xe}
                         </td>
-                        <td>{v.ma_the_xe || <span style={{ color: "#94a3b8" }}>Chưa gán</span>}</td>
+                        <td>{v.ma_the_xe || <span style={{ color: "var(--text-muted)" }}>Chưa gán</span>}</td>
                         <td>
                           {["HoatDong", "Đang sử dụng", "Hoạt động", "Đã duyệt"].includes(v.trang_thai) ? (
                             <span className={`${styles.badgePill} ${styles.badgeGreen}`}>
@@ -735,9 +735,9 @@ export function ResidentDrawer({
                                 type="button"
                                 onClick={() => handleApproveVehicle(v.ma_phuong_tien)}
                                 style={{
-                                  background: "#ecfdf5",
-                                  border: "1px solid #a7f3d0",
-                                  color: "#065f46",
+                                  background: "var(--status-success-bg)",
+                                  border: "1px solid var(--status-success-border)",
+                                  color: "var(--status-success-text)",
                                   padding: "3px 8px",
                                   borderRadius: 4,
                                   fontSize: 11.5,
@@ -753,7 +753,7 @@ export function ResidentDrawer({
                               style={{
                                 background: "none",
                                 border: "none",
-                                color: "#ef4444",
+                                color: "var(--status-danger-text)",
                                 cursor: "pointer",
                                 padding: 4,
                               }}
@@ -775,7 +775,7 @@ export function ResidentDrawer({
           {tab === "account" && (
             <div className={styles.sectionBox}>
               <h3 className={styles.sectionTitle}>
-                <Smartphone size={16} color="#4f46e5" /> Trạng thái Tài khoản Mobile App Cư dân
+                <Smartphone size={16} color="var(--primary)" /> Trạng thái Tài khoản Mobile App Cư dân
               </h3>
               <div className={styles.infoGrid} style={{ marginBottom: 16 }}>
                 <div className={styles.infoField}>
@@ -805,11 +805,11 @@ export function ResidentDrawer({
                   <span className={styles.infoLabel}>Tình trạng mật khẩu</span>
                   <span className={styles.infoValue}>
                     {!tenant.da_doi_mat_khau ? (
-                      <span style={{ color: "#d97706" }}>
+                      <span style={{ color: "var(--status-warning-text)" }}>
                         ⚠️ Chưa đổi mật khẩu lần đầu (Đang dùng mật khẩu mặc định 123456)
                       </span>
                     ) : (
-                      <span style={{ color: "#059669" }}>
+                      <span style={{ color: "var(--status-success-text)" }}>
                         ✓ Khách đã tự đổi mật khẩu riêng an toàn
                       </span>
                     )}
@@ -824,8 +824,8 @@ export function ResidentDrawer({
                   onClick={handleResetPassword}
                   disabled={isPending}
                   style={{
-                    background: "#4f46e5",
-                    color: "#ffffff",
+                    background: "var(--primary)",
+                    color: "var(--bg-surface)",
                     border: "none",
                     borderRadius: 8,
                     padding: "10px 18px",
@@ -854,7 +854,7 @@ export function ResidentDrawer({
                   <h4 className={styles.credentialTitle}>
                     🎉 Tài khoản Mobile App đã sẵn sàng!
                   </h4>
-                  <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "#475569" }}>
+                  <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "var(--text-muted)" }}>
                     Gửi thông tin bên dưới cho khách thuê để họ tải App và đăng nhập lần đầu:
                   </p>
                   <div className={styles.credentialRow}>
@@ -865,7 +865,7 @@ export function ResidentDrawer({
                     <span>Mật khẩu mặc định:</span>
                     <span
                       className={styles.credentialCode}
-                      style={{ color: "#dc2626", letterSpacing: 2 }}
+                      style={{ color: "var(--status-danger-text)", letterSpacing: 2 }}
                     >
                       {resetAccount.tempPassword}
                     </span>
@@ -887,7 +887,7 @@ export function ResidentDrawer({
           {tab === "contracts" && (
             <div className={styles.sectionBox}>
               <h3 className={styles.sectionTitle}>
-                <FileText size={16} color="#4f46e5" /> Lịch sử Hợp đồng thuê phòng ({contracts.length})
+                <FileText size={16} color="var(--primary)" /> Lịch sử Hợp đồng thuê phòng ({contracts.length})
               </h3>
               {contracts.length === 0 ? (
                 <div className={styles.emptyBox}>
@@ -912,7 +912,7 @@ export function ResidentDrawer({
                           <Link
                             href={`/hop-dong/${c.ma_hop_dong}`}
                             style={{
-                              color: "#4f46e5",
+                              color: "var(--primary)",
                               fontWeight: 700,
                               textDecoration: "underline",
                               display: "inline-flex",

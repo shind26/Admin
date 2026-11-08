@@ -175,6 +175,37 @@ export async function updateRoom(
 
   try {
     // Quản lý tòa chỉ được sửa phòng trong tòa của mình.
+    // Lấy thông tin trạng thái phòng hiện tại để áp dụng quy tắc nghiệp vụ
+    const currentRoom = await getDbPool().query<{ trang_thai: string | null }>(
+      `SELECT trang_thai FROM public.phong
+       WHERE ma_phong = $1 AND ($2::text IS NULL OR toa_nha = $2)
+       LIMIT 1`,
+      [maPhong, scope.allBuildings ? null : scope.building],
+    );
+    if (currentRoom.rows.length === 0) {
+      return { error: "Không tìm thấy phòng cần cập nhật.", success: null };
+    }
+
+    const currentStatus = currentRoom.rows[0].trang_thai;
+    let finalStatus = currentStatus ?? "Trống";
+
+    const isContractBound =
+      currentStatus === "Đang thuê" ||
+      currentStatus === "Đã đặt cọc" ||
+      currentStatus === "Đã cọc";
+
+    if (isContractBound) {
+      // Phòng đang có khách ở hoặc có người cọc: Giữ nguyên trạng thái do HĐ/cọc quyết định
+      finalStatus = currentStatus;
+    } else {
+      // Phòng trống: Chỉ cho phép chuyển đổi giữa Trống và Đang bảo trì
+      if (trangThai === "Đang bảo trì" || trangThai === "Trống") {
+        finalStatus = trangThai;
+      } else {
+        finalStatus = currentStatus === "Đang bảo trì" ? "Đang bảo trì" : "Trống";
+      }
+    }
+
     // Không cho phép sửa cơ sở/tòa nhà, tầng, loại phòng và diện tích của phòng đã tồn tại.
     const { rowCount } = await getDbPool().query(
       `UPDATE public.phong
@@ -191,7 +222,7 @@ export async function updateRoom(
         maPhong,
         text(formData, "tenHienThi") || maPhong,
         giaThue,
-        trangThai,
+        finalStatus,
         text(formData, "moTaNgan") || null,
         tienDatCoc,
         lines(formData, "noiThat"),

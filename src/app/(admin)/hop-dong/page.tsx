@@ -176,7 +176,7 @@ async function ContractsContent({
                       <Link
                         href={`/hop-dong/${encodeURIComponent(contract.ma_hop_dong)}`}
                         className={styles.strong}
-                        style={{ color: "#1877f2", textDecoration: "underline" }}
+                        style={{ color: "var(--primary)", textDecoration: "none", fontWeight: 700 }}
                       >
                         {contract.ma_hop_dong}
                       </Link>
@@ -201,10 +201,10 @@ async function ContractsContent({
                               display: "inline-flex",
                               alignItems: "center",
                               gap: 3,
-                              background: "#F6E6B4",
-                              color: "#92400E",
-                              border: "1px solid #FDE68A",
-                              borderRadius: 4,
+                              background: "var(--status-warning-bg)",
+                              color: "var(--status-warning-text)",
+                              border: "1px solid var(--status-warning-border)",
+                              borderRadius: "var(--radius-sm)",
                               padding: "2px 6px",
                               fontSize: 11,
                               fontWeight: 700,
@@ -222,10 +222,10 @@ async function ContractsContent({
                               display: "inline-flex",
                               alignItems: "center",
                               gap: 3,
-                              background: "#e7f3ff",
-                              color: "#0369A1",
-                              border: "1px solid #BAE6FD",
-                              borderRadius: 4,
+                              background: "var(--status-info-bg)",
+                              color: "var(--status-info-text)",
+                              border: "1px solid var(--status-info-border)",
+                              borderRadius: "var(--radius-sm)",
                               padding: "2px 6px",
                               fontSize: 11,
                               fontWeight: 700,

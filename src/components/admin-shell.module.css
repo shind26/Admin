@@ -1,153 +1,310 @@
 .shell {
   display: flex;
   min-height: 100vh;
-  background: #f0f2f5;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  color: #1c1e21;
+  background: var(--bg-canvas);
+  color: var(--text-main);
 }
 
+/* ── 1. THANH TOP BAR TRÊN MOBILE (<1024px) ── */
+.mobileHeader {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .shell {
+    flex-direction: column;
+  }
+
+  .mobileHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: 52px;
+    padding: 0 16px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+  }
+
+  .hamburgerBtn {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .hamburgerBtn:hover {
+    background: var(--bg-subtle);
+    color: var(--text-main);
+  }
+
+  .mobileBrand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mobileBrandText {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
+  }
+
+  .mobileHeaderActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+/* ── 2. MÀN PHỦ CHO DRAWER TRÊN MOBILE ── */
+.drawerBackdrop {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .drawerBackdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    z-index: 50;
+    animation: fadeIn 0.15s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── 3. SIDEBAR DESKTOP & DRAWER MOBILE ── */
 .sidebar {
-  width: 260px;
+  width: 240px;
   flex-shrink: 0;
-  background: #ffffff;
-  border-right: 1px solid #e4e6eb;
-  padding: 20px 16px;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  padding: 16px 12px;
   display: flex;
   flex-direction: column;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  bottom: 0;
   height: 100vh;
+  z-index: 45;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+@media (max-width: 1023px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 270px;
+    max-width: 82vw;
+    height: 100vh;
+    z-index: 60;
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-md);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+}
+
+/* Brand logo & title */
 .brand {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 25px;
-  padding: 0 4px;
+  gap: 8px;
+  padding: 4px 6px 14px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
 }
 
 .brandInfo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 9px;
   min-width: 0;
 }
 
 .brandMark {
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: #1877f2;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  background: var(--primary);
   color: #ffffff;
   font-weight: 800;
-  font-size: 15px;
-  box-shadow: 0 2px 5px rgba(24, 119, 242, 0.3);
+  font-size: 12px;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+.brandTitles {
+  min-width: 0;
 }
 
 .brandName {
-  font-weight: 800;
-  font-size: 15.5px;
-  color: #1877f2;
-  line-height: 1.15;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-main);
+  line-height: 1.2;
   letter-spacing: -0.01em;
 }
 
 .brandSub {
   font-size: 11px;
-  color: #65676b;
-  margin-top: 2px;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+.brandActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Navigation */
+.navContainer {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 2px;
 }
 
 .nav {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 4px;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+.groupBlock {
+  display: flex;
+  flex-direction: column;
 }
 
 .menuLabel {
   display: block;
-  font-size: 11px;
-  color: #65676b;
-  font-weight: 700;
-  letter-spacing: 0.6px;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  margin-bottom: 8px;
-  padding: 0 8px;
+  margin-bottom: 4px;
+  padding: 4px 8px;
+}
+
+.groupItems {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .navLink,
 .navActive {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  font-weight: 600;
-  font-size: 13.5px;
-  border-radius: 8px;
+  gap: 9px;
+  padding: 7px 10px;
+  font-weight: 500;
+  font-size: 13px;
+  border-radius: var(--radius-md);
   text-decoration: none;
-  margin-bottom: 4px;
-  transition: all 0.15s ease;
+  transition: background-color 0.12s ease, color 0.12s ease;
+  line-height: 1.3;
+}
+
+.navIcon {
+  flex-shrink: 0;
+  opacity: 0.8;
 }
 
 .navLink {
-  color: #050505;
+  color: var(--text-secondary);
 }
 
 .navLink:hover {
-  background: #f0f2f5;
-  color: #1877f2;
+  background: var(--bg-subtle);
+  color: var(--text-main);
+}
+
+.navLink:hover .navIcon {
+  opacity: 1;
 }
 
 .navActive {
-  background: #e7f3ff;
-  color: #1877f2;
-  font-weight: 700;
-  box-shadow: inset 3px 0 0 #1877f2;
+  background: var(--primary-subtle);
+  color: var(--primary-text);
+  font-weight: 600;
+}
+
+.navActive .navIcon {
+  opacity: 1;
+  color: var(--primary);
+}
+
+/* User Box */
+.userSection {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+  flex-shrink: 0;
 }
 
 .userBox {
-  margin-top: auto;
-  padding-top: 14px;
-  border-top: 1px solid #e4e6eb;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding-left: 2px;
-  padding-right: 2px;
+  gap: 9px;
+  padding: 6px 4px;
 }
 
 .userAvatar {
   position: relative;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #1877f2;
-  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  color: var(--text-main);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px;
   flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(24, 119, 242, 0.25);
 }
 
 .userDot {
   position: absolute;
-  right: -1px;
-  bottom: -1px;
-  width: 10px;
-  height: 10px;
+  right: -2px;
+  bottom: -2px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: #31a24c;
-  border: 2px solid #ffffff;
+  background: var(--status-success-text);
+  border: 2px solid var(--bg-surface);
 }
 
 .userMeta {
@@ -157,20 +314,22 @@
 }
 
 .userName {
-  font-size: 13px;
-  font-weight: 700;
-  color: #050505;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-main);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.25;
 }
 
 .userRole {
   font-size: 11px;
-  color: #65676b;
+  color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.25;
 }
 
 .logoutForm {
@@ -181,78 +340,62 @@
 .sidebarLogoutBtn {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid #e4e6eb;
-  background: #ffffff;
-  color: #65676b;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-muted);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .sidebarLogoutBtn:hover {
-  background: #feecee;
-  color: #e41e3f;
-  border-color: #fdc9cf;
+  background: var(--status-danger-bg);
+  color: var(--status-danger-text);
+  border-color: var(--status-danger-border);
 }
 
+/* ── 4. KHU VỰC NỘI DUNG CHÍNH (MAIN) ── */
 .main {
   flex: 1;
   min-width: 0;
-  padding: 24px 28px 40px;
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  padding: 24px 28px 48px;
+}
+
+.mainContentInner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1023px) {
+  .main {
+    margin-left: 0;
+    width: 100%;
+    padding: 16px 14px 36px;
+  }
 }
 
 .loading {
   padding: 2rem;
-  color: #65676b;
+  color: var(--text-muted);
 }
 
-@media (max-width: 768px) {
-  .shell {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: static;
-    border-right: 0;
-    border-bottom: 1px solid #e4e6eb;
-  }
-
-  .main {
-    padding: 18px 14px 28px;
-  }
-}
-
-/* Khung chờ cho menu điều hướng */
+/* Skeleton loader for navigation */
 .navSkeleton {
-  height: 320px;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #ffffff 25%, #f0f2f5 37%, #ffffff 63%);
-  background-size: 400% 100%;
-  animation: navShimmer 1.4s ease-in-out infinite;
+  height: 280px;
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  opacity: 0.6;
 }
 
-@keyframes navShimmer {
-  0% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0 50%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .navSkeleton {
-    animation: none;
-  }
-}
-
-/* Ẩn Sidebar khi in ấn */
+/* In ấn */
 @media print {
   .sidebar,
+  .mobileHeader,
+  .drawerBackdrop,
   .navSkeleton {
     display: none !important;
   }

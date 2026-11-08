@@ -89,10 +89,10 @@ export function HandoverItemsEditor({
   return (
     <div
       style={{
-        border: "1px solid #cbd5e1",
+        border: "1px solid var(--border)",
         borderRadius: 10,
         padding: "14px 16px",
-        background: "#ffffff",
+        background: "var(--bg-surface)",
         marginBottom: 16,
       }}
     >
@@ -116,16 +116,16 @@ export function HandoverItemsEditor({
               gap: 8,
               fontSize: 13.5,
               fontWeight: 700,
-              color: "#0f172a",
+              color: "var(--text-main)",
             }}
           >
-            <PackageCheck size={18} style={{ color: "#059669" }} />
+            <PackageCheck size={18} style={{ color: "var(--status-success-text)" }} />
             <span>{title}</span>
             <span
               style={{
                 fontSize: 11,
-                background: "#ecfdf5",
-                color: "#065f46",
+                background: "var(--status-success-bg)",
+                color: "var(--status-success-text)",
                 padding: "1px 8px",
                 borderRadius: 999,
                 fontWeight: 600,
@@ -135,7 +135,7 @@ export function HandoverItemsEditor({
             </span>
           </div>
           {hint && (
-            <p style={{ margin: "3px 0 0", fontSize: 12, color: "#64748b" }}>
+            <p style={{ margin: "3px 0 0", fontSize: 12, color: "var(--text-muted)" }}>
               {hint}
             </p>
           )}
@@ -152,9 +152,9 @@ export function HandoverItemsEditor({
             fontWeight: 600,
             padding: "5px 11px",
             borderRadius: 6,
-            background: "#f0fdf4",
-            color: "#166534",
-            border: "1px solid #bbf7d0",
+            background: "var(--status-success-bg)",
+            color: "var(--status-success-text)",
+            border: "1px solid var(--status-success-border)",
             cursor: "pointer",
           }}
           title="Thêm một món đồ bàn giao mới hoặc đồ khách thuê thêm"
@@ -168,11 +168,11 @@ export function HandoverItemsEditor({
           style={{
             textAlign: "center",
             padding: "18px 10px",
-            color: "#94a3b8",
+            color: "var(--text-muted)",
             fontSize: 12.5,
-            background: "#f8fafc",
+            background: "var(--bg-subtle)",
             borderRadius: 8,
-            border: "1px dashed #e2e8f0",
+            border: "1px dashed var(--border)",
           }}
         >
           Chưa có danh mục nội thất nào được chọn cho phòng này. Bấm &quot;Thêm món bàn giao&quot; nếu cần.
@@ -187,7 +187,7 @@ export function HandoverItemsEditor({
             }}
           >
             <thead>
-              <tr style={{ borderBottom: "1px solid #e2e8f0", textAlign: "left", color: "#64748b" }}>
+              <tr style={{ borderBottom: "1px solid var(--border)", textAlign: "left", color: "var(--text-muted)" }}>
                 <th style={{ padding: "6px 8px", width: 35, textAlign: "center" }}>#</th>
                 <th style={{ padding: "6px 8px" }}>Tên thiết bị / Nội thất *</th>
                 <th style={{ padding: "6px 8px", width: 70 }}>SL *</th>
@@ -201,11 +201,11 @@ export function HandoverItemsEditor({
                 <tr
                   key={it.id}
                   style={{
-                    borderBottom: "1px solid #f1f5f9",
-                    background: idx % 2 === 0 ? "#ffffff" : "#fbfcfe",
+                    borderBottom: "1px solid var(--bg-subtle)",
+                    background: idx % 2 === 0 ? "var(--bg-surface)" : "var(--bg-subtle)",
                   }}
                 >
-                  <td style={{ padding: "6px 8px", textAlign: "center", color: "#94a3b8", fontWeight: 600 }}>
+                  <td style={{ padding: "6px 8px", textAlign: "center", color: "var(--text-muted)", fontWeight: 600 }}>
                     {idx + 1}
                   </td>
                   <td style={{ padding: "6px 8px" }}>
@@ -220,7 +220,7 @@ export function HandoverItemsEditor({
                         padding: "5px 8px",
                         fontSize: 12.5,
                         borderRadius: 6,
-                        border: "1px solid #cbd5e1",
+                        border: "1px solid var(--border)",
                       }}
                     />
                   </td>
@@ -236,7 +236,7 @@ export function HandoverItemsEditor({
                         padding: "5px 6px",
                         fontSize: 12.5,
                         borderRadius: 6,
-                        border: "1px solid #cbd5e1",
+                        border: "1px solid var(--border)",
                         textAlign: "center",
                       }}
                     />
@@ -250,19 +250,19 @@ export function HandoverItemsEditor({
                         padding: "5px 8px",
                         fontSize: 12.5,
                         borderRadius: 6,
-                        border: "1px solid #cbd5e1",
+                        border: "1px solid var(--border)",
                         background:
                           it.tinhTrang === "Hoạt động tốt" || it.tinhTrang === "Mới 100%"
-                            ? "#f0fdf4"
+                            ? "var(--status-success-bg)"
                             : it.tinhTrang.includes("Hỏng")
-                              ? "#fef2f2"
-                              : "#ffffff",
+                              ? "var(--status-danger-bg)"
+                              : "var(--bg-surface)",
                         color:
                           it.tinhTrang === "Hoạt động tốt" || it.tinhTrang === "Mới 100%"
-                            ? "#15803d"
+                            ? "var(--status-success-text)"
                             : it.tinhTrang.includes("Hỏng")
-                              ? "#b91c1c"
-                              : "#334155",
+                              ? "var(--status-danger-text)"
+                              : "var(--text-main)",
                         fontWeight: 500,
                       }}
                     >
@@ -284,7 +284,7 @@ export function HandoverItemsEditor({
                         padding: "5px 8px",
                         fontSize: 12.5,
                         borderRadius: 6,
-                        border: "1px solid #cbd5e1",
+                        border: "1px solid var(--border)",
                       }}
                     />
                   </td>
@@ -295,7 +295,7 @@ export function HandoverItemsEditor({
                       style={{
                         background: "transparent",
                         border: "none",
-                        color: "#ef4444",
+                        color: "var(--status-danger-text)",
                         cursor: "pointer",
                         padding: "4px",
                         borderRadius: 4,

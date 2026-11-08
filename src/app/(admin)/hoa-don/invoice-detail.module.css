@@ -2,8 +2,8 @@
 .modalBackdrop {
   position: fixed;
   inset: 0;
-  background: rgba(36, 78, 110, 0.45);
-  backdrop-filter: blur(4px);
+  background: rgba(15, 23, 42, 0.5);
+  /* no glassmorphism */
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -13,15 +13,15 @@
 }
 
 .modalContainer {
-  background: #ffffff;
-  border-radius: 16px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
   width: 100%;
   max-width: 860px;
   max-height: 92vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 25px 50px -12px rgba(36, 78, 110, 0.25);
-  border: 1px solid #e4e6eb;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
   overflow: hidden;
 }
 
@@ -30,8 +30,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  border-bottom: 1px solid #e4e6eb;
-  background: #f0f2f5;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-subtle);
 }
 
 .modalTitleGroup {
@@ -43,7 +43,7 @@
 .modalTitle {
   font-size: 17px;
   font-weight: 700;
-  color: #244e6e;
+  color: var(--text-main);
   margin: 0;
 }
 
@@ -58,10 +58,10 @@
   border: none;
   font-size: 20px;
   line-height: 1;
-  color: #65676b;
+  color: var(--text-muted);
   cursor: pointer;
   padding: 6px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -69,8 +69,8 @@
 }
 
 .closeButton:hover {
-  background: #e7f3ff;
-  color: #244e6e;
+  background: var(--primary-subtle);
+  color: var(--text-main);
 }
 
 .modalBody {
@@ -81,11 +81,11 @@
 
 /* Invoice Bill Document Styling */
 .billPaper {
-  background: #ffffff;
-  border: 1px solid #e4e6eb;
-  border-radius: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   padding: 32px;
-  color: #65676b;
+  color: var(--text-muted);
 }
 
 .billHeader {
@@ -101,13 +101,13 @@
   font-size: 18px;
   font-weight: 800;
   letter-spacing: 0.5px;
-  color: #1877f2;
+  color: var(--primary-text);
   text-transform: uppercase;
 }
 
 .brandSub {
   font-size: 12.5px;
-  color: #65676b;
+  color: var(--text-muted);
   margin-top: 4px;
 }
 
@@ -118,7 +118,7 @@
 .billTitle {
   font-size: 20px;
   font-weight: 800;
-  color: #244e6e;
+  color: var(--text-main);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0 0 6px 0;
@@ -127,7 +127,7 @@
 .billCode {
   font-size: 13.5px;
   font-weight: 600;
-  color: #1877f2;
+  color: var(--primary-text);
 }
 
 .billMetaRow {
@@ -143,18 +143,18 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
-  background: #f0f2f5;
-  border-radius: 10px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
   padding: 16px 20px;
   margin-bottom: 24px;
-  border: 1px solid #e7f3ff;
+  border: 1px solid var(--border);
 }
 
 .infoCol h4 {
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
-  color: #244e6e;
+  color: var(--text-main);
   letter-spacing: 0.5px;
   margin: 0 0 10px 0;
   padding-bottom: 6px;
@@ -170,12 +170,12 @@
 
 .infoLabel {
   width: 110px;
-  color: #65676b;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
 .infoValue {
-  color: #244e6e;
+  color: var(--text-main);
   font-weight: 600;
 }
 
@@ -183,7 +183,7 @@
 .sectionTitle {
   font-size: 14px;
   font-weight: 700;
-  color: #244e6e;
+  color: var(--text-main);
   margin: 20px 0 10px 0;
   display: flex;
   align-items: center;
@@ -209,16 +209,16 @@
 
 .billTable td {
   padding: 10px 12px;
-  border: 1px solid #e4e6eb;
-  color: #65676b;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
 }
 
 .billTable tbody tr:nth-child(even) {
-  background: #f0f2f5;
+  background: var(--bg-subtle);
 }
 
 .billTable tbody tr:nth-child(odd) {
-  background: #ffffff;
+  background: var(--bg-surface);
 }
 
 .textRight {
@@ -231,13 +231,13 @@
 
 /* Utilities box */
 .meterBox {
-  background: #e6f4ea;
-  border: 1px solid #b8e2c8;
-  border-radius: 8px;
+  background: var(--status-success-bg);
+  border: 1px solid var(--status-success-border);
+  border-radius: var(--radius-md);
   padding: 12px 16px;
   margin-bottom: 16px;
   font-size: 12.5px;
-  color: #166534;
+  color: var(--status-success-text);
 }
 
 .meterGrid {
@@ -248,15 +248,15 @@
 }
 
 .meterItem {
-  background: #ffffff;
-  border: 1px solid #b8e2c8;
-  border-radius: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--status-success-border);
+  border-radius: var(--radius-sm);
   padding: 8px 12px;
 }
 
 .meterLabel {
   font-weight: 700;
-  color: #166534;
+  color: var(--status-success-text);
   margin-bottom: 4px;
 }
 
@@ -278,7 +278,7 @@
   justify-content: space-between;
   font-size: 13.5px;
   padding: 6px 0;
-  color: #65676b;
+  color: var(--text-muted);
 }
 
 .summaryTotalRow {
@@ -288,8 +288,8 @@
   font-weight: 800;
   padding: 10px 0;
   border-top: 2px solid #1877f2;
-  border-bottom: 1px solid #e4e6eb;
-  color: #244e6e;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-main);
   margin: 6px 0;
 }
 
@@ -299,7 +299,7 @@
   font-size: 15px;
   font-weight: 700;
   padding: 8px 0;
-  color: #991b1b;
+  color: var(--status-danger-text);
 }
 
 .summaryPaidRow {
@@ -308,15 +308,15 @@
   font-size: 14px;
   font-weight: 600;
   padding: 6px 0;
-  color: #166534;
+  color: var(--status-success-text);
 }
 
 /* Receipts section */
 .receiptsBox {
   margin-top: 24px;
-  background: #f0f2f5;
+  background: var(--bg-subtle);
   border: 1px dashed #ced0d4;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 14px 18px;
 }
 
@@ -326,7 +326,7 @@
   align-items: center;
   gap: 6px;
   padding: 7px 14px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -336,16 +336,16 @@
 }
 
 .btnPrint {
-  background: #1877f2;
+  background: var(--primary);
   color: #ffffff;
 }
 
 .btnPrint:hover {
-  background: #3a78a6;
+  background: var(--primary-hover);
 }
 
 .btnPdf {
-  background: #e0f2fe;
+  background: var(--primary-subtle);
   color: #0369a1;
   border-color: #bae6fd;
 }
@@ -375,22 +375,22 @@
 }
 
 .btnSecondary {
-  background: #ffffff;
-  border-color: #ced0d4;
-  color: #65676b;
+  background: var(--bg-surface);
+  border-color: var(--border-strong);
+  color: var(--text-muted);
 }
 
 .btnSecondary:hover {
-  background: #f0f2f5;
-  color: #244e6e;
+  background: var(--bg-subtle);
+  color: var(--text-main);
 }
 
 .btnDetailRow {
-  background: #f0f2f5;
-  color: #1877f2;
-  border: 1px solid #e7f3ff;
+  background: var(--bg-subtle);
+  color: var(--primary-text);
+  border: 1px solid var(--border);
   padding: 4px 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -400,7 +400,7 @@
 }
 
 .btnDetailRow:hover {
-  background: #e7f3ff;
+  background: var(--primary-subtle);
 }
 
 /* Print Styles */

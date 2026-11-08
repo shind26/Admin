@@ -64,9 +64,6 @@ export function EditRoomButton({
                 <h2 className={styles.modalTitle}>
                   Sửa phòng {room.tenHienThi || room.maPhong}
                 </h2>
-                <p className={styles.modalSub}>
-                  Cập nhật thông tin vật lý, giá thuê, nội thất và ảnh của phòng.
-                </p>
               </div>
               <button
                 type="button"

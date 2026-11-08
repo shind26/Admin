@@ -107,7 +107,7 @@ export function RoomUtilitySummaryCard({
           </div>
 
           <footer className={styles.panelFooter}>
-            <span style={{ fontSize: 12, color: "#65676b" }}>
+            <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
               {meters[0]?.ngay_ghi_nhan
                 ? `Chốt gần nhất: ${formatDate(meters[0].ngay_ghi_nhan)}`
                 : "Chỉ số hàng tháng"}
@@ -171,7 +171,7 @@ export function RoomUtilitySummaryCard({
                 <div className={styles.debtMetaText}>Đã hoàn tất thanh toán tiền phòng</div>
               </div>
             ) : (
-              <div className={`${styles.debtAlertBox} ${styles.debtAlertGray}`}>
+              <div className={styles.emptyBox}>
                 <span>Chưa có hóa đơn phát sinh nào cho phòng này.</span>
               </div>
             )}
@@ -221,7 +221,7 @@ export function RoomUtilitySummaryCard({
                   <span
                     className={styles.invoiceFieldValue}
                     style={{
-                      color: Number(latestInvoice.con_no) > 0 ? "#e41e3f" : "#1f7a37",
+                      color: Number(latestInvoice.con_no) > 0 ? "var(--status-danger-text)" : "var(--status-success-text)",
                       fontWeight: 700,
                     }}
                   >
@@ -233,7 +233,7 @@ export function RoomUtilitySummaryCard({
           </div>
 
           <footer className={styles.panelFooter}>
-            <span style={{ fontSize: 12, color: "#65676b" }}>
+            <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
               {latestInvoice ? `Hợp đồng: #${latestInvoice.ma_hop_dong || "—"}` : "Hóa đơn phòng"}
             </span>
             <Link

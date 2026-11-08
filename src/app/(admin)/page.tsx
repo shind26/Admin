@@ -57,7 +57,7 @@ async function DashboardContent({
             <h1>Xin chào, {displayName}!</h1>
             <p className={styles.dashSub}>
               Tổng quan hoạt động kinh doanh nhà trọ Kiều Giang
-              {buildingFilter && ` • Cơ sở: ${buildingFilter}`}
+              {buildingFilter && `    Cơ sở: ${buildingFilter}`}
             </p>
           </div>
 
@@ -83,16 +83,16 @@ async function DashboardContent({
             <div className={styles.pendingAlertLeft}>
               <div
                 style={{
-                  background: "#10b981",
-                  color: "#ffffff",
+                  background: "var(--primary-subtle)",
+                  color: "var(--primary-text)",
                   width: 36,
                   height: 36,
-                  borderRadius: 10,
+                  borderRadius: "var(--radius-md)",
                   display: "grid",
                   placeItems: "center",
                 }}
               >
-                <Bell size={20} />
+                <Bell size={18} />
               </div>
               <div className={styles.pendingAlertText}>
                 <h4>Có {kpi.pendingHoldCount} yêu cầu cọc giữ chỗ mới cần lập hợp đồng</h4>
@@ -110,11 +110,11 @@ async function DashboardContent({
           <article className={styles.kpiCard}>
             <div className={styles.kpiHead}>
               <span className={styles.kpiLabel}>Tiền đã thu tháng này</span>
-              <div className={styles.kpiIconBox} style={{ background: "#ecfdf5", color: "#059669" }}>
-                <Wallet size={20} />
+              <div className={styles.kpiIconBox} style={{ background: "var(--status-success-bg)", color: "var(--status-success-text)" }}>
+                <Wallet size={18} />
               </div>
             </div>
-            <div className={styles.kpiValue} style={{ color: "#0f172a", whiteSpace: "nowrap" }}>
+            <div className={styles.kpiValue} style={{ whiteSpace: "nowrap" }}>
               {formatMoney(kpi.doanhThuThang)}
             </div>
             <div className={styles.kpiFoot}>
@@ -137,24 +137,24 @@ async function DashboardContent({
             </div>
           </article>
 
-          {/* Card 2: Tiền nợ chưa thu (Không có số (1)) */}
+          {/* Card 2: Tiền nợ chưa thu */}
           <article className={styles.kpiCard}>
             <div className={styles.kpiHead}>
               <span className={styles.kpiLabel}>Tiền nợ chưa thu</span>
-              <div className={styles.kpiIconBox} style={{ background: "#fef2f2", color: "#dc2626" }}>
-                <Receipt size={20} />
+              <div className={styles.kpiIconBox} style={{ background: "var(--status-danger-bg)", color: "var(--status-danger-text)" }}>
+                <Receipt size={18} />
               </div>
             </div>
-            <div className={styles.kpiValue} style={{ color: "#0f172a", fontWeight: 800, whiteSpace: "nowrap" }}>
+            <div className={styles.kpiValue} style={{ whiteSpace: "nowrap" }}>
               {formatMoney(kpi.tongNoTonDong)}
             </div>
             <div className={styles.kpiFoot}>
               <span style={{ whiteSpace: "nowrap" }}>
                 {kpi.tongNoTonDong <= 0 ? (
-                  <span style={{ color: "#166534", fontWeight: 600 }}>Tất cả đã thanh toán</span>
+                  <span style={{ color: "var(--status-success-text)", fontWeight: 600 }}>Tất cả đã thanh toán</span>
                 ) : (
                   <>
-                    Tổng từ <strong style={{ color: "#1c1e21" }}>{kpi.soHoaDonNo || 1} hóa đơn</strong> chưa thanh toán
+                    Tổng từ <strong>{kpi.soHoaDonNo || 1} hóa đơn</strong> chưa thanh toán
                   </>
                 )}
               </span>
@@ -165,11 +165,11 @@ async function DashboardContent({
           <article className={styles.kpiCard}>
             <div className={styles.kpiHead}>
               <span className={styles.kpiLabel}>Tiền cọc đang giữ</span>
-              <div className={styles.kpiIconBox} style={{ background: "#faf5ff", color: "#7c3aed" }}>
-                <PiggyBank size={20} />
+              <div className={styles.kpiIconBox} style={{ background: "var(--primary-subtle)", color: "var(--primary)" }}>
+                <PiggyBank size={18} />
               </div>
             </div>
-            <div className={styles.kpiValue} style={{ color: "#0f172a", whiteSpace: "nowrap" }}>
+            <div className={styles.kpiValue} style={{ whiteSpace: "nowrap" }}>
               {formatMoney(kpi.tongTienCoc)}
             </div>
             <div
@@ -180,14 +180,13 @@ async function DashboardContent({
                 gap: 2,
                 alignItems: "flex-start",
                 width: "100%",
-                color: "#65676b",
               }}
             >
               <div style={{ whiteSpace: "nowrap", fontSize: 11.5 }}>
-                Cọc hợp đồng: <strong style={{ color: "#1c1e21" }}>{formatMoney(kpi.tienCocHopDong)}</strong>
+                Cọc hợp đồng: <strong>{formatMoney(kpi.tienCocHopDong)}</strong>
               </div>
               <div style={{ whiteSpace: "nowrap", fontSize: 11.5 }}>
-                Cọc giữ chỗ: <strong style={{ color: "#1c1e21" }}>{formatMoney(kpi.tienCocGiuCho)}</strong>
+                Cọc giữ chỗ: <strong>{formatMoney(kpi.tienCocGiuCho)}</strong>
               </div>
             </div>
           </article>
@@ -220,7 +219,7 @@ async function DashboardContent({
 
             <div className={styles.opMiniGrid}>
               <Link href="/phong" className={styles.opMiniCard}>
-                <div className={styles.opIconBox} style={{ background: "#e0f2fe", color: "#0284c7" }}>
+                <div className={styles.opIconBox} style={{ background: "var(--primary-subtle)", color: "var(--primary-text)" }}>
                   <DoorOpen size={18} />
                 </div>
                 <div className={styles.opMiniText}>
@@ -230,7 +229,7 @@ async function DashboardContent({
               </Link>
 
               <Link href="/phong?status=Trong" className={styles.opMiniCard}>
-                <div className={styles.opIconBox} style={{ background: "#dcfce7", color: "#16a34a" }}>
+                <div className={styles.opIconBox} style={{ background: "var(--status-success-bg)", color: "var(--status-success-text)" }}>
                   <Building2 size={18} />
                 </div>
                 <div className={styles.opMiniText}>
@@ -240,7 +239,7 @@ async function DashboardContent({
               </Link>
 
               <Link href="/khach-thue" className={styles.opMiniCard}>
-                <div className={styles.opIconBox} style={{ background: "#f3e8ff", color: "#7c3aed" }}>
+                <div className={styles.opIconBox} style={{ background: "var(--bg-subtle)", color: "var(--text-main)" }}>
                   <Users size={18} />
                 </div>
                 <div className={styles.opMiniText}>
@@ -250,12 +249,12 @@ async function DashboardContent({
               </Link>
 
               <Link href="/su-co" className={styles.opMiniCard}>
-                <div className={styles.opIconBox} style={{ background: "#fef3c7", color: "#d97706" }}>
+                <div className={styles.opIconBox} style={{ background: "var(--status-warning-bg)", color: "var(--status-warning-text)" }}>
                   <TriangleAlert size={18} />
                 </div>
                 <div className={styles.opMiniText}>
                   <span className={styles.opMiniLabel}>Báo hỏng / Sự cố</span>
-                  <strong className={styles.opMiniValue} style={{ color: kpi.suCo > 0 ? "#b91c1c" : "#1c1e21" }}>
+                  <strong className={styles.opMiniValue} style={{ color: kpi.suCo > 0 ? "var(--status-danger-text)" : "var(--text-main)" }}>
                     {kpi.suCo} yêu cầu
                   </strong>
                 </div>

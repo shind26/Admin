@@ -102,7 +102,7 @@ export function InvoiceDetailView({
               </>
             ) : exportSuccess ? (
               <>
-                <Check size={14} color="#16a34a" /> Đã tải xong
+                <Check size={14} color="var(--status-success-text)" /> Đã tải xong
               </>
             ) : (
               <>
@@ -175,7 +175,7 @@ export function InvoiceDetailView({
                 {invoice.ma_hop_dong ? (
                   <Link
                     href={`/hop-dong/${encodeURIComponent(invoice.ma_hop_dong)}`}
-                    style={{ color: "#1877f2", textDecoration: "underline" }}
+                    style={{ color: "var(--primary)", textDecoration: "none" }}
                   >
                     {invoice.ma_hop_dong}
                   </Link>
@@ -190,7 +190,7 @@ export function InvoiceDetailView({
             </div>
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Hạn thanh toán:</span>
-              <span className={styles.infoValue} style={{ color: "#b91c1c", fontWeight: 600 }}>
+              <span className={styles.infoValue} style={{ color: "var(--status-danger-text)", fontWeight: 600 }}>
                 {formatDate(invoice.han_dong_tien)}
               </span>
             </div>
@@ -209,7 +209,7 @@ export function InvoiceDetailView({
                 <div>
                   Chỉ số cũ: <strong>{Number(invoice.chi_so_dien_nuoc.chi_so_dien_cu).toLocaleString("vi-VN")}</strong> → Mới: <strong>{Number(invoice.chi_so_dien_nuoc.chi_so_dien_moi).toLocaleString("vi-VN")}</strong>
                 </div>
-                <div style={{ marginTop: 2, color: "#15803d", fontWeight: 600 }}>
+                <div style={{ marginTop: 2, color: "var(--status-success-text)", fontWeight: 600 }}>
                   Tiêu thụ: {invoice.chi_so_dien_nuoc.tieu_thu_dien} kWh
                 </div>
               </div>
@@ -219,7 +219,7 @@ export function InvoiceDetailView({
                 <div>
                   Chỉ số cũ: <strong>{Number(invoice.chi_so_dien_nuoc.chi_so_nuoc_cu).toLocaleString("vi-VN")}</strong> → Mới: <strong>{Number(invoice.chi_so_dien_nuoc.chi_so_nuoc_moi).toLocaleString("vi-VN")}</strong>
                 </div>
-                <div style={{ marginTop: 2, color: "#15803d", fontWeight: 600 }}>
+                <div style={{ marginTop: 2, color: "var(--status-success-text)", fontWeight: 600 }}>
                   Tiêu thụ: {invoice.chi_so_dien_nuoc.tieu_thu_nuoc} m³
                 </div>
               </div>
@@ -289,10 +289,10 @@ export function InvoiceDetailView({
                 {Number(invoice.no_cu || 0) > 0 && (
                   <tr>
                     <td className={styles.textCenter}>4</td>
-                    <td style={{ fontWeight: 600, color: "#b91c1c" }}>Nợ cũ chuyển sang</td>
+                    <td style={{ fontWeight: 600, color: "var(--status-danger-text)" }}>Nợ cũ chuyển sang</td>
                     <td className={styles.textCenter}>1</td>
                     <td className={styles.textRight}>{formatMoney(invoice.no_cu)}</td>
-                    <td className={`${styles.textRight} ${styles.infoValue}`} style={{ color: "#b91c1c" }}>
+                    <td className={`${styles.textRight} ${styles.infoValue}`} style={{ color: "var(--status-danger-text)" }}>
                       {formatMoney(invoice.no_cu)}
                     </td>
                   </tr>
@@ -311,11 +311,11 @@ export function InvoiceDetailView({
             </div>
             <div className={styles.summaryPaidRow}>
               <span>ĐÃ THANH TOÁN:</span>
-              <span style={{ color: "#16a34a" }}>{formatMoney(invoice.da_thu)}</span>
+              <span style={{ color: "var(--status-success-text)" }}>{formatMoney(invoice.da_thu)}</span>
             </div>
             <div className={styles.summaryDueRow}>
               <span>CÒN LẠI CẦN THU:</span>
-              <span style={{ color: conLai > 0 ? "#dc2626" : "#16a34a", fontSize: 16, fontWeight: 800 }}>
+              <span style={{ color: conLai > 0 ? "var(--status-danger-text)" : "var(--status-success-text)", fontSize: 16, fontWeight: 800 }}>
                 {formatMoney(conLai)}
               </span>
             </div>
@@ -324,11 +324,11 @@ export function InvoiceDetailView({
 
         {/* Payment History / Receipts */}
         <div className={styles.receiptsBox}>
-          <div style={{ fontWeight: 700, fontSize: 13, color: "#1e293b", marginBottom: 8 }}>
+          <div style={{ fontWeight: 700, fontSize: 13, color: "var(--text-main)", marginBottom: 8 }}>
             Lịch sử phiếu thu đã ghi nhận ({invoice.phieu_thu.length} giao dịch)
           </div>
           {invoice.phieu_thu.length === 0 ? (
-            <div style={{ fontSize: 12.5, color: "#64748b", fontStyle: "italic" }}>
+            <div style={{ fontSize: 12.5, color: "var(--text-muted)", fontStyle: "italic" }}>
               Chưa có phiếu thu nào được xác nhận cho hóa đơn này.
             </div>
           ) : (
@@ -364,7 +364,7 @@ export function InvoiceDetailView({
         </div>
 
         {/* Footer notes */}
-        <div style={{ marginTop: 28, paddingTop: 14, borderTop: "1px dashed #cbd5e1", fontSize: 12, color: "#64748b", display: "flex", justifyContent: "space-between" }}>
+        <div style={{ marginTop: 28, paddingTop: 14, borderTop: "1px dashed var(--border)", fontSize: 12, color: "var(--text-muted)", display: "flex", justifyContent: "space-between" }}>
           <div>
             * Quý khách vui lòng thanh toán đúng hạn quy định trên hóa đơn.
           </div>

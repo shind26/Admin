@@ -11,7 +11,6 @@ import {
 import { RoomPhotoUpload } from "./room-photo-upload";
 import styles from "@/components/business.module.css";
 
-const ROOM_STATUSES = ["Trống", "Đang thuê", "Đang bảo trì", "Đã đặt cọc"];
 const initialState: RoomFormState = { error: null, success: null };
 
 export type RoomFormData = {
@@ -62,7 +61,6 @@ export function RoomForm({
   const formRef = useRef<HTMLFormElement>(null);
   const action = mode === "create" ? createRoom : updateRoom;
 
-
   const defaultRoomType =
     room?.maLoaiPhong ||
     (mode === "create" ? (roomTypes[0]?.ma_loai_phong ?? "") : "");
@@ -71,16 +69,27 @@ export function RoomForm({
   const [selectedType, setSelectedType] = useState(defaultRoomType);
   const [noiThatVal, setNoiThatVal] = useState(room?.noiThat ?? "");
 
-  const [state, formAction, pending] = useActionState(async (previous: RoomFormState, data: FormData) => {
-    const result = await action(previous, data);
-    if (result.success && mode === "create") {
-      formRef.current?.reset();
-      setNoiThatVal("");
-    }
-    return result;
-  }, initialState);
+  const [state, formAction, pending] = useActionState(
+    async (previous: RoomFormState, data: FormData) => {
+      const result = await action(previous, data);
+      if (result.success && mode === "create") {
+        formRef.current?.reset();
+        setNoiThatVal("");
+      }
+      return result;
+    },
+    initialState,
+  );
 
-  const selectedTypeObj = roomTypes.find((t) => t.ma_loai_phong === selectedType);
+  const selectedTypeObj = roomTypes.find(
+    (t) => t.ma_loai_phong === selectedType,
+  );
+
+  const currentStatus = room?.trangThai ?? "Trống";
+  const isContractBound =
+    currentStatus === "Đang thuê" ||
+    currentStatus === "Đã đặt cọc" ||
+    currentStatus === "Đã cọc";
 
   return (
     <form ref={formRef} action={formAction} className={styles.formGrid}>
@@ -93,16 +102,20 @@ export function RoomForm({
           name="maPhong"
           defaultValue={room?.maPhong ?? ""}
           readOnly={mode === "edit"}
+          style={
+            mode === "edit"
+              ? {
+                  background: "var(--bg-subtle)",
+                  color: "var(--text-muted)",
+                  cursor: "not-allowed",
+                }
+              : undefined
+          }
           required
           maxLength={50}
           placeholder={mode === "create" ? "VD: P101, A202" : undefined}
           autoFocus={mode === "create"}
         />
-        <span className={styles.fieldHint}>
-          {mode === "create"
-            ? "Mã định danh duy nhất (viết hoa tự động)"
-            : "Không thể đổi mã phòng"}
-        </span>
       </div>
 
       <div className={styles.formField}>
@@ -118,16 +131,17 @@ export function RoomForm({
       <div className={styles.formField}>
         <label htmlFor="toaNha">Cơ sở / Tòa nhà *</label>
         {mode === "edit" ? (
-          <>
-            <input
-              id="toaNha"
-              name="toaNha"
-              value={defaultBuildingVal}
-              readOnly
-              style={{ background: "#f8fafc", color: "#64748b" }}
-            />
-            <span className={styles.fieldHint}>Không thể đổi cơ sở / tòa nhà khi sửa phòng</span>
-          </>
+          <input
+            id="toaNha"
+            name="toaNha"
+            value={defaultBuildingVal}
+            readOnly
+            style={{
+              background: "var(--bg-subtle)",
+              color: "var(--text-muted)",
+              cursor: "not-allowed",
+            }}
+          />
         ) : editableBuilding ? (
           <select
             id="toaNha"
@@ -161,12 +175,17 @@ export function RoomForm({
           min={1}
           defaultValue={room?.tang ?? 1}
           readOnly={mode === "edit"}
-          style={mode === "edit" ? { background: "#f8fafc", color: "#64748b" } : undefined}
+          style={
+            mode === "edit"
+              ? {
+                  background: "var(--bg-subtle)",
+                  color: "var(--text-muted)",
+                  cursor: "not-allowed",
+                }
+              : undefined
+          }
           required
         />
-        {mode === "edit" && (
-          <span className={styles.fieldHint}>Không thể đổi tầng khi sửa phòng</span>
-        )}
       </div>
 
       <div className={styles.formField}>
@@ -178,9 +197,12 @@ export function RoomForm({
               id="maLoaiPhong"
               value={selectedTypeObj?.ten_loai_phong ?? selectedType}
               readOnly
-              style={{ background: "#f8fafc", color: "#64748b" }}
+              style={{
+                background: "var(--bg-subtle)",
+                color: "var(--text-muted)",
+                cursor: "not-allowed",
+              }}
             />
-            <span className={styles.fieldHint}>Không thể đổi loại phòng khi sửa phòng</span>
           </>
         ) : (
           <select
@@ -205,34 +227,42 @@ export function RoomForm({
       <div className={styles.formField}>
         <label htmlFor="trangThai">Trạng thái *</label>
         {mode === "create" ? (
+          <input
+            id="trangThai"
+            name="trangThai"
+            value="Trống"
+            readOnly
+            style={{
+              background: "var(--bg-subtle)",
+              color: "var(--text-muted)",
+              cursor: "not-allowed",
+            }}
+          />
+        ) : isContractBound ? (
           <>
+            <input type="hidden" name="trangThai" value={currentStatus} />
             <input
               id="trangThai"
-              name="trangThai"
-              value="Trống"
+              value={currentStatus}
               readOnly
+              style={{
+                background: "var(--bg-subtle)",
+                color: "var(--text-muted)",
+                cursor: "not-allowed",
+              }}
             />
-            <span className={styles.fieldHint}>
-              Phòng mới tạo luôn mặc định ở trạng thái Trống
-            </span>
           </>
         ) : (
-          <>
-            <select
-              id="trangThai"
-              name="trangThai"
-              defaultValue={room?.trangThai ?? "Trống"}
-            >
-              {ROOM_STATUSES.map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-            <span className={styles.fieldHint}>
-              Trạng thái thật do hợp đồng quyết định
-            </span>
-          </>
+          <select
+            id="trangThai"
+            name="trangThai"
+            defaultValue={
+              currentStatus === "Đang bảo trì" ? "Đang bảo trì" : "Trống"
+            }
+          >
+            <option value="Trống">Trống</option>
+            <option value="Đang bảo trì">Đang bảo trì</option>
+          </select>
         )}
       </div>
 
@@ -249,12 +279,17 @@ export function RoomForm({
           placeholder="VD: 25"
           defaultValue={room?.dienTich ?? ""}
           readOnly={mode === "edit"}
-          style={mode === "edit" ? { background: "#f8fafc", color: "#64748b" } : undefined}
+          style={
+            mode === "edit"
+              ? {
+                  background: "var(--bg-subtle)",
+                  color: "var(--text-muted)",
+                  cursor: "not-allowed",
+                }
+              : undefined
+          }
           required
         />
-        {mode === "edit" && (
-          <span className={styles.fieldHint}>Không thể đổi diện tích khi sửa phòng</span>
-        )}
       </div>
 
       <div className={styles.formField}>
@@ -292,7 +327,9 @@ export function RoomForm({
         />
       </div>
 
-      <div className={styles.formSection}>Chỉ số công tơ điện nước ban đầu / hiện tại</div>
+      <div className={styles.formSection}>
+        Chỉ số công tơ điện nước ban đầu / hiện tại
+      </div>
 
       <div className={styles.formField}>
         <label htmlFor="chiSoDien">Chỉ số điện (kWh) *</label>
@@ -306,11 +343,6 @@ export function RoomForm({
           defaultValue={room?.chiSoDien ?? 0}
           required
         />
-        <span className={styles.fieldHint}>
-          {mode === "create"
-            ? "Chỉ số công tơ điện ban đầu khi đưa phòng vào hoạt động"
-            : "Chỉ số điện hiện tại (tự cập nhật khi BQL duyệt số hoặc thay công tơ)"}
-        </span>
       </div>
 
       <div className={styles.formField}>
@@ -325,19 +357,21 @@ export function RoomForm({
           defaultValue={room?.chiSoNuoc ?? 0}
           required
         />
-        <span className={styles.fieldHint}>
-          {mode === "create"
-            ? "Chỉ số đồng hồ nước ban đầu khi đưa phòng vào hoạt động"
-            : "Chỉ số nước hiện tại (tự cập nhật khi BQL duyệt số hoặc thay đồng hồ)"}
-        </span>
       </div>
 
       <div className={styles.formSection}>Nội thất &amp; Tiện ích</div>
 
       <div className={styles.formField}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 4,
+          }}
+        >
           <label htmlFor="noiThat" style={{ margin: 0 }}>
-            Nội thất sẵn có (mỗi dòng một món)
+            Nội thất sẵn có - mỗi dòng một món
           </label>
         </div>
         <textarea
@@ -350,7 +384,14 @@ export function RoomForm({
           maxLength={2000}
         />
         <div style={{ marginTop: 6 }}>
-          <span style={{ fontSize: 11.5, color: "#64748b", display: "block", marginBottom: 4 }}>
+          <span
+            style={{
+              fontSize: 11.5,
+              color: "#64748b",
+              display: "block",
+              marginBottom: 4,
+            }}
+          >
             Gợi ý thêm nhanh:
           </span>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
@@ -377,8 +418,15 @@ export function RoomForm({
                   type="button"
                   disabled={hasItem}
                   onClick={() => {
-                    const lines = noiThatVal.split("\n").map((s) => s.trim()).filter(Boolean);
-                    if (!lines.map((l) => l.toLowerCase()).includes(item.toLowerCase())) {
+                    const lines = noiThatVal
+                      .split("\n")
+                      .map((s) => s.trim())
+                      .filter(Boolean);
+                    if (
+                      !lines
+                        .map((l) => l.toLowerCase())
+                        .includes(item.toLowerCase())
+                    ) {
                       setNoiThatVal([...lines, item].join("\n"));
                     }
                   }}
@@ -392,7 +440,9 @@ export function RoomForm({
                     color: hasItem ? "#94a3b8" : "#334155",
                     cursor: hasItem ? "default" : "pointer",
                   }}
-                  title={hasItem ? "Đã có trong danh sách" : `Thêm nhanh ${item}`}
+                  title={
+                    hasItem ? "Đã có trong danh sách" : `Thêm nhanh ${item}`
+                  }
                 >
                   {hasItem ? `✓ ${item}` : `+ ${item}`}
                 </button>
@@ -400,16 +450,18 @@ export function RoomForm({
             })}
           </div>
         </div>
-        <span className={styles.fieldHint} style={{ marginTop: 6 }}>
-          Danh sách này là căn cứ tự động khởi tạo Biên bản bàn giao tài sản khi ký hợp đồng cho phòng.
-        </span>
       </div>
 
       <div className={styles.formField}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-          <label style={{ margin: 0 }}>
-            Tiện ích chung (Kế thừa từ Loại phòng)
-          </label>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            marginBottom: 4,
+          }}
+        >
+          <label style={{ margin: 0 }}>Tiện ích chung</label>
           <span
             style={{
               fontSize: 10.5,
@@ -466,12 +518,10 @@ export function RoomForm({
               border: "1px dashed #e2e8f0",
             }}
           >
-            Loại phòng này chưa thiết lập tiện ích chung (Cấu hình tại danh mục Loại phòng).
+            Loại phòng này chưa thiết lập tiện ích chung (Cấu hình tại danh mục
+            Loại phòng).
           </div>
         )}
-        <span className={styles.fieldHint}>
-          Tiện ích tòa nhà (Wifi, thang máy, bảo vệ, gửi xe...) được quy định chung theo loại phòng để tối ưu dữ liệu, không cần nhập trùng lặp ở từng phòng.
-        </span>
       </div>
 
       <div className={styles.formField}>
@@ -632,7 +682,12 @@ export function CreateRoomModal({
         type="button"
         className={styles.primary}
         onClick={() => setOpen(true)}
-        style={{ display: "inline-flex", alignItems: "center", gap: 6, fontWeight: 700 }}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          fontWeight: 700,
+        }}
       >
         <Plus size={16} /> Thêm phòng mới
       </button>
@@ -679,10 +734,23 @@ export function CreateRoomModal({
               }}
             >
               <div>
-                <h2 style={{ fontSize: 18, fontWeight: 800, color: "#0f172a", margin: 0 }}>
+                <h2
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 800,
+                    color: "#0f172a",
+                    margin: 0,
+                  }}
+                >
                   Thêm phòng mới
                 </h2>
-                <p style={{ fontSize: 12.5, color: "#64748b", margin: "3px 0 0" }}>
+                <p
+                  style={{
+                    fontSize: 12.5,
+                    color: "#64748b",
+                    margin: "3px 0 0",
+                  }}
+                >
                   Điền thông tin phòng và chỉ số điện nước ban đầu
                 </p>
               </div>

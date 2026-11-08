@@ -9,15 +9,15 @@ import {
   getDashboardStats,
   getRooms,
   getRoomTypes,
+  type RoomRow,
 } from "@/lib/queries";
 import { ScopeQuery } from "@/lib/scope";
 import {
   CreateRoomModal,
   DeleteRoomButton,
-  RoomEditorToggle,
   RoomForm,
-  type RoomFormData,
 } from "./room-forms";
+import { RoomTableRow } from "./room-table-row";
 import styles from "@/components/business.module.css";
 
 type SearchParams = Promise<{
@@ -39,11 +39,92 @@ function formatMoney(value: string | number | null) {
   return `${Number(value).toLocaleString("vi-VN")}\u00A0đ`;
 }
 
-function roomStatusClass(status: string | null) {
-  if (status === "Đang thuê") return styles.badgeInfo;
-  if (status === "Trống") return styles.badgeOk;
-  if (status === "Đã đặt cọc" || status === "Đã cọc") return styles.badgeWarn;
-  return styles.badgeMuted;
+function RoomStatusIndicator({
+  status,
+  issue,
+}: {
+  status: string | null;
+  issue: string | null;
+}) {
+  let dotColor = "var(--text-muted)";
+  if (status === "Đang thuê") dotColor = "var(--primary)";
+  else if (status === "Trống") dotColor = "#10b981";
+  else if (status === "Đã đặt cọc" || status === "Đã cọc") dotColor = "#f59e0b";
+  else if (status === "Đang bảo trì" || status === "Sửa chữa") dotColor = "#ef4444";
+
+  return (
+    <div style={{ display: "inline-flex", flexDirection: "column", gap: 3 }}>
+      <span
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          fontSize: 12.5,
+          fontWeight: 500,
+          color: "var(--text-main)",
+          whiteSpace: "nowrap",
+        }}
+      >
+        <span
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            backgroundColor: dotColor,
+            flexShrink: 0,
+          }}
+        />
+        {status ?? "—"}
+      </span>
+      {issue && (
+        <span
+          style={{
+            fontSize: 11,
+            color: "var(--status-danger-text)",
+            fontWeight: 500,
+            whiteSpace: "nowrap",
+          }}
+        >
+          Sự cố: {issue}
+        </span>
+      )}
+    </div>
+  );
+}
+
+type BuildingRoomGroup = {
+  building: string;
+  rooms: RoomRow[];
+  total: number;
+  rented: number;
+  empty: number;
+  deposit: number;
+  issues: number;
+};
+
+function groupRoomsByBuilding(rooms: RoomRow[]): BuildingRoomGroup[] {
+  const map = new Map<string, RoomRow[]>();
+
+  for (const room of rooms) {
+    const key = room.toa_nha || "Chưa phân cơ sở";
+    const list = map.get(key) ?? [];
+    list.push(room);
+    map.set(key, list);
+  }
+
+  return Array.from(map.entries())
+    .sort(([a], [b]) => a.localeCompare(b, "vi"))
+    .map(([building, groupRooms]) => ({
+      building,
+      rooms: groupRooms,
+      total: groupRooms.length,
+      rented: groupRooms.filter((r) => r.trang_thai === "Đang thuê").length,
+      empty: groupRooms.filter((r) => r.trang_thai === "Trống").length,
+      deposit: groupRooms.filter(
+        (r) => r.trang_thai === "Đã đặt cọc" || r.trang_thai === "Đã cọc",
+      ).length,
+      issues: groupRooms.filter((r) => r.su_co_dang_mo !== null).length,
+    }));
 }
 
 async function RoomsContent({ searchParams }: { searchParams: SearchParams }) {
@@ -65,6 +146,8 @@ async function RoomsContent({ searchParams }: { searchParams: SearchParams }) {
     getDashboardStats(building, scopeQuery),
     getRoomTypes(),
   ]);
+
+  const buildingGroups = groupRoomsByBuilding(rooms);
 
   const defaultBuildingName =
     building !== ALL_BUILDINGS && building ? building : (buildings[0] ?? "Tòa A");
@@ -173,138 +256,198 @@ async function RoomsContent({ searchParams }: { searchParams: SearchParams }) {
         </div>
       </form>
 
-      <div className={styles.tableCard}>
-        <div className={styles.tableScroll}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                                <th style={{ whiteSpace: "nowrap" }}>Phòng</th>
-                <th style={{ whiteSpace: "nowrap" }}>Cơ sở / Tầng</th>
-                <th style={{ whiteSpace: "nowrap" }}>Loại phòng</th>
-                <th style={{ whiteSpace: "nowrap" }}>Diện tích</th>
-                <th style={{ whiteSpace: "nowrap" }}>Khách thuê</th>
-                <th style={{ whiteSpace: "nowrap" }}>Giá niêm yết</th>
-                <th style={{ whiteSpace: "nowrap" }}>Tiền cọc</th>
-                <th style={{ whiteSpace: "nowrap" }}>Trạng thái</th>
-                <th style={{ whiteSpace: "nowrap" }}>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rooms.length === 0 ? (
-                <tr>
-                  <td colSpan={9} className={styles.empty}>
-                    Không có phòng phù hợp với bộ lọc.
-                  </td>
-                </tr>
-              ) : (
-                rooms.map((room) => {
-                  const roomFormData: RoomFormData = {
-                    maPhong: room.ma_phong,
-                    tenHienThi: room.ten_hien_thi ?? room.ma_phong,
-                    tang: room.tang,
-                    dienTich: room.dien_tich,
-                    giaThue: room.gia_thue,
-                    trangThai: room.trang_thai ?? "Trống",
-                    toaNha: room.toa_nha ?? "",
-                    maLoaiPhong: room.ma_loai_phong ?? "",
-                    moTaNgan: room.mo_ta_ngan ?? "",
-                    tienDatCoc: room.tien_dat_coc,
-                    noiThat: (room.noi_that_san_co ?? []).join("\n"),
-                    hinhAnh: room.hinh_anh ?? "",
-                    chiSoDien: room.chi_so_dien,
-                    chiSoNuoc: room.chi_so_nuoc,
-                  };
+      {rooms.length === 0 ? (
+        <div className={styles.tableCard}>
+          <div
+            style={{
+              padding: "40px 20px",
+              textAlign: "center",
+              color: "var(--text-muted)",
+              fontSize: 13,
+            }}
+          >
+            Không có phòng phù hợp với bộ lọc.
+          </div>
+        </div>
+      ) : (
+        buildingGroups.map((group) => (
+          <section key={group.building} style={{ marginBottom: 28 }}>
+            {/* Header thông tin tòa nhà */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 12,
+                padding: "11px 16px",
+                background: "var(--bg-subtle)",
+                border: "1px solid var(--border)",
+                borderBottom: "none",
+                borderTopLeftRadius: "var(--radius-md)",
+                borderTopRightRadius: "var(--radius-md)",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: 14.5,
+                    fontWeight: 700,
+                    color: "var(--text-main)",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {group.building}
+                </h2>
+                <span
+                  style={{
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    background: "var(--bg-surface)",
+                    border: "1px solid var(--border)",
+                    padding: "2px 7px",
+                    borderRadius: "var(--radius-sm)",
+                    color: "var(--text-muted)",
+                  }}
+                >
+                  {group.total} phòng
+                </span>
+              </div>
 
-                  return (
-                    <tr key={room.ma_phong}>
-                      <td>
-                        <Link
-                          href={`/phong/${encodeURIComponent(room.ma_phong)}`}
-                          className={styles.strong}
-                          style={{ color: "#1877f2", textDecoration: "none", fontWeight: 700 }}
-                        >
-                          {room.ten_hien_thi || room.ma_phong}
-                        </Link>
-                      </td>
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        {room.toa_nha || "—"}
-                        {room.tang !== null ? ` • Tầng ${room.tang}` : ""}
-                      </td>
-                      <td>{room.ten_loai_phong || "Tiêu chuẩn"}</td>
-                      <td style={{ whiteSpace: "nowrap" }}>{room.dien_tich ? `${room.dien_tich} m²` : "—"}</td>
-                      <td>
-                        {room.khach_thue ? (
-                          <div>
-                            <div className={styles.strong}>{room.khach_thue}</div>
-                            {room.ma_hop_dong && (
-                              <div className={styles.muted} style={{ fontSize: 11 }}>
-                                {room.ma_hop_dong}
-                              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 16,
+                  fontSize: 12,
+                  color: "var(--text-muted)",
+                }}
+              >
+                <span>
+                  <strong style={{ color: "var(--text-main)", fontWeight: 600 }}>
+                    {group.rented}
+                  </strong>{" "}
+                  đang thuê
+                </span>
+                <span>
+                  <strong style={{ color: "var(--text-main)", fontWeight: 600 }}>
+                    {group.empty}
+                  </strong>{" "}
+                  trống
+                </span>
+                {group.deposit > 0 && (
+                  <span>
+                    <strong style={{ color: "var(--text-main)", fontWeight: 600 }}>
+                      {group.deposit}
+                    </strong>{" "}
+                    đã cọc
+                  </span>
+                )}
+                {group.issues > 0 && (
+                  <span style={{ color: "var(--status-danger-text)", fontWeight: 600 }}>
+                    {group.issues} sự cố
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Bảng danh sách phòng của tòa */}
+            <div
+              className={styles.tableCard}
+              style={{
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+                marginTop: 0,
+              }}
+            >
+              <div className={styles.tableScroll}>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th style={{ whiteSpace: "nowrap" }}>Phòng</th>
+                      <th style={{ whiteSpace: "nowrap" }}>Tầng</th>
+                      <th style={{ whiteSpace: "nowrap" }}>Loại phòng</th>
+                      <th style={{ whiteSpace: "nowrap" }}>Diện tích</th>
+                      <th style={{ whiteSpace: "nowrap" }}>Khách thuê</th>
+                      <th style={{ whiteSpace: "nowrap" }}>Giá niêm yết</th>
+                      <th style={{ whiteSpace: "nowrap" }}>Tiền cọc</th>
+                      <th style={{ whiteSpace: "nowrap" }}>Trạng thái</th>
+                      <th style={{ whiteSpace: "nowrap", textAlign: "right" }}>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {group.rooms.map((room) => (
+                      <RoomTableRow key={room.ma_phong} maPhong={room.ma_phong}>
+                        <td>
+                          <span
+                            className={styles.strong}
+                            style={{ color: "var(--primary)", fontWeight: 700 }}
+                          >
+                            {room.ten_hien_thi || room.ma_phong}
+                          </span>
+                        </td>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          {room.tang !== null ? `Tầng ${room.tang}` : "—"}
+                        </td>
+                        <td>{room.ten_loai_phong || "Tiêu chuẩn"}</td>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          {room.dien_tich ? `${room.dien_tich} m²` : "—"}
+                        </td>
+                        <td>
+                          {room.khach_thue ? (
+                            <div>
+                              <div className={styles.strong}>{room.khach_thue}</div>
+                              {room.ma_hop_dong && (
+                                <div className={styles.muted} style={{ fontSize: 11 }}>
+                                  {room.ma_hop_dong}
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <span className={styles.muted}>Trống</span>
+                          )}
+                        </td>
+                        <td style={{ whiteSpace: "nowrap", fontWeight: 600 }}>
+                          {formatMoney(room.gia_thue)}
+                        </td>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          {formatMoney(room.tien_dat_coc)}
+                        </td>
+                        <td>
+                          <RoomStatusIndicator
+                            status={room.trang_thai}
+                            issue={room.su_co_dang_mo}
+                          />
+                        </td>
+                        <td style={{ whiteSpace: "nowrap", textAlign: "right" }}>
+                          <div
+                            className={styles.actionCell}
+                            style={{ justifyContent: "flex-end" }}
+                          >
+                            <Link
+                              href={`/phong/${encodeURIComponent(room.ma_phong)}?tab=edit`}
+                              className={styles.linkButton}
+                            >
+                              Sửa
+                            </Link>
+                            {isAdmin && (
+                              <DeleteRoomButton
+                                maPhong={room.ma_phong}
+                                tenPhong={room.ten_hien_thi || room.ma_phong}
+                              />
                             )}
                           </div>
-                        ) : (
-                          <span className={styles.muted}>Trống</span>
-                        )}
-                      </td>
-                      <td style={{ whiteSpace: "nowrap", fontWeight: 600 }}>{formatMoney(room.gia_thue)}</td>
-                      <td style={{ whiteSpace: "nowrap" }}>{formatMoney(room.tien_dat_coc)}</td>
-                      <td>
-                        <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start" }}>
-                          <span className={roomStatusClass(room.trang_thai)}>
-                            {room.trang_thai ?? "—"}
-                          </span>
-                          {room.su_co_dang_mo && (
-                            <span
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 3,
-                                background: "#fee2e2",
-                                color: "#991b1b",
-                                border: "1px solid #fecaca",
-                                borderRadius: 4,
-                                padding: "2px 6px",
-                                fontSize: 11,
-                                fontWeight: 700,
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              Sự cố: {room.su_co_dang_mo}
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <div className={styles.actionCell} style={{ flexWrap: "nowrap" }}>
-                          <Link
-                            href={`/phong/${encodeURIComponent(room.ma_phong)}`}
-                            className={styles.linkButton}
-                          >
-                            Chi tiết
-                          </Link>
-                          <RoomEditorToggle
-                            room={roomFormData}
-                            buildings={buildings}
-                            roomTypes={roomTypes}
-                            defaultBuilding={room.toa_nha || defaultBuildingName}
-                            editableBuilding={scope.allBuildings}
-                          />
-                          {isAdmin && (
-                            <DeleteRoomButton
-                              maPhong={room.ma_phong}
-                              tenPhong={room.ten_hien_thi || room.ma_phong}
-                            />
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                        </td>
+                      </RoomTableRow>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        ))
+      )}
     </AdminShell>
   );
 }

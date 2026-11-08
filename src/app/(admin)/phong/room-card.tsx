@@ -129,7 +129,7 @@ export function RoomCard({ room }: { room: RoomRow }) {
           </div>
           <div className={styles.roomCardSub}>
             {room.ten_loai_phong || "Chưa phân loại"}
-            {room.dien_tich ? ` • ${room.dien_tich}m²` : ""}
+            {room.dien_tich ? `   ${room.dien_tich}m²` : ""}
           </div>
         </div>
         <span className={`${styles.roomCardBadge} ${BADGE_TONE[badge.tone]}`}>
@@ -144,9 +144,9 @@ export function RoomCard({ room }: { room: RoomRow }) {
             <dd>{item.value}</dd>
           </div>
         ))}
-        <div className={styles.roomCardDetailRow} style={{ borderTop: "1px dashed #e2e8f0", paddingTop: 4, marginTop: 4 }}>
-          <dt style={{ color: "#64748b" }}>Số công tơ</dt>
-          <dd style={{ fontWeight: 600, color: "#1e293b", fontSize: 12 }}>
+        <div className={styles.roomCardDetailRow} style={{ borderTop: "1px dashed var(--border)", paddingTop: 4, marginTop: 4 }}>
+          <dt style={{ color: "var(--text-muted)" }}>Số công tơ</dt>
+          <dd style={{ fontWeight: 600, color: "var(--text-main)", fontSize: 12 }}>
             ⚡ {room.chi_so_dien ? Number(room.chi_so_dien).toLocaleString("vi-VN") : 0} | 💧 {room.chi_so_nuoc ? Number(room.chi_so_nuoc).toLocaleString("vi-VN") : 0}
           </dd>
         </div>

@@ -403,7 +403,7 @@ function HandoverPrintModal({
                 </>
               ) : exportSuccess ? (
                 <>
-                  <Check size={14} color="#16a34a" /> Đã tải xong
+                  <Check size={14} color="var(--status-success-text)" /> Đã tải xong
                 </>
               ) : (
                 <>
@@ -723,7 +723,7 @@ export function RoomAssetManager({
                       </span>
                     </td>
                     <td className={styles.moneyCol}>{formatMoney(item.gia_tri)}</td>
-                    <td style={{ maxWidth: 220, fontSize: 12, color: "#64748b" }}>
+                    <td style={{ maxWidth: 220, fontSize: 12, color: "var(--text-muted)" }}>
                       {item.ghi_chu || "—"}
                     </td>
                     {canEdit && (

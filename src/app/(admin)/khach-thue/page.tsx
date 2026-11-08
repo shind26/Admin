@@ -93,7 +93,7 @@ async function TenantsContent({
         </div>
         <div className={styles.miniCard}>
           <div className={styles.miniLabel}>Đang cư trú</div>
-          <div className={styles.miniValue} style={{ color: "#059669" }}>
+          <div className={styles.miniValue} style={{ color: "var(--status-success-text)" }}>
             {activeCount}
           </div>
         </div>
@@ -101,14 +101,14 @@ async function TenantsContent({
           <div className={styles.miniLabel}>Chờ duyệt CCCD / Xe</div>
           <div
             className={styles.miniValue}
-            style={{ color: pendingCount > 0 ? "#d97706" : "#2b3674" }}
+            style={{ color: pendingCount > 0 ? "var(--status-warning-text)" : "var(--text-main)" }}
           >
             {pendingCount}
           </div>
         </div>
         <div className={styles.miniCard}>
           <div className={styles.miniLabel}>Khách đã rời đi</div>
-          <div className={styles.miniValue} style={{ color: "#64748b" }}>
+          <div className={styles.miniValue} style={{ color: "var(--text-muted)" }}>
             {pastCount}
           </div>
         </div>

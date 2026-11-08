@@ -1,6 +1,6 @@
 .content {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: flex-start;
 }
 
@@ -9,68 +9,71 @@
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
 }
 
 .dangerIcon {
-  background: #fde8e8;
-  color: #991b1b;
+  background: var(--status-danger-bg);
+  color: var(--status-danger-text);
+  border: 1px solid var(--status-danger-border);
 }
 
 .warnIcon {
-  background: #e7f3ff;
-  color: #1877f2;
+  background: var(--status-warning-bg);
+  color: var(--status-warning-text);
+  border: 1px solid var(--status-warning-border);
 }
 
 .message {
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: #65676b;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
 }
 
 .message strong {
-  color: #244e6e;
+  color: var(--text-main);
+  font-weight: 600;
 }
 
 .cancelButton,
 .confirmButton,
 .dangerButton {
-  border-radius: 9px;
-  padding: 10px 18px;
-  font-size: 13.5px;
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: all 0.15s ease;
+  transition: all 0.12s ease;
 }
 
 .cancelButton {
-  background: #ffffff;
-  border-color: #ced0d4;
-  color: #65676b;
+  background: var(--bg-surface);
+  border-color: var(--border);
+  color: var(--text-secondary);
 }
 
 .cancelButton:hover {
-  background: #f0f2f5;
-  color: #244e6e;
+  background: var(--bg-subtle);
+  color: var(--text-main);
 }
 
 .confirmButton {
-  background: #1877f2;
+  background: var(--primary);
   color: #ffffff;
 }
 
 .confirmButton:hover {
-  background: #3a78a6;
+  background: var(--primary-hover);
 }
 
 .dangerButton {
-  background: #991b1b;
+  background: var(--status-danger-text);
   color: #ffffff;
 }
 
 .dangerButton:hover {
-  background: #7f1d1d;
+  opacity: 0.9;
 }

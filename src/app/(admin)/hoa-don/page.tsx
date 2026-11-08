@@ -101,7 +101,7 @@ async function InvoicesContent({
           <div className={styles.miniLabel}>Công nợ còn lại ({outstanding} hóa đơn)</div>
           <div
             className={styles.miniValue}
-            style={{ color: totalDebt > 0 ? "#dc2626" : "#16a34a", fontWeight: 700 }}
+            style={{ color: totalDebt > 0 ? "var(--status-danger-text)" : "var(--status-success-text)", fontWeight: 700 }}
           >
             {formatMoney(String(totalDebt))}
           </div>
@@ -232,7 +232,7 @@ async function InvoicesContent({
                       <td className={styles.strong}>
                         {formatMoney(invoice.tong_tien)}
                       </td>
-                      <td style={{ color: "#16a34a", fontWeight: 600 }}>
+                      <td style={{ color: "var(--status-success-text)", fontWeight: 600 }}>
                         {formatMoney(invoice.da_thu)}
                       </td>
                       <td>
@@ -240,12 +240,12 @@ async function InvoicesContent({
                           style={{
                             display: "inline-block",
                             padding: "2px 8px",
-                            borderRadius: 4,
+                            borderRadius: "var(--radius-sm)",
                             fontSize: 12.5,
                             fontWeight: 700,
-                            background: conNo > 0 ? "#fef2f2" : "#f0fdf4",
-                            color: conNo > 0 ? "#dc2626" : "#16a34a",
-                            border: `1px solid ${conNo > 0 ? "#fecaca" : "#bbf7d0"}`,
+                            background: conNo > 0 ? "var(--status-danger-bg)" : "var(--status-success-bg)",
+                            color: conNo > 0 ? "var(--status-danger-text)" : "var(--status-success-text)",
+                            border: `1px solid ${conNo > 0 ? "var(--status-danger-border)" : "var(--status-success-border)"}`,
                           }}
                         >
                           {formatMoney(String(conNo))}

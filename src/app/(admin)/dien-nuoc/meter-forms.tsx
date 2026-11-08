@@ -39,15 +39,15 @@ export function MeterAnomalyBadge({ reading }: { reading: MeterRow }) {
             gap: 3,
             fontSize: 11,
             fontWeight: 700,
-            background: "#fef2f2",
-            color: "#dc2626",
-            border: "1px solid #fecaca",
+            background: "var(--status-danger-bg)",
+            color: "var(--status-danger-text)",
+            border: "1px solid var(--status-danger-border)",
             borderRadius: 5,
             padding: "2px 6px",
             width: "fit-content",
           }}
         >
-          <Zap size={11} color="#dc2626" /> Điện tăng &gt;80%
+          <Zap size={11} color="var(--status-danger-text)" /> Điện tăng &gt;80%
         </span>
       )}
 
@@ -60,15 +60,15 @@ export function MeterAnomalyBadge({ reading }: { reading: MeterRow }) {
             gap: 3,
             fontSize: 11,
             fontWeight: 700,
-            background: "#fef2f2",
-            color: "#b91c1c",
-            border: "1px solid #fca5a5",
+            background: "var(--status-danger-bg)",
+            color: "var(--status-danger-text)",
+            border: "1px solid var(--status-danger-border)",
             borderRadius: 5,
             padding: "2px 6px",
             width: "fit-content",
           }}
         >
-          <Droplets size={11} color="#b91c1c" /> Rò rỉ nước (+80%)
+          <Droplets size={11} color="var(--status-danger-text)" /> Rò rỉ nước (+80%)
         </span>
       )}
 
@@ -81,15 +81,15 @@ export function MeterAnomalyBadge({ reading }: { reading: MeterRow }) {
             gap: 3,
             fontSize: 11,
             fontWeight: 700,
-            background: "#fffbeb",
-            color: "#b45309",
-            border: "1px solid #fde68a",
+            background: "var(--status-warning-bg)",
+            color: "var(--status-warning-text)",
+            border: "1px solid var(--status-warning-border)",
             borderRadius: 5,
             padding: "2px 6px",
             width: "fit-content",
           }}
         >
-          <AlertTriangle size={11} color="#b45309" /> Không thay đổi (0)
+          <AlertTriangle size={11} color="var(--status-warning-text)" /> Không thay đổi (0)
         </span>
       )}
     </div>
@@ -108,9 +108,9 @@ export function MeterInvoiceLink({ maHoaDon }: { maHoaDon?: string | null }) {
         display: "inline-flex",
         alignItems: "center",
         gap: 4,
-        background: "#f0fdf4",
-        color: "#15803d",
-        border: "1px solid #bbf7d0",
+        background: "var(--status-success-bg)",
+        color: "var(--status-success-text)",
+        border: "1px solid var(--status-success-border)",
         borderRadius: 6,
         padding: "3px 7px",
         fontSize: 11.5,
@@ -190,8 +190,8 @@ export function ClosingProgressCard({
   return (
     <div
       style={{
-        background: "#ffffff",
-        border: "1px solid #e2e8f0",
+        background: "var(--bg-surface)",
+        border: "1px solid var(--border)",
         borderRadius: 14,
         padding: "16px 20px",
         marginBottom: 18,
@@ -214,8 +214,8 @@ export function ClosingProgressCard({
               width: 38,
               height: 38,
               borderRadius: 10,
-              background: "#eff6ff",
-              color: "#2563eb",
+              background: "var(--primary-subtle)",
+              color: "var(--primary)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -224,10 +224,10 @@ export function ClosingProgressCard({
             <Clock size={19} />
           </div>
           <div>
-            <h3 style={{ fontSize: 15, fontWeight: 700, color: "#1e293b", margin: 0 }}>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text-main)", margin: 0 }}>
               Tiến Độ Chốt Số Kỳ {progress.selectedPeriod}
             </h3>
-            <p style={{ fontSize: 12, color: "#64748b", margin: "2px 0 0" }}>
+            <p style={{ fontSize: 12, color: "var(--text-muted)", margin: "2px 0 0" }}>
               Theo dõi tình trạng khách chụp ảnh công tơ gửi qua Mobile App
             </p>
           </div>
@@ -235,7 +235,7 @@ export function ClosingProgressCard({
 
         {/* Dropdown chọn kỳ */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: "#475569" }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: "var(--text-muted)" }}>
             Chọn kỳ theo dõi:
           </label>
           <select
@@ -244,11 +244,11 @@ export function ClosingProgressCard({
             style={{
               padding: "6px 12px",
               borderRadius: 8,
-              border: "1px solid #cbd5e1",
+              border: "1px solid var(--border)",
               fontSize: 12.5,
               fontWeight: 600,
-              color: "#1e293b",
-              background: "#f8fafc",
+              color: "var(--text-main)",
+              background: "var(--bg-subtle)",
               cursor: "pointer",
             }}
           >
@@ -270,33 +270,33 @@ export function ClosingProgressCard({
           marginBottom: 14,
         }}
       >
-        <div style={{ padding: "10px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
-          <div style={{ fontSize: 11.5, color: "#64748b" }}>Đã nộp</div>
-          <div style={{ fontSize: 17, fontWeight: 800, color: "#0f172a", marginTop: 2 }}>
+        <div style={{ padding: "10px 12px", background: "var(--bg-subtle)", borderRadius: 8, border: "1px solid var(--border)" }}>
+          <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Đã nộp</div>
+          <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text-main)", marginTop: 2 }}>
             {progress.submitted} / {progress.totalRooms}{" "}
-            <span style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>({pctSubmitted}%)</span>
+            <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 600 }}>({pctSubmitted}%)</span>
           </div>
         </div>
 
-        <div style={{ padding: "10px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
-          <div style={{ fontSize: 11.5, color: "#64748b" }}>Đã duyệt</div>
-          <div style={{ fontSize: 17, fontWeight: 800, color: "#0f172a", marginTop: 2 }}>
+        <div style={{ padding: "10px 12px", background: "var(--bg-subtle)", borderRadius: 8, border: "1px solid var(--border)" }}>
+          <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Đã duyệt</div>
+          <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text-main)", marginTop: 2 }}>
             {progress.approved} phòng
           </div>
         </div>
 
-        <div style={{ padding: "10px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
-          <div style={{ fontSize: 11.5, color: "#64748b" }}>Chờ duyệt</div>
-          <div style={{ fontSize: 17, fontWeight: 800, color: "#0f172a", marginTop: 2 }}>
+        <div style={{ padding: "10px 12px", background: "var(--bg-subtle)", borderRadius: 8, border: "1px solid var(--border)" }}>
+          <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Chờ duyệt</div>
+          <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text-main)", marginTop: 2 }}>
             {progress.pending} phòng
           </div>
         </div>
 
-        <div style={{ padding: "10px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
+        <div style={{ padding: "10px 12px", background: "var(--bg-subtle)", borderRadius: 8, border: "1px solid var(--border)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 6 }}>
             <div>
-              <div style={{ fontSize: 11.5, color: "#64748b" }}>Chưa gửi ảnh</div>
-              <div style={{ fontSize: 17, fontWeight: 800, color: "#0f172a", marginTop: 2 }}>
+              <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Chưa gửi ảnh</div>
+              <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text-main)", marginTop: 2 }}>
                 {progress.unsubmittedRooms.length} phòng
               </div>
             </div>
@@ -308,9 +308,9 @@ export function ClosingProgressCard({
                 style={{
                   padding: "4px 8px",
                   borderRadius: 6,
-                  border: "1px solid #cbd5e1",
-                  background: "#ffffff",
-                  color: "#0f172a",
+                  border: "1px solid var(--border)",
+                  background: "var(--bg-surface)",
+                  color: "var(--text-main)",
                   fontSize: 11.5,
                   fontWeight: 600,
                   cursor: "pointer",
@@ -333,17 +333,17 @@ export function ClosingProgressCard({
           style={{
             height: 10,
             borderRadius: 999,
-            background: "#f1f5f9",
+            background: "var(--bg-subtle)",
             overflow: "hidden",
             display: "flex",
-            border: "1px solid #e2e8f0",
+            border: "1px solid var(--border)",
           }}
         >
           {pctApproved > 0 && (
             <div
               style={{
                 width: `${pctApproved}%`,
-                background: "#10b981",
+                background: "var(--status-success-text)",
                 transition: "width 0.4s ease",
               }}
               title={`Đã duyệt: ${progress.approved} phòng (${pctApproved}%)`}
@@ -353,7 +353,7 @@ export function ClosingProgressCard({
             <div
               style={{
                 width: `${pctPending}%`,
-                background: "#f59e0b",
+                background: "var(--status-warning-text)",
                 transition: "width 0.4s ease",
               }}
               title={`Chờ duyệt: ${progress.pending} phòng (${pctPending}%)`}
@@ -363,7 +363,7 @@ export function ClosingProgressCard({
             <div
               style={{
                 width: `${pctUnsubmitted}%`,
-                background: "#e2e8f0",
+                background: "var(--border)",
                 transition: "width 0.4s ease",
               }}
               title={`Chưa nộp: ${progress.unsubmittedRooms.length} phòng (${pctUnsubmitted}%)`}
@@ -374,9 +374,9 @@ export function ClosingProgressCard({
 
       {/* Button xem phòng chưa nộp */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-        <div style={{ fontSize: 12, color: "#64748b" }}>
+        <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
           {progress.unsubmittedRooms.length === 0 ? (
-            <span style={{ color: "#16a34a", fontWeight: 600 }}>
+            <span style={{ color: "var(--status-success-text)", fontWeight: 600 }}>
               🎉 Tất cả các phòng có khách ở đều đã nộp ảnh chỉ số kỳ này!
             </span>
           ) : (
@@ -409,14 +409,14 @@ export function ClosingProgressCard({
         >
           <div
             style={{
-              background: "#ffffff",
+              background: "var(--bg-surface)",
               borderRadius: 14,
               maxWidth: 680,
               width: "100%",
               maxHeight: "85vh",
               overflowY: "auto",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.35)",
-              border: "1px solid #e2e8f0",
+              border: "1px solid var(--border)",
               padding: 20,
             }}
           >
@@ -425,23 +425,23 @@ export function ClosingProgressCard({
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                borderBottom: "1px solid #e2e8f0",
+                borderBottom: "1px solid var(--border)",
                 paddingBottom: 12,
                 marginBottom: 16,
               }}
             >
               <div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1e293b", margin: 0 }}>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "var(--text-main)", margin: 0 }}>
                   Danh Sách Phòng Chưa Nộp Chỉ Số Kỳ {progress.selectedPeriod}
                 </h3>
-                <p style={{ fontSize: 12, color: "#64748b", margin: "2px 0 0" }}>
+                <p style={{ fontSize: 12, color: "var(--text-muted)", margin: "2px 0 0" }}>
                   Tổng cộng: {progress.unsubmittedRooms.length} phòng
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowUnsubmittedModal(false)}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b" }}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}
               >
                 <X size={20} />
               </button>
@@ -452,9 +452,9 @@ export function ClosingProgressCard({
                 style={{
                   padding: "10px 14px",
                   borderRadius: 8,
-                  background: "#f0fdf4",
-                  border: "1px solid #bbf7d0",
-                  color: "#166534",
+                  background: "var(--status-success-bg)",
+                  border: "1px solid var(--status-success-border)",
+                  color: "var(--status-success-text)",
                   fontSize: 12.5,
                   fontWeight: 600,
                   marginBottom: 14,
@@ -476,8 +476,8 @@ export function ClosingProgressCard({
                   padding: "7px 14px",
                   borderRadius: 6,
                   border: "none",
-                  background: remindedAll ? "#059669" : "#2563eb",
-                  color: "#ffffff",
+                  background: remindedAll ? "var(--status-success-text)" : "var(--primary)",
+                  color: "var(--bg-surface)",
                   fontSize: 12.5,
                   fontWeight: 700,
                   cursor: remindingId === "ALL" || remindedAll ? "not-allowed" : "pointer",
@@ -497,21 +497,21 @@ export function ClosingProgressCard({
 
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
               <thead>
-                <tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
-                  <th style={{ padding: "8px 10px", textAlign: "left", color: "#475569" }}>Phòng</th>
-                  <th style={{ padding: "8px 10px", textAlign: "left", color: "#475569" }}>Khách thuê</th>
-                  <th style={{ padding: "8px 10px", textAlign: "left", color: "#475569" }}>Số điện thoại</th>
-                  <th style={{ padding: "8px 10px", textAlign: "right", color: "#475569" }}>Hành động</th>
+                <tr style={{ background: "var(--bg-subtle)", borderBottom: "1px solid var(--border)" }}>
+                  <th style={{ padding: "8px 10px", textAlign: "left", color: "var(--text-muted)" }}>Phòng</th>
+                  <th style={{ padding: "8px 10px", textAlign: "left", color: "var(--text-muted)" }}>Khách thuê</th>
+                  <th style={{ padding: "8px 10px", textAlign: "left", color: "var(--text-muted)" }}>Số điện thoại</th>
+                  <th style={{ padding: "8px 10px", textAlign: "right", color: "var(--text-muted)" }}>Hành động</th>
                 </tr>
               </thead>
               <tbody>
                 {progress.unsubmittedRooms.map((r) => (
-                  <tr key={r.ma_hop_dong} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                    <td style={{ padding: "10px", fontWeight: 700, color: "#1e293b" }}>
-                      {r.ma_phong} <span style={{ fontSize: 11, color: "#64748b", fontWeight: 400 }}>({r.toa_nha || "Chưa gán tòa"})</span>
+                  <tr key={r.ma_hop_dong} style={{ borderBottom: "1px solid var(--bg-subtle)" }}>
+                    <td style={{ padding: "10px", fontWeight: 700, color: "var(--text-main)" }}>
+                      {r.ma_phong} <span style={{ fontSize: 11, color: "var(--text-muted)", fontWeight: 400 }}>({r.toa_nha || "Chưa gán tòa"})</span>
                     </td>
-                    <td style={{ padding: "10px", color: "#334155" }}>{r.ten_khach || "—"}</td>
-                    <td style={{ padding: "10px", color: "#475569" }}>{r.so_dt || "—"}</td>
+                    <td style={{ padding: "10px", color: "var(--text-main)" }}>{r.ten_khach || "—"}</td>
+                    <td style={{ padding: "10px", color: "var(--text-muted)" }}>{r.so_dt || "—"}</td>
                     <td style={{ padding: "10px", textAlign: "right" }}>
                       <button
                         type="button"
@@ -520,9 +520,9 @@ export function ClosingProgressCard({
                         style={{
                           padding: "5px 10px",
                           borderRadius: 6,
-                          border: "1px solid #cbd5e1",
-                          background: "#ffffff",
-                          color: "#2563eb",
+                          border: "1px solid var(--border)",
+                          background: "var(--bg-surface)",
+                          color: "var(--primary)",
                           fontSize: 12,
                           fontWeight: 600,
                           cursor: remindingId === r.ma_phong ? "not-allowed" : "pointer",
@@ -572,8 +572,8 @@ export function QuickApproveButton({ maKy }: { maKy: string }) {
         display: "inline-flex",
         alignItems: "center",
         gap: 4,
-        background: "#059669",
-        color: "#ffffff",
+        background: "var(--status-success-text)",
+        color: "var(--bg-surface)",
         border: "none",
         borderRadius: 6,
         padding: "5px 10px",
@@ -616,9 +616,9 @@ export function QuickRejectButton({ maKy }: { maKy: string }) {
         display: "inline-flex",
         alignItems: "center",
         gap: 4,
-        background: "#ffffff",
-        color: "#dc2626",
-        border: "1px solid #fca5a5",
+        background: "var(--bg-surface)",
+        color: "var(--status-danger-text)",
+        border: "1px solid var(--status-danger-border)",
         borderRadius: 6,
         padding: "5px 10px",
         fontSize: 12,
@@ -647,7 +647,7 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
 
   if (!hasPhotos) {
     return (
-      <span style={{ fontSize: 12, color: "#94a3b8", fontStyle: "italic" }}>
+      <span style={{ fontSize: 12, color: "var(--text-muted)", fontStyle: "italic" }}>
         Chưa có ảnh
       </span>
     );
@@ -664,9 +664,9 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
           display: "inline-flex",
           alignItems: "center",
           gap: 5,
-          background: "#eff6ff",
-          color: "#2563eb",
-          border: "1px solid #bfdbfe",
+          background: "var(--primary-subtle)",
+          color: "var(--primary)",
+          border: "1px solid var(--primary-subtle)",
           borderRadius: 6,
           padding: "4px 9px",
           fontSize: 12,
@@ -682,7 +682,7 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
             padding: "1px 5px",
             background: "#dbeafe",
             borderRadius: 999,
-            color: "#1d4ed8",
+            color: "var(--primary)",
             fontWeight: 700,
           }}
         >
@@ -711,30 +711,31 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
         >
           <div
             style={{
-              background: "#ffffff",
+              background: "var(--bg-surface)",
               borderRadius: 16,
               maxWidth: 720,
               width: "100%",
               overflow: "hidden",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.35)",
-              border: "1px solid #e2e8f0",
+              border: "1px solid var(--border)",
             }}
           >
             <div
               style={{
                 padding: "14px 18px",
-                borderBottom: "1px solid #e2e8f0",
+                borderBottom: "1px solid var(--border)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "#f8fafc",
+                background: "var(--bg-subtle)",
               }}
             >
               <div>
-                <strong style={{ fontSize: 15, color: "#0f172a" }}>
-                  Ảnh đồng hồ: Phòng {reading.ma_phong} • Kỳ {reading.thang_nam}
+                <strong style={{ fontSize: 15, color: "var(--text-main)", display: "flex", gap: 14 }}>
+                  <span>Ảnh đồng hồ: Phòng {reading.ma_phong}</span>
+                  <span>Kỳ {reading.thang_nam}</span>
                 </strong>
-                <div style={{ fontSize: 12, color: "#64748b" }}>
+                <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
                   Khách thuê: {reading.ten_khach || "—"} ({reading.ma_ky})
                 </div>
               </div>
@@ -745,7 +746,7 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
                   background: "none",
                   border: "none",
                   cursor: "pointer",
-                  color: "#64748b",
+                  color: "var(--text-muted)",
                 }}
               >
                 <X size={20} />
@@ -756,7 +757,7 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
             <div
               style={{
                 padding: "10px 18px",
-                borderBottom: "1px solid #f1f5f9",
+                borderBottom: "1px solid var(--bg-subtle)",
                 display: "flex",
                 gap: 10,
               }}
@@ -770,10 +771,10 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
                     borderRadius: 8,
                     border:
                       activePhoto === "dien"
-                        ? "2px solid #eab308"
-                        : "1px solid #cbd5e1",
-                    background: activePhoto === "dien" ? "#fefce8" : "#fff",
-                    color: activePhoto === "dien" ? "#854d0e" : "#475569",
+                        ? "2px solid var(--status-warning-text)"
+                        : "1px solid var(--border)",
+                    background: activePhoto === "dien" ? "var(--status-warning-bg)" : "var(--bg-surface)",
+                    color: activePhoto === "dien" ? "var(--status-warning-text)" : "var(--text-muted)",
                     fontWeight: 700,
                     fontSize: 12.5,
                     cursor: "pointer",
@@ -782,7 +783,7 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
                     gap: 6,
                   }}
                 >
-                  <Zap size={15} color="#eab308" /> Ảnh đồng hồ Điện
+                  <Zap size={15} color="var(--status-warning-text)" /> Ảnh đồng hồ Điện
                 </button>
               )}
 
@@ -795,10 +796,10 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
                     borderRadius: 8,
                     border:
                       activePhoto === "nuoc"
-                        ? "2px solid #0284c7"
-                        : "1px solid #cbd5e1",
-                    background: activePhoto === "nuoc" ? "#f0f9ff" : "#fff",
-                    color: activePhoto === "nuoc" ? "#0369a1" : "#475569",
+                        ? "2px solid var(--status-info-text)"
+                        : "1px solid var(--border)",
+                    background: activePhoto === "nuoc" ? "var(--status-info-bg)" : "var(--bg-surface)",
+                    color: activePhoto === "nuoc" ? "var(--status-info-text)" : "var(--text-muted)",
                     fontWeight: 700,
                     fontSize: 12.5,
                     cursor: "pointer",
@@ -807,7 +808,7 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
                     gap: 6,
                   }}
                 >
-                  <Droplets size={15} color="#0284c7" /> Ảnh đồng hồ Nước
+                  <Droplets size={15} color="var(--status-info-text)" /> Ảnh đồng hồ Nước
                 </button>
               )}
             </div>
@@ -816,7 +817,7 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
             <div
               style={{
                 padding: 18,
-                background: "#0f172a",
+                background: "var(--text-main)",
                 textAlign: "center",
                 minHeight: 340,
                 display: "flex",
@@ -838,7 +839,7 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
                   }}
                 />
               ) : (
-                <div style={{ color: "#94a3b8", fontSize: 13 }}>
+                <div style={{ color: "var(--text-muted)", fontSize: 13 }}>
                   Không tìm thấy hình ảnh cho đồng hồ {activePhoto}.
                 </div>
               )}
@@ -848,8 +849,8 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
             <div
               style={{
                 padding: "12px 18px",
-                background: "#f8fafc",
-                borderTop: "1px solid #e2e8f0",
+                background: "var(--bg-subtle)",
+                borderTop: "1px solid var(--border)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
@@ -863,7 +864,7 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
                   <span>
                     Số điện khách gửi: <strong>{reading.chi_so_dien_cu}</strong>{" "}
                     →{" "}
-                    <strong style={{ color: "#d97706" }}>
+                    <strong style={{ color: "var(--status-warning-text)" }}>
                       {reading.chi_so_dien_moi}
                     </strong>{" "}
                     (Tiêu thụ: <strong>{reading.dien_tieu_thu} kWh</strong>)
@@ -872,7 +873,7 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
                   <span>
                     Số nước khách gửi: <strong>{reading.chi_so_nuoc_cu}</strong>{" "}
                     →{" "}
-                    <strong style={{ color: "#0284c7" }}>
+                    <strong style={{ color: "var(--status-info-text)" }}>
                       {reading.chi_so_nuoc_moi}
                     </strong>{" "}
                     (Tiêu thụ: <strong>{reading.nuoc_tieu_thu} m³</strong>)
@@ -885,8 +886,8 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
                 style={{
                   padding: "6px 14px",
                   borderRadius: 6,
-                  border: "1px solid #cbd5e1",
-                  background: "#fff",
+                  border: "1px solid var(--border)",
+                  background: "var(--bg-surface)",
                   fontSize: 12,
                   cursor: "pointer",
                 }}
@@ -982,9 +983,9 @@ export function MeterEditorToggle({
           display: "inline-flex",
           alignItems: "center",
           gap: 4,
-          background: "#ffffff",
-          color: "#1877f2",
-          border: "1px solid #bfdbfe",
+          background: "var(--bg-surface)",
+          color: "var(--primary)",
+          border: "1px solid var(--primary-subtle)",
           borderRadius: 6,
           padding: "5px 10px",
           fontSize: 12,
@@ -1015,25 +1016,25 @@ export function MeterEditorToggle({
         >
           <div
             style={{
-              background: "#ffffff",
+              background: "var(--bg-surface)",
               borderRadius: 16,
               maxWidth: 960,
               width: "100%",
               maxHeight: "92vh",
               overflowY: "auto",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.35)",
-              border: "1px solid #e2e8f0",
+              border: "1px solid var(--border)",
             }}
           >
             {/* Modal Header */}
             <div
               style={{
                 padding: "16px 22px",
-                borderBottom: "1px solid #e2e8f0",
+                borderBottom: "1px solid var(--border)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "#f8fafc",
+                background: "var(--bg-subtle)",
                 borderTopLeftRadius: 16,
                 borderTopRightRadius: 16,
               }}
@@ -1042,7 +1043,7 @@ export function MeterEditorToggle({
                 <div
                   style={{
                     background: "#dbeafe",
-                    color: "#1877f2",
+                    color: "var(--primary)",
                     width: 38,
                     height: 38,
                     borderRadius: 10,
@@ -1058,7 +1059,7 @@ export function MeterEditorToggle({
                     style={{
                       fontSize: 16,
                       fontWeight: 800,
-                      color: "#0f172a",
+                      color: "var(--text-main)",
                       margin: 0,
                     }}
                   >
@@ -1067,13 +1068,16 @@ export function MeterEditorToggle({
                   <p
                     style={{
                       fontSize: 12.5,
-                      color: "#64748b",
+                      color: "var(--text-muted)",
                       margin: "3px 0 0",
+                      display: "flex",
+                      gap: 14,
+                      flexWrap: "wrap",
                     }}
                   >
-                    Phòng <strong>{reading.ma_phong}</strong> • Khách thuê:{" "}
-                    <strong>{reading.ten_khach || "—"}</strong> • Kỳ:{" "}
-                    <strong>{reading.thang_nam}</strong> ({reading.ma_ky})
+                    <span>Phòng <strong>{reading.ma_phong}</strong></span>
+                    <span>Khách thuê: <strong>{reading.ten_khach || "—"}</strong></span>
+                    <span>Kỳ: <strong>{reading.thang_nam}</strong> ({reading.ma_ky})</span>
                   </p>
                 </div>
               </div>
@@ -1085,7 +1089,7 @@ export function MeterEditorToggle({
                   background: "transparent",
                   border: "none",
                   cursor: "pointer",
-                  color: "#94a3b8",
+                  color: "var(--text-muted)",
                   padding: 4,
                 }}
               >
@@ -1126,9 +1130,9 @@ export function MeterEditorToggle({
               {state.error && (
                 <div
                   style={{
-                    background: "#fef2f2",
-                    border: "1px solid #fecaca",
-                    color: "#b91c1c",
+                    background: "var(--status-danger-bg)",
+                    border: "1px solid var(--status-danger-border)",
+                    color: "var(--status-danger-text)",
                     padding: "10px 14px",
                     borderRadius: 8,
                     fontSize: 13,
@@ -1145,9 +1149,9 @@ export function MeterEditorToggle({
               {state.success && (
                 <div
                   style={{
-                    background: "#ecfdf5",
-                    border: "1px solid #a7f3d0",
-                    color: "#047857",
+                    background: "var(--status-success-bg)",
+                    border: "1px solid var(--status-success-border)",
+                    color: "var(--status-success-text)",
                     padding: "12px 14px",
                     borderRadius: 8,
                     fontSize: 13,
@@ -1174,8 +1178,8 @@ export function MeterEditorToggle({
                 {/* ── CỘT TRÁI: ẢNH ĐỒNG HỒ KHÁCH GỬI ── */}
                 <div
                   style={{
-                    background: "#f8fafc",
-                    border: "1px solid #e2e8f0",
+                    background: "var(--bg-subtle)",
+                    border: "1px solid var(--border)",
                     borderRadius: 12,
                     padding: 14,
                     display: "flex",
@@ -1194,7 +1198,7 @@ export function MeterEditorToggle({
                       style={{
                         fontSize: 12.5,
                         fontWeight: 700,
-                        color: "#334155",
+                        color: "var(--text-main)",
                       }}
                     >
                       📸 Ảnh công tơ từ phòng
@@ -1209,11 +1213,11 @@ export function MeterEditorToggle({
                           borderRadius: 6,
                           border:
                             activePhoto === "dien"
-                              ? "2px solid #eab308"
-                              : "1px solid #cbd5e1",
+                              ? "2px solid var(--status-warning-text)"
+                              : "1px solid var(--border)",
                           background:
-                            activePhoto === "dien" ? "#fefce8" : "#fff",
-                          color: activePhoto === "dien" ? "#854d0e" : "#475569",
+                            activePhoto === "dien" ? "var(--status-warning-bg)" : "var(--bg-surface)",
+                          color: activePhoto === "dien" ? "var(--status-warning-text)" : "var(--text-muted)",
                           fontSize: 11.5,
                           fontWeight: 700,
                           cursor: "pointer",
@@ -1229,11 +1233,11 @@ export function MeterEditorToggle({
                           borderRadius: 6,
                           border:
                             activePhoto === "nuoc"
-                              ? "2px solid #0284c7"
-                              : "1px solid #cbd5e1",
+                              ? "2px solid var(--status-info-text)"
+                              : "1px solid var(--border)",
                           background:
-                            activePhoto === "nuoc" ? "#f0f9ff" : "#fff",
-                          color: activePhoto === "nuoc" ? "#0369a1" : "#475569",
+                            activePhoto === "nuoc" ? "var(--status-info-bg)" : "var(--bg-surface)",
+                          color: activePhoto === "nuoc" ? "var(--status-info-text)" : "var(--text-muted)",
                           fontSize: 11.5,
                           fontWeight: 700,
                           cursor: "pointer",
@@ -1250,7 +1254,7 @@ export function MeterEditorToggle({
                       flex: 1,
                       minHeight: 280,
                       maxHeight: 380,
-                      background: "#0f172a",
+                      background: "var(--text-main)",
                       borderRadius: 10,
                       display: "flex",
                       alignItems: "center",
@@ -1275,7 +1279,7 @@ export function MeterEditorToggle({
                     ) : (
                       <div
                         style={{
-                          color: "#94a3b8",
+                          color: "var(--text-muted)",
                           fontSize: 12.5,
                           textAlign: "center",
                         }}
@@ -1299,7 +1303,7 @@ export function MeterEditorToggle({
                         rel="noreferrer"
                         style={{
                           fontSize: 11.5,
-                          color: "#2563eb",
+                          color: "var(--primary)",
                           textDecoration: "underline",
                           display: "inline-flex",
                           alignItems: "center",
@@ -1318,11 +1322,11 @@ export function MeterEditorToggle({
                   {anomaly.hasAnomaly && (
                     <div
                       style={{
-                        background: "#fef2f2",
-                        border: "1px solid #fca5a5",
+                        background: "var(--status-danger-bg)",
+                        border: "1px solid var(--status-danger-border)",
                         borderRadius: 12,
                         padding: "12px 14px",
-                        color: "#991b1b",
+                        color: "var(--status-danger-text)",
                       }}
                     >
                       <div
@@ -1335,7 +1339,7 @@ export function MeterEditorToggle({
                           marginBottom: 6,
                         }}
                       >
-                        <AlertTriangle size={16} color="#dc2626" />
+                        <AlertTriangle size={16} color="var(--status-danger-text)" />
                         Phát hiện tiêu thụ bất thường:
                       </div>
                       <ul
@@ -1359,8 +1363,8 @@ export function MeterEditorToggle({
                   {reading.ma_hoa_don && (
                     <div
                       style={{
-                        background: "#f0fdf4",
-                        border: "1px solid #bbf7d0",
+                        background: "var(--status-success-bg)",
+                        border: "1px solid var(--status-success-border)",
                         borderRadius: 12,
                         padding: "10px 14px",
                         display: "flex",
@@ -1374,10 +1378,10 @@ export function MeterEditorToggle({
                           alignItems: "center",
                           gap: 6,
                           fontSize: 12.5,
-                          color: "#166534",
+                          color: "var(--status-success-text)",
                         }}
                       >
-                        <FileText size={15} color="#15803d" />
+                        <FileText size={15} color="var(--status-success-text)" />
                         <span>
                           Đã kết chuyển Hóa đơn:{" "}
                           <strong>{reading.ma_hoa_don}</strong>
@@ -1391,7 +1395,7 @@ export function MeterEditorToggle({
                         style={{
                           fontSize: 12,
                           fontWeight: 700,
-                          color: "#15803d",
+                          color: "var(--status-success-text)",
                           textDecoration: "underline",
                           display: "inline-flex",
                           alignItems: "center",
@@ -1406,8 +1410,8 @@ export function MeterEditorToggle({
                   {/* Khối Điện */}
                   <div
                     style={{
-                      background: "#fffbeb",
-                      border: "1px solid #fde68a",
+                      background: "var(--status-warning-bg)",
+                      border: "1px solid var(--status-warning-border)",
                       borderRadius: 12,
                       padding: 14,
                     }}
@@ -1423,13 +1427,13 @@ export function MeterEditorToggle({
                       <strong
                         style={{
                           fontSize: 13.5,
-                          color: "#92400e",
+                          color: "var(--status-warning-text)",
                           display: "flex",
                           alignItems: "center",
                           gap: 6,
                         }}
                       >
-                        <Zap size={16} color="#eab308" /> CHỈ SỐ ĐIỆN (kWh)
+                        <Zap size={16} color="var(--status-warning-text)" /> CHỈ SỐ ĐIỆN (kWh)
                       </strong>
                       <span
                         style={{
@@ -1437,9 +1441,9 @@ export function MeterEditorToggle({
                           fontWeight: 700,
                           padding: "2px 8px",
                           borderRadius: 999,
-                          background: "#fef3c7",
-                          color: "#b45309",
-                          border: "1px solid #fde68a",
+                          background: "var(--status-warning-bg)",
+                          color: "var(--status-warning-text)",
+                          border: "1px solid var(--status-warning-border)",
                         }}
                       >
                         Tiêu thụ: {dienTieuThu} kWh
@@ -1461,20 +1465,20 @@ export function MeterEditorToggle({
                             alignItems: "center",
                             gap: 4,
                             fontSize: 11.5,
-                            color: "#78350f",
+                            color: "var(--status-warning-text)",
                             fontWeight: 600,
                             marginBottom: 4,
                           }}
                         >
-                          <Lock size={11} color="#92400e" /> Số điện cũ (Kỳ trước)
+                          <Lock size={11} color="var(--status-warning-text)" /> Số điện cũ (Kỳ trước)
                         </label>
                         <div
                           style={{
                             padding: "8px 12px",
                             borderRadius: 8,
-                            border: "1px solid #fcd34d",
-                            background: "#fef3c7",
-                            color: "#78350f",
+                            border: "1px solid var(--status-warning-border)",
+                            background: "var(--status-warning-bg)",
+                            color: "var(--status-warning-text)",
                             fontSize: 14,
                             fontWeight: 700,
                             display: "flex",
@@ -1483,7 +1487,7 @@ export function MeterEditorToggle({
                           }}
                         >
                           <span>{chiSoDienCuNum}</span>
-                          <span style={{ fontSize: 11, color: "#92400e" }}>
+                          <span style={{ fontSize: 11, color: "var(--status-warning-text)" }}>
                             kWh
                           </span>
                         </div>
@@ -1495,7 +1499,7 @@ export function MeterEditorToggle({
                           style={{
                             display: "block",
                             fontSize: 11.5,
-                            color: "#78350f",
+                            color: "var(--status-warning-text)",
                             fontWeight: 700,
                             marginBottom: 4,
                           }}
@@ -1514,12 +1518,12 @@ export function MeterEditorToggle({
                             padding: "8px 10px",
                             borderRadius: 8,
                             border: dienLoi
-                              ? "2px solid #ef4444"
-                              : "2px solid #eab308",
+                              ? "2px solid var(--status-danger-text)"
+                              : "2px solid var(--status-warning-text)",
                             fontSize: 16,
                             fontWeight: 800,
-                            color: "#0f172a",
-                            background: "#ffffff",
+                            color: "var(--text-main)",
+                            background: "var(--bg-surface)",
                           }}
                         />
                       </div>
@@ -1529,7 +1533,7 @@ export function MeterEditorToggle({
                       <div
                         style={{
                           fontSize: 11.5,
-                          color: "#dc2626",
+                          color: "var(--status-danger-text)",
                           marginTop: 6,
                           fontWeight: 600,
                         }}
@@ -1543,8 +1547,8 @@ export function MeterEditorToggle({
                   {/* Khối Nước */}
                   <div
                     style={{
-                      background: "#f0f9ff",
-                      border: "1px solid #bae6fd",
+                      background: "var(--status-info-bg)",
+                      border: "1px solid var(--status-info-border)",
                       borderRadius: 12,
                       padding: 14,
                     }}
@@ -1560,13 +1564,13 @@ export function MeterEditorToggle({
                       <strong
                         style={{
                           fontSize: 13.5,
-                          color: "#0369a1",
+                          color: "var(--status-info-text)",
                           display: "flex",
                           alignItems: "center",
                           gap: 6,
                         }}
                       >
-                        <Droplets size={16} color="#0284c7" /> CHỈ SỐ NƯỚC (m³)
+                        <Droplets size={16} color="var(--status-info-text)" /> CHỈ SỐ NƯỚC (m³)
                       </strong>
                       <span
                         style={{
@@ -1574,9 +1578,9 @@ export function MeterEditorToggle({
                           fontWeight: 700,
                           padding: "2px 8px",
                           borderRadius: 999,
-                          background: "#e0f2fe",
-                          color: "#0369a1",
-                          border: "1px solid #bae6fd",
+                          background: "var(--status-info-bg)",
+                          color: "var(--status-info-text)",
+                          border: "1px solid var(--status-info-border)",
                         }}
                       >
                         Tiêu thụ: {nuocTieuThu} m³
@@ -1598,20 +1602,20 @@ export function MeterEditorToggle({
                             alignItems: "center",
                             gap: 4,
                             fontSize: 11.5,
-                            color: "#075985",
+                            color: "var(--status-info-text)",
                             fontWeight: 600,
                             marginBottom: 4,
                           }}
                         >
-                          <Lock size={11} color="#0369a1" /> Số nước cũ (Kỳ trước)
+                          <Lock size={11} color="var(--status-info-text)" /> Số nước cũ (Kỳ trước)
                         </label>
                         <div
                           style={{
                             padding: "8px 12px",
                             borderRadius: 8,
-                            border: "1px solid #7dd3fc",
-                            background: "#e0f2fe",
-                            color: "#075985",
+                            border: "1px solid var(--status-info-border)",
+                            background: "var(--status-info-bg)",
+                            color: "var(--status-info-text)",
                             fontSize: 14,
                             fontWeight: 700,
                             display: "flex",
@@ -1620,7 +1624,7 @@ export function MeterEditorToggle({
                           }}
                         >
                           <span>{chiSoNuocCuNum}</span>
-                          <span style={{ fontSize: 11, color: "#0369a1" }}>
+                          <span style={{ fontSize: 11, color: "var(--status-info-text)" }}>
                             m³
                           </span>
                         </div>
@@ -1632,7 +1636,7 @@ export function MeterEditorToggle({
                           style={{
                             display: "block",
                             fontSize: 11.5,
-                            color: "#075985",
+                            color: "var(--status-info-text)",
                             fontWeight: 700,
                             marginBottom: 4,
                           }}
@@ -1651,12 +1655,12 @@ export function MeterEditorToggle({
                             padding: "8px 10px",
                             borderRadius: 8,
                             border: nuocLoi
-                              ? "2px solid #ef4444"
-                              : "2px solid #0284c7",
+                              ? "2px solid var(--status-danger-text)"
+                              : "2px solid var(--status-info-text)",
                             fontSize: 16,
                             fontWeight: 800,
-                            color: "#0f172a",
-                            background: "#ffffff",
+                            color: "var(--text-main)",
+                            background: "var(--bg-surface)",
                           }}
                         />
                       </div>
@@ -1666,7 +1670,7 @@ export function MeterEditorToggle({
                       <div
                         style={{
                           fontSize: 11.5,
-                          color: "#dc2626",
+                          color: "var(--status-danger-text)",
                           marginTop: 6,
                           fontWeight: 600,
                         }}
@@ -1680,8 +1684,8 @@ export function MeterEditorToggle({
                   {/* Trạng thái duyệt & Ngày ghi nhận */}
                   <div
                     style={{
-                      background: "#f8fafc",
-                      border: "1px solid #e2e8f0",
+                      background: "var(--bg-subtle)",
+                      border: "1px solid var(--border)",
                       borderRadius: 12,
                       padding: 14,
                     }}
@@ -1692,7 +1696,7 @@ export function MeterEditorToggle({
                           display: "block",
                           fontSize: 12,
                           fontWeight: 700,
-                          color: "#334155",
+                          color: "var(--text-main)",
                           marginBottom: 6,
                         }}
                       >
@@ -1707,12 +1711,12 @@ export function MeterEditorToggle({
                             borderRadius: 8,
                             background:
                               reading.trang_thai_duyet === "Đã duyệt"
-                                ? "#ecfdf5"
-                                : "#fef2f2",
+                                ? "var(--status-success-bg)"
+                                : "var(--status-danger-bg)",
                             border: `1px solid ${
                               reading.trang_thai_duyet === "Đã duyệt"
-                                ? "#a7f3d0"
-                                : "#fecaca"
+                                ? "var(--status-success-border)"
+                                : "var(--status-danger-border)"
                             }`,
                             display: "flex",
                             alignItems: "center",
@@ -1727,17 +1731,17 @@ export function MeterEditorToggle({
                             }}
                           >
                             {reading.trang_thai_duyet === "Đã duyệt" ? (
-                              <CheckCircle2 size={16} color="#059669" />
+                              <CheckCircle2 size={16} color="var(--status-success-text)" />
                             ) : (
-                              <X size={16} color="#dc2626" />
+                              <X size={16} color="var(--status-danger-text)" />
                             )}
                             <strong
                               style={{
                                 fontSize: 13,
                                 color:
                                   reading.trang_thai_duyet === "Đã duyệt"
-                                    ? "#065f46"
-                                    : "#991b1b",
+                                    ? "var(--status-success-text)"
+                                    : "var(--status-danger-text)",
                               }}
                             >
                               Trạng thái: {reading.trang_thai_duyet}
@@ -1746,7 +1750,7 @@ export function MeterEditorToggle({
                           <span
                             style={{
                               fontSize: 11.5,
-                              color: "#64748b",
+                              color: "var(--text-muted)",
                               display: "inline-flex",
                               alignItems: "center",
                               gap: 4,
@@ -1768,33 +1772,33 @@ export function MeterEditorToggle({
                             const bg =
                               status === "Đã duyệt"
                                 ? isSel
-                                  ? "#dcfce7"
-                                  : "#fff"
+                                  ? "var(--status-success-bg)"
+                                  : "var(--bg-surface)"
                                 : status === "Từ chối"
                                   ? isSel
-                                    ? "#fee2e2"
-                                    : "#fff"
+                                    ? "var(--status-danger-bg)"
+                                    : "var(--bg-surface)"
                                   : isSel
-                                    ? "#fef3c7"
-                                    : "#fff";
+                                    ? "var(--status-warning-bg)"
+                                    : "var(--bg-surface)";
                             const border =
                               status === "Đã duyệt"
                                 ? isSel
-                                  ? "2px solid #059669"
-                                  : "1px solid #cbd5e1"
+                                  ? "2px solid var(--status-success-text)"
+                                  : "1px solid var(--border)"
                                 : status === "Từ chối"
                                   ? isSel
-                                    ? "2px solid #dc2626"
-                                    : "1px solid #cbd5e1"
+                                    ? "2px solid var(--status-danger-text)"
+                                    : "1px solid var(--border)"
                                   : isSel
-                                    ? "2px solid #d97706"
-                                    : "1px solid #cbd5e1";
+                                    ? "2px solid var(--status-warning-text)"
+                                    : "1px solid var(--border)";
                             const color =
                               status === "Đã duyệt"
-                                ? "#15803d"
+                                ? "var(--status-success-text)"
                                 : status === "Từ chối"
-                                  ? "#b91c1c"
-                                  : "#b45309";
+                                  ? "var(--status-danger-text)"
+                                  : "var(--status-warning-text)";
 
                             return (
                               <label
@@ -1837,7 +1841,7 @@ export function MeterEditorToggle({
                         style={{
                           display: "block",
                           fontSize: 11.5,
-                          color: "#475569",
+                          color: "var(--text-muted)",
                           fontWeight: 600,
                           marginBottom: 4,
                         }}
@@ -1853,7 +1857,7 @@ export function MeterEditorToggle({
                           width: "100%",
                           padding: "6px 10px",
                           borderRadius: 6,
-                          border: "1px solid #cbd5e1",
+                          border: "1px solid var(--border)",
                           fontSize: 12.5,
                         }}
                       />
@@ -1868,7 +1872,7 @@ export function MeterEditorToggle({
                   display: "flex",
                   justifyContent: "flex-end",
                   gap: 10,
-                  borderTop: "1px solid #e2e8f0",
+                  borderTop: "1px solid var(--border)",
                   paddingTop: 16,
                 }}
               >
@@ -1879,9 +1883,9 @@ export function MeterEditorToggle({
                   style={{
                     padding: "9px 18px",
                     borderRadius: 8,
-                    border: "1px solid #cbd5e1",
-                    background: "#ffffff",
-                    color: "#475569",
+                    border: "1px solid var(--border)",
+                    background: "var(--bg-surface)",
+                    color: "var(--text-muted)",
                     fontWeight: 600,
                     cursor: "pointer",
                     fontSize: 13,
@@ -1897,8 +1901,8 @@ export function MeterEditorToggle({
                     padding: "9px 20px",
                     borderRadius: 8,
                     border: "none",
-                    background: "#2563eb",
-                    color: "#ffffff",
+                    background: "var(--primary)",
+                    color: "var(--bg-surface)",
                     fontWeight: 700,
                     cursor:
                       pending || dienLoi || nuocLoi ? "not-allowed" : "pointer",
@@ -2053,12 +2057,12 @@ export function CreateMeterModal({
         >
           <div
             style={{
-              background: "#ffffff",
+              background: "var(--bg-surface)",
               borderRadius: 16,
               width: "100%",
               maxWidth: 640,
               boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)",
-              border: "1px solid #e2e8f0",
+              border: "1px solid var(--border)",
               overflow: "hidden",
             }}
           >
@@ -2069,8 +2073,8 @@ export function CreateMeterModal({
                 justifyContent: "space-between",
                 alignItems: "center",
                 padding: "16px 20px",
-                borderBottom: "1px solid #e2e8f0",
-                background: "linear-gradient(to right, #f8fafc, #ffffff)",
+                borderBottom: "1px solid var(--border)",
+                background: "var(--bg-subtle)",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -2079,8 +2083,8 @@ export function CreateMeterModal({
                     width: 38,
                     height: 38,
                     borderRadius: 10,
-                    background: "#eff6ff",
-                    color: "#2563eb",
+                    background: "var(--primary-subtle)",
+                    color: "var(--primary)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -2093,14 +2097,14 @@ export function CreateMeterModal({
                     style={{
                       fontSize: 16,
                       fontWeight: 800,
-                      color: "#0f172a",
+                      color: "var(--text-main)",
                       margin: 0,
                     }}
                   >
                     Ghi Nhận Chỉ Số Điện Nước
                   </h3>
-                  <p style={{ fontSize: 12, color: "#64748b", margin: "2px 0 0" }}>
-                    Chủ trọ ghi số đo • Tự động kế thừa chỉ số phòng &amp; cập nhật lại phòng
+                  <p style={{ fontSize: 12, color: "var(--text-muted)", margin: "2px 0 0" }}>
+                    Chủ trọ ghi số đo — Tự động kế thừa chỉ số phòng &amp; cập nhật lại phòng
                   </p>
                 </div>
               </div>
@@ -2111,8 +2115,8 @@ export function CreateMeterModal({
                 disabled={pending}
                 style={{
                   border: "none",
-                  background: "#f1f5f9",
-                  color: "#64748b",
+                  background: "var(--bg-subtle)",
+                  color: "var(--text-muted)",
                   borderRadius: 8,
                   padding: 6,
                   cursor: "pointer",
@@ -2127,11 +2131,11 @@ export function CreateMeterModal({
               {state.error && (
                 <div
                   style={{
-                    background: "#fef2f2",
-                    border: "1px solid #fee2e2",
+                    background: "var(--status-danger-bg)",
+                    border: "1px solid var(--status-danger-bg)",
                     borderRadius: 10,
                     padding: "10px 14px",
-                    color: "#dc2626",
+                    color: "var(--status-danger-text)",
                     fontSize: 13,
                     marginBottom: 16,
                   }}
@@ -2147,7 +2151,7 @@ export function CreateMeterModal({
                     display: "block",
                     fontSize: 12.5,
                     fontWeight: 700,
-                    color: "#334155",
+                    color: "var(--text-main)",
                     marginBottom: 6,
                   }}
                 >
@@ -2162,20 +2166,20 @@ export function CreateMeterModal({
                     width: "100%",
                     padding: "9px 12px",
                     borderRadius: 8,
-                    border: "1px solid #cbd5e1",
+                    border: "1px solid var(--border)",
                     fontSize: 13.5,
                     fontWeight: 600,
-                    color: "#0f172a",
-                    background: "#f8fafc",
+                    color: "var(--text-main)",
+                    background: "var(--bg-subtle)",
                   }}
                 >
                   {contracts.map((c) => (
                     <option key={c.ma_hop_dong} value={c.ma_hop_dong}>
-                      {c.ma_phong} • {c.ten_khach || "Khách thuê"} (HĐ: {c.ma_hop_dong})
+                      {c.ma_phong}   {c.ten_khach || "Khách thuê"} (HĐ: {c.ma_hop_dong})
                     </option>
                   ))}
                 </select>
-                <div style={{ fontSize: 11.5, color: "#64748b", marginTop: 4 }}>
+                <div style={{ fontSize: 11.5, color: "var(--text-muted)", marginTop: 4 }}>
                   Chỉ số hiện tại lưu ở phòng: Điện <strong>{dienCu} kWh</strong> | Nước <strong>{nuocCu} m³</strong>
                 </div>
               </div>
@@ -2195,7 +2199,7 @@ export function CreateMeterModal({
                       display: "block",
                       fontSize: 12.5,
                       fontWeight: 700,
-                      color: "#334155",
+                      color: "var(--text-main)",
                       marginBottom: 6,
                     }}
                   >
@@ -2211,7 +2215,7 @@ export function CreateMeterModal({
                       width: "100%",
                       padding: "8px 12px",
                       borderRadius: 8,
-                      border: "1px solid #cbd5e1",
+                      border: "1px solid var(--border)",
                       fontSize: 13.5,
                     }}
                   />
@@ -2223,7 +2227,7 @@ export function CreateMeterModal({
                       display: "block",
                       fontSize: 12.5,
                       fontWeight: 700,
-                      color: "#334155",
+                      color: "var(--text-main)",
                       marginBottom: 6,
                     }}
                   >
@@ -2238,7 +2242,7 @@ export function CreateMeterModal({
                       width: "100%",
                       padding: "8px 12px",
                       borderRadius: 8,
-                      border: "1px solid #cbd5e1",
+                      border: "1px solid var(--border)",
                       fontSize: 13.5,
                     }}
                   />
@@ -2248,7 +2252,7 @@ export function CreateMeterModal({
               {/* Nhập chỉ số điện */}
               <div
                 style={{
-                  background: "#eff6ff",
+                  background: "var(--primary-subtle)",
                   borderRadius: 12,
                   padding: "14px 16px",
                   marginBottom: 14,
@@ -2263,8 +2267,8 @@ export function CreateMeterModal({
                     marginBottom: 10,
                   }}
                 >
-                  <Zap size={16} color="#2563eb" />
-                  <span style={{ fontSize: 13.5, fontWeight: 700, color: "#1877f2" }}>
+                  <Zap size={16} color="var(--primary)" />
+                  <span style={{ fontSize: 13.5, fontWeight: 700, color: "var(--primary)" }}>
                     Chỉ số Công tơ Điện (kWh)
                   </span>
                 </div>
@@ -2277,7 +2281,7 @@ export function CreateMeterModal({
                   }}
                 >
                   <div>
-                    <label style={{ fontSize: 11.5, color: "#64748b", display: "block", marginBottom: 3 }}>
+                    <label style={{ fontSize: 11.5, color: "var(--text-muted)", display: "block", marginBottom: 3 }}>
                       Số cũ (từ phòng)
                     </label>
                     <input
@@ -2290,15 +2294,15 @@ export function CreateMeterModal({
                         width: "100%",
                         padding: "7px 10px",
                         borderRadius: 6,
-                        border: "1px solid #cbd5e1",
-                        background: "#ffffff",
+                        border: "1px solid var(--border)",
+                        background: "var(--bg-surface)",
                         fontSize: 13,
                         fontWeight: 600,
                       }}
                     />
                   </div>
                   <div>
-                    <label style={{ fontSize: 11.5, color: "#1877f2", display: "block", marginBottom: 3, fontWeight: 700 }}>
+                    <label style={{ fontSize: 11.5, color: "var(--primary)", display: "block", marginBottom: 3, fontWeight: 700 }}>
                       Số mới *
                     </label>
                     <input
@@ -2314,15 +2318,15 @@ export function CreateMeterModal({
                         width: "100%",
                         padding: "7px 10px",
                         borderRadius: 6,
-                        border: dienLoi ? "2px solid #ef4444" : "1px solid #2563eb",
-                        background: "#ffffff",
+                        border: dienLoi ? "2px solid var(--status-danger-text)" : "1px solid var(--primary)",
+                        background: "var(--bg-surface)",
                         fontSize: 13,
                         fontWeight: 700,
                       }}
                     />
                   </div>
                   <div>
-                    <label style={{ fontSize: 11.5, color: "#64748b", display: "block", marginBottom: 3 }}>
+                    <label style={{ fontSize: 11.5, color: "var(--text-muted)", display: "block", marginBottom: 3 }}>
                       Tiêu thụ
                     </label>
                     <div
@@ -2332,7 +2336,7 @@ export function CreateMeterModal({
                         background: "#dbeafe",
                         fontSize: 13,
                         fontWeight: 800,
-                        color: "#1877f2",
+                        color: "var(--primary)",
                         textAlign: "center",
                       }}
                     >
@@ -2341,7 +2345,7 @@ export function CreateMeterModal({
                   </div>
                 </div>
                 {dienLoi && (
-                  <div style={{ color: "#dc2626", fontSize: 11.5, marginTop: 4 }}>
+                  <div style={{ color: "var(--status-danger-text)", fontSize: 11.5, marginTop: 4 }}>
                     ⚠️ Số mới phải lớn hơn hoặc bằng số cũ ({dienCu} kWh)!
                   </div>
                 )}
@@ -2350,11 +2354,11 @@ export function CreateMeterModal({
               {/* Nhập chỉ số nước */}
               <div
                 style={{
-                  background: "#f0fdf4",
+                  background: "var(--status-success-bg)",
                   borderRadius: 12,
                   padding: "14px 16px",
                   marginBottom: 16,
-                  border: "1px solid #dcfce7",
+                  border: "1px solid var(--status-success-bg)",
                 }}
               >
                 <div
@@ -2365,8 +2369,8 @@ export function CreateMeterModal({
                     marginBottom: 10,
                   }}
                 >
-                  <Droplets size={16} color="#15803d" />
-                  <span style={{ fontSize: 13.5, fontWeight: 700, color: "#15803d" }}>
+                  <Droplets size={16} color="var(--status-success-text)" />
+                  <span style={{ fontSize: 13.5, fontWeight: 700, color: "var(--status-success-text)" }}>
                     Chỉ số Đồng hồ Nước (m³)
                   </span>
                 </div>
@@ -2379,7 +2383,7 @@ export function CreateMeterModal({
                   }}
                 >
                   <div>
-                    <label style={{ fontSize: 11.5, color: "#64748b", display: "block", marginBottom: 3 }}>
+                    <label style={{ fontSize: 11.5, color: "var(--text-muted)", display: "block", marginBottom: 3 }}>
                       Số cũ (từ phòng)
                     </label>
                     <input
@@ -2392,15 +2396,15 @@ export function CreateMeterModal({
                         width: "100%",
                         padding: "7px 10px",
                         borderRadius: 6,
-                        border: "1px solid #cbd5e1",
-                        background: "#ffffff",
+                        border: "1px solid var(--border)",
+                        background: "var(--bg-surface)",
                         fontSize: 13,
                         fontWeight: 600,
                       }}
                     />
                   </div>
                   <div>
-                    <label style={{ fontSize: 11.5, color: "#15803d", display: "block", marginBottom: 3, fontWeight: 700 }}>
+                    <label style={{ fontSize: 11.5, color: "var(--status-success-text)", display: "block", marginBottom: 3, fontWeight: 700 }}>
                       Số mới *
                     </label>
                     <input
@@ -2416,25 +2420,25 @@ export function CreateMeterModal({
                         width: "100%",
                         padding: "7px 10px",
                         borderRadius: 6,
-                        border: nuocLoi ? "2px solid #ef4444" : "1px solid #15803d",
-                        background: "#ffffff",
+                        border: nuocLoi ? "2px solid var(--status-danger-text)" : "1px solid var(--status-success-text)",
+                        background: "var(--bg-surface)",
                         fontSize: 13,
                         fontWeight: 700,
                       }}
                     />
                   </div>
                   <div>
-                    <label style={{ fontSize: 11.5, color: "#64748b", display: "block", marginBottom: 3 }}>
+                    <label style={{ fontSize: 11.5, color: "var(--text-muted)", display: "block", marginBottom: 3 }}>
                       Tiêu thụ
                     </label>
                     <div
                       style={{
                         padding: "7px 10px",
                         borderRadius: 6,
-                        background: "#dcfce7",
+                        background: "var(--status-success-bg)",
                         fontSize: 13,
                         fontWeight: 800,
-                        color: "#15803d",
+                        color: "var(--status-success-text)",
                         textAlign: "center",
                       }}
                     >
@@ -2443,7 +2447,7 @@ export function CreateMeterModal({
                   </div>
                 </div>
                 {nuocLoi && (
-                  <div style={{ color: "#dc2626", fontSize: 11.5, marginTop: 4 }}>
+                  <div style={{ color: "var(--status-danger-text)", fontSize: 11.5, marginTop: 4 }}>
                     ⚠️ Số mới phải lớn hơn hoặc bằng số cũ ({nuocCu} m³)!
                   </div>
                 )}
@@ -2456,7 +2460,7 @@ export function CreateMeterModal({
                     display: "block",
                     fontSize: 12.5,
                     fontWeight: 700,
-                    color: "#334155",
+                    color: "var(--text-main)",
                     marginBottom: 6,
                   }}
                 >
@@ -2470,9 +2474,9 @@ export function CreateMeterModal({
                     width: "100%",
                     padding: "8px 12px",
                     borderRadius: 8,
-                    border: "1px solid #cbd5e1",
+                    border: "1px solid var(--border)",
                     fontSize: 13,
-                    background: "#ffffff",
+                    background: "var(--bg-surface)",
                     fontWeight: 600,
                   }}
                 >
@@ -2491,7 +2495,7 @@ export function CreateMeterModal({
                   display: "flex",
                   justifyContent: "flex-end",
                   gap: 10,
-                  borderTop: "1px solid #e2e8f0",
+                  borderTop: "1px solid var(--border)",
                   paddingTop: 16,
                 }}
               >
@@ -2502,9 +2506,9 @@ export function CreateMeterModal({
                   style={{
                     padding: "9px 18px",
                     borderRadius: 8,
-                    border: "1px solid #cbd5e1",
-                    background: "#ffffff",
-                    color: "#475569",
+                    border: "1px solid var(--border)",
+                    background: "var(--bg-surface)",
+                    color: "var(--text-muted)",
                     fontWeight: 600,
                     cursor: "pointer",
                     fontSize: 13,
@@ -2520,8 +2524,8 @@ export function CreateMeterModal({
                     padding: "9px 20px",
                     borderRadius: 8,
                     border: "none",
-                    background: "#2563eb",
-                    color: "#ffffff",
+                    background: "var(--primary)",
+                    color: "var(--bg-surface)",
                     fontWeight: 700,
                     cursor: pending || dienLoi || nuocLoi ? "not-allowed" : "pointer",
                     fontSize: 13,

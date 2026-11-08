@@ -46,6 +46,25 @@ function isContractActive(item: RoomRentalHistoryRow): boolean {
   return false;
 }
 
+function getContractStatus(item: RoomRentalHistoryRow): {
+  text: string;
+  className: string;
+} {
+  if (isContractActive(item)) {
+    return { text: "Đang thuê", className: styles.badgeOk };
+  }
+  if (item.trang_thai === "Đã đặt cọc") {
+    return { text: "Đã đặt cọc", className: styles.badgeInfo };
+  }
+  if (item.trang_thai === "Đã thanh lý") {
+    return { text: "Đã thanh lý", className: styles.badgeMuted };
+  }
+  if (item.trang_thai === "Còn hạn") {
+    return { text: "Hết hạn", className: styles.badgeMuted };
+  }
+  return { text: item.trang_thai || "Đã kết thúc", className: styles.badgeMuted };
+}
+
 type TabKey = "all" | "active" | "ended";
 
 export function RoomRentalHistory({
@@ -72,10 +91,7 @@ export function RoomRentalHistory({
       {/* ── Tiêu đề & Bộ lọc ── */}
       <div className={styles.headerRow}>
         <div className={styles.titleArea}>
-          <h2 className={styles.title}>
-            Lịch sử các hợp đồng thuê
-            <span className={styles.countBadge}>{history.length} hợp đồng</span>
-          </h2>
+          <h2 className={styles.title}>Lịch sử các hợp đồng thuê</h2>
         </div>
 
         {history.length > 1 && (
@@ -122,6 +138,8 @@ export function RoomRentalHistory({
             const active = isContractActive(item);
             const duration = calculateDuration(item.ngay_bd, item.ngay_kt);
 
+            const statusInfo = getContractStatus(item);
+
             return (
               <div
                 key={item.ma_hop_dong}
@@ -137,22 +155,14 @@ export function RoomRentalHistory({
                         {item.ho_ten_khach || "Chưa cập nhật tên"}
                       </div>
                       <div className={styles.tenantMetaText}>
-                        SĐT: {item.so_dt || "—"} {item.cccd ? ` • CCCD: ${item.cccd}` : ""}
+                        SĐT: {item.so_dt || "—"} {item.cccd ? `  CCCD: ${item.cccd}` : ""}
                       </div>
                     </div>
                   </div>
 
                   <div className={styles.headerBadges}>
-                    <span
-                      className={`${styles.badge} ${
-                        active
-                          ? styles.badgeOk
-                          : item.trang_thai === "Đã đặt cọc"
-                            ? styles.badgeInfo
-                            : styles.badgeMuted
-                      }`}
-                    >
-                      {active ? "Đang thuê" : item.trang_thai || "Đã kết thúc"}
+                    <span className={`${styles.badge} ${statusInfo.className}`}>
+                      {statusInfo.text}
                     </span>
                     <Link
                       href={`/hop-dong/${encodeURIComponent(item.ma_hop_dong)}`}
@@ -165,16 +175,20 @@ export function RoomRentalHistory({
 
                 <div className={styles.infoGrid}>
                   <div className={styles.field}>
-                    <span className={styles.fieldLabel}>Thời hạn hợp đồng</span>
+                    <div className={styles.fieldLabel}>
+                      <span>Thời hạn hợp đồng</span>
+                      {duration && <span className={styles.durationTag}>{duration}</span>}
+                    </div>
                     <span className={styles.fieldValue}>
                       {formatDate(item.ngay_bd)} – {formatDate(item.ngay_kt)}
-                      {duration && <span className={styles.durationTag}>{duration}</span>}
                     </span>
                   </div>
 
                   <div className={styles.field}>
                     <span className={styles.fieldLabel}>Giá thuê</span>
-                    <span className={styles.fieldValue}>{formatMoney(item.gia_thue)} / tháng</span>
+                    <span className={`${styles.fieldValue} ${styles.priceCol}`}>
+                      {formatMoney(item.gia_thue)} / tháng
+                    </span>
                   </div>
 
                   <div className={styles.field}>

@@ -67,7 +67,7 @@ export function ServiceForm({
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <label
           htmlFor={`tenDichVu-${mode}`}
-          style={{ fontSize: 12.5, fontWeight: 700, color: "#050505" }}
+          style={{ fontSize: 12.5, fontWeight: 700, color: "var(--text-main)" }}
         >
           Tên dịch vụ *
         </label>
@@ -83,10 +83,10 @@ export function ServiceForm({
             height: 40,
             padding: "0 12px",
             borderRadius: 8,
-            border: "1px solid #ced0d4",
+            border: "1px solid var(--border-strong)",
             fontSize: 13,
-            color: "#050505",
-            background: "#ffffff",
+            color: "var(--text-main)",
+            background: "var(--bg-surface)",
           }}
         />
       </div>
@@ -94,7 +94,7 @@ export function ServiceForm({
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <label
           htmlFor={`donGia-${mode}`}
-          style={{ fontSize: 12.5, fontWeight: 700, color: "#050505" }}
+          style={{ fontSize: 12.5, fontWeight: 700, color: "var(--text-main)" }}
         >
           Đơn giá (đ) *
         </label>
@@ -111,13 +111,13 @@ export function ServiceForm({
             height: 40,
             padding: "0 12px",
             borderRadius: 8,
-            border: "1px solid #ced0d4",
+            border: "1px solid var(--border-strong)",
             fontSize: 13,
-            color: "#050505",
-            background: "#ffffff",
+            color: "var(--text-main)",
+            background: "var(--bg-surface)",
           }}
         />
-        <span style={{ fontSize: 11.5, color: "#65676b" }}>
+        <span style={{ fontSize: 11.5, color: "var(--text-muted)" }}>
           {isDien
             ? "Mỗi nấc tăng / giảm: 100 đ (3.500, 3.600, 3.700...)"
             : "Mỗi nấc tăng / giảm: 1.000 đ"}
@@ -127,7 +127,7 @@ export function ServiceForm({
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <label
           htmlFor={`donViTinh-${mode}`}
-          style={{ fontSize: 12.5, fontWeight: 700, color: "#050505" }}
+          style={{ fontSize: 12.5, fontWeight: 700, color: "var(--text-main)" }}
         >
           Đơn vị tính *
         </label>
@@ -143,10 +143,10 @@ export function ServiceForm({
             height: 40,
             padding: "0 12px",
             borderRadius: 8,
-            border: "1px solid #ced0d4",
+            border: "1px solid var(--border-strong)",
             fontSize: 13,
-            color: "#050505",
-            background: "#ffffff",
+            color: "var(--text-main)",
+            background: "var(--bg-surface)",
           }}
         />
       </div>
@@ -154,7 +154,7 @@ export function ServiceForm({
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <label
           htmlFor={`dangApDung-${mode}`}
-          style={{ fontSize: 12.5, fontWeight: 700, color: "#050505" }}
+          style={{ fontSize: 12.5, fontWeight: 700, color: "var(--text-main)" }}
         >
           Trạng thái áp dụng *
         </label>
@@ -166,10 +166,10 @@ export function ServiceForm({
             height: 40,
             padding: "0 12px",
             borderRadius: 8,
-            border: "1px solid #ced0d4",
+            border: "1px solid var(--border-strong)",
             fontSize: 13,
-            color: "#050505",
-            background: "#ffffff",
+            color: "var(--text-main)",
+            background: "var(--bg-surface)",
           }}
         >
           <option value="true">Đang áp dụng</option>
@@ -180,7 +180,7 @@ export function ServiceForm({
       <div style={{ gridColumn: "1 / -1", display: "flex", flexDirection: "column", gap: 6 }}>
         <label
           htmlFor={`ghiChu-${mode}`}
-          style={{ fontSize: 12.5, fontWeight: 700, color: "#050505" }}
+          style={{ fontSize: 12.5, fontWeight: 700, color: "var(--text-main)" }}
         >
           Ghi chú
         </label>
@@ -194,10 +194,10 @@ export function ServiceForm({
             height: 40,
             padding: "0 12px",
             borderRadius: 8,
-            border: "1px solid #ced0d4",
+            border: "1px solid var(--border-strong)",
             fontSize: 13,
-            color: "#050505",
-            background: "#ffffff",
+            color: "var(--text-main)",
+            background: "var(--bg-surface)",
           }}
         />
       </div>
@@ -206,9 +206,9 @@ export function ServiceForm({
         <div
           style={{
             gridColumn: "1 / -1",
-            background: "#fef2f2",
-            border: "1px solid #fecaca",
-            color: "#b91c1c",
+            background: "var(--status-danger-bg)",
+            border: "1px solid var(--status-danger-border)",
+            color: "var(--status-danger-text)",
             borderRadius: 8,
             padding: "10px 14px",
             fontSize: 12.5,
@@ -222,9 +222,9 @@ export function ServiceForm({
         <div
           style={{
             gridColumn: "1 / -1",
-            background: "#f0fdf4",
-            border: "1px solid #bbf7d0",
-            color: "#15803d",
+            background: "var(--status-success-bg)",
+            border: "1px solid var(--status-success-border)",
+            color: "var(--status-success-text)",
             borderRadius: 8,
             padding: "10px 14px",
             fontSize: 12.5,
@@ -253,9 +253,9 @@ export function ServiceForm({
             style={{
               padding: "9px 18px",
               borderRadius: 8,
-              border: "1px solid #ced0d4",
-              background: "#ffffff",
-              color: "#65676b",
+              border: "1px solid var(--border-strong)",
+              background: "var(--bg-surface)",
+              color: "var(--text-muted)",
               fontWeight: 600,
               fontSize: 13,
               cursor: "pointer",
@@ -271,8 +271,8 @@ export function ServiceForm({
             padding: "9px 22px",
             borderRadius: 8,
             border: "none",
-            background: "#1877f2",
-            color: "#ffffff",
+            background: "var(--primary)",
+            color: "var(--bg-surface)",
             fontWeight: 700,
             fontSize: 13,
             cursor: pending || readOnly ? "not-allowed" : "pointer",
@@ -393,12 +393,12 @@ export function ServiceEditorToggle({
         >
           <div
             style={{
-              background: "#ffffff",
+              background: "var(--bg-surface)",
               borderRadius: 18,
               maxWidth: 580,
               width: "100%",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              border: "1px solid #e4e6eb",
+              border: "1px solid var(--border)",
               overflow: "hidden",
             }}
           >
@@ -406,20 +406,21 @@ export function ServiceEditorToggle({
             <div
               style={{
                 padding: "16px 20px",
-                borderBottom: "1px solid #f0f2f5",
+                borderBottom: "1px solid var(--bg-subtle)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "linear-gradient(135deg, #1877f2 0%, #4599ff 100%)",
-                color: "#ffffff",
+                background: "var(--primary)",
+                color: "var(--bg-surface)",
               }}
             >
               <div>
-                <h3 style={{ fontSize: 16, fontWeight: 800, margin: 0, color: "#ffffff" }}>
+                <h3 style={{ fontSize: 16, fontWeight: 800, margin: 0, color: "var(--bg-surface)" }}>
                   Chỉnh sửa dịch vụ
                 </h3>
-                <p style={{ fontSize: 12, margin: "2px 0 0", color: "#e7f3ff" }}>
-                  Mã: {service.maDichVu} • {service.tenDichVu}
+                <p style={{ fontSize: 12, margin: "2px 0 0", color: "var(--primary-subtle)", display: "flex", gap: 14 }}>
+                  <span>Mã: {service.maDichVu}</span>
+                  <span>{service.tenDichVu}</span>
                 </p>
               </div>
               <button
@@ -429,7 +430,7 @@ export function ServiceEditorToggle({
                   background: "transparent",
                   border: "none",
                   cursor: "pointer",
-                  color: "#ffffff",
+                  color: "var(--bg-surface)",
                   opacity: 0.85,
                   padding: 4,
                   display: "flex",
@@ -501,9 +502,9 @@ export function ServiceStatusToggle({
         fontSize: 12,
         fontWeight: 700,
         cursor: readOnly || pending ? "default" : "pointer",
-        background: active ? "#ecfdf5" : "#f1f5f9",
-        color: active ? "#059669" : "#64748b",
-        border: `1px solid ${active ? "#a7f3d0" : "#cbd5e1"}`,
+        background: active ? "var(--status-success-bg)" : "var(--bg-subtle)",
+        color: active ? "var(--status-success-text)" : "var(--text-muted)",
+        border: `1px solid ${active ? "var(--status-success-border)" : "var(--border)"}`,
         transition: "all 0.2s ease",
       }}
       title={readOnly ? "Bạn không có quyền đổi trạng thái" : "Bấm để bật / tắt áp dụng dịch vụ này"}
@@ -513,7 +514,7 @@ export function ServiceStatusToggle({
           width: 8,
           height: 8,
           borderRadius: "50%",
-          background: active ? "#10b981" : "#94a3b8",
+          background: active ? "var(--status-success-text)" : "var(--text-muted)",
         }}
       />
       {pending ? "Đang đổi..." : active ? "Đang áp dụng" : "Không áp dụng"}

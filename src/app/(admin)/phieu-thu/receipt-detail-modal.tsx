@@ -86,9 +86,9 @@ export function ReceiptDetailTrigger({
             cursor: "pointer",
             textAlign: "left",
             font: "inherit",
-            color: "#1877f2",
+            color: "var(--primary)",
             fontWeight: 700,
-            textDecoration: "underline",
+            textDecoration: "none",
           }}
           title="Bấm để xem &amp; In phiếu thu"
         >
@@ -118,7 +118,7 @@ export function ReceiptDetailTrigger({
                   type="button"
                   onClick={handlePrint}
                   className={`${styles.btnAction}`}
-                  style={{ background: "#1e293b", color: "#ffffff" }}
+                  style={{ background: "var(--btn-primary-bg)", color: "var(--btn-primary-text)" }}
                   title="In biên lai hoặc lưu PDF qua trình duyệt"
                 >
                   <Printer size={13} /> In phiếu thu
@@ -136,7 +136,7 @@ export function ReceiptDetailTrigger({
                     </>
                   ) : exportSuccess ? (
                     <>
-                      <Check size={13} color="#16a34a" /> Đã tải xong
+                      <Check size={13} color="var(--status-success-text)" /> Đã tải xong
                     </>
                   ) : (
                     <>
@@ -182,7 +182,6 @@ export function ReceiptDetailTrigger({
                   </div>
                   <div className={styles.receiptMeta}>
                     <span>Hóa đơn: <strong>{receipt.ma_hoa_don || "—"}</strong></span>
-                    <span>•</span>
                     <span>Phòng: <strong>{receipt.ma_phong || "—"}</strong></span>
                   </div>
                 </div>
@@ -240,7 +239,7 @@ export function ReceiptDetailTrigger({
                     <span className={styles.fieldLabel}>Hình thức nộp tiền:</span>
                     <span className={styles.fieldVal}>{receipt.hinh_thuc || "Chuyển khoản"}</span>
                     {receipt.ma_tra_cuu && (
-                      <span style={{ marginLeft: 8, color: "#64748b" }}>
+                      <span style={{ marginLeft: 8, color: "var(--text-muted)" }}>
                         (Mã tra cứu / ủy nhiệm chi: <strong>{receipt.ma_tra_cuu}</strong>)
                       </span>
                     )}
@@ -271,7 +270,7 @@ export function ReceiptDetailTrigger({
                   style={{
                     marginTop: 36,
                     fontSize: 11,
-                    color: "#94a3b8",
+                    color: "var(--text-muted)",
                     textAlign: "right",
                     fontStyle: "italic",
                   }}

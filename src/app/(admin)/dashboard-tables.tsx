@@ -52,7 +52,7 @@ export function UnpaidInvoicesTable({
               <tr>
                 <td colSpan={7} className={styles.emptyCell}>
                   <div className={styles.emptyBanner}>
-                    <CheckCircle2 size={22} color="#16a34a" />
+                    <CheckCircle2 size={22} color="var(--status-success-text)" />
                     <span>Hiện tại không có hóa đơn nào nợ tiền.</span>
                   </div>
                 </td>
@@ -73,7 +73,7 @@ export function UnpaidInvoicesTable({
                   <td style={{ whiteSpace: "nowrap", fontWeight: 600 }}>
                     {formatMoney(inv.tong_tien)}
                   </td>
-                  <td style={{ color: "#166534", fontWeight: 600, whiteSpace: "nowrap" }}>
+                  <td style={{ color: "var(--status-success-text)", fontWeight: 600, whiteSpace: "nowrap" }}>
                     {formatMoney(inv.da_thu)}
                   </td>
                   <td style={{ whiteSpace: "nowrap" }}>
@@ -143,13 +143,12 @@ export function RecentReceiptsTable({
               <th style={{ whiteSpace: "nowrap" }}>Số tiền</th>
               <th style={{ whiteSpace: "nowrap" }}>Hình thức</th>
               <th style={{ whiteSpace: "nowrap" }}>Ngày thu</th>
-              <th style={{ whiteSpace: "nowrap" }}>Trạng thái</th>
             </tr>
           </thead>
           <tbody>
             {receipts.length === 0 ? (
               <tr>
-                <td colSpan={7} className={styles.emptyCell}>
+                <td colSpan={6} className={styles.emptyCell}>
                   Chưa có phiếu thu nào gần đây.
                 </td>
               </tr>
@@ -157,7 +156,7 @@ export function RecentReceiptsTable({
               receipts.map((rc) => (
                 <tr key={rc.ma_phieu_thu}>
                   <td style={{ whiteSpace: "nowrap" }}>
-                    <strong style={{ color: "#1877f2" }}>#{rc.ma_phieu_thu}</strong>
+                    <strong style={{ color: "var(--primary-text)" }}>#{rc.ma_phieu_thu}</strong>
                   </td>
                   <td style={{ whiteSpace: "nowrap" }}>
                     <div className={styles.strongText}>
@@ -176,17 +175,6 @@ export function RecentReceiptsTable({
                   </td>
                   <td className={styles.dateCell} style={{ whiteSpace: "nowrap" }}>
                     {formatDate(rc.ngay_thu)}
-                  </td>
-                  <td style={{ whiteSpace: "nowrap" }}>
-                    <span
-                      className={
-                        rc.trang_thai === "Đã xác nhận" || rc.trang_thai === "Đã khớp lệnh"
-                          ? styles.statusOk
-                          : styles.statusWarn
-                      }
-                    >
-                      {rc.trang_thai}
-                    </span>
                   </td>
                 </tr>
               ))

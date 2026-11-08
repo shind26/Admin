@@ -160,7 +160,7 @@ export function ContractForm({
           ))}
         </select>
         {mode === "create" && availableRooms.length === 0 && (
-          <span className={styles.fieldHint} style={{ color: "#dc2626" }}>
+          <span className={styles.fieldHint} style={{ color: "var(--status-danger-text)" }}>
             Tất cả các phòng thuộc cơ sở bạn quản lý hiện đều đang có khách thuê hoặc đang giữ chỗ.
           </span>
         )}
@@ -177,9 +177,9 @@ export function ContractForm({
                 style={{
                   padding: "5px 12px",
                   borderRadius: 6,
-                  border: tenantMode === "new" ? "2px solid #059669" : "1px solid #cbd5e1",
-                  background: tenantMode === "new" ? "#ecfdf5" : "#fff",
-                  color: tenantMode === "new" ? "#065f46" : "#475569",
+                  border: tenantMode === "new" ? "2px solid var(--status-success-text)" : "1px solid var(--border)",
+                  background: tenantMode === "new" ? "var(--status-success-bg)" : "var(--bg-surface)",
+                  color: tenantMode === "new" ? "var(--status-success-text)" : "var(--text-muted)",
                   fontWeight: 600,
                   fontSize: 12,
                   cursor: "pointer",
@@ -193,9 +193,9 @@ export function ContractForm({
                 style={{
                   padding: "5px 12px",
                   borderRadius: 6,
-                  border: tenantMode === "existing" ? "2px solid #059669" : "1px solid #cbd5e1",
-                  background: tenantMode === "existing" ? "#ecfdf5" : "#fff",
-                  color: tenantMode === "existing" ? "#065f46" : "#475569",
+                  border: tenantMode === "existing" ? "2px solid var(--status-success-text)" : "1px solid var(--border)",
+                  background: tenantMode === "existing" ? "var(--status-success-bg)" : "var(--bg-surface)",
+                  color: tenantMode === "existing" ? "var(--status-success-text)" : "var(--text-muted)",
                   fontWeight: 600,
                   fontSize: 12,
                   cursor: "pointer",
@@ -210,8 +210,8 @@ export function ContractForm({
           {tenantMode === "new" ? (
             <div
               style={{
-                background: "#f8fafc",
-                border: "1px dashed #cbd5e1",
+                background: "var(--bg-subtle)",
+                border: "1px dashed var(--border)",
                 borderRadius: 8,
                 padding: "12px 14px",
                 display: "grid",
@@ -228,7 +228,7 @@ export function ContractForm({
                   name="newHoTen"
                   placeholder="Ví dụ: Nguyễn Văn A"
                   required={tenantMode === "new"}
-                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
                 />
               </div>
 
@@ -241,7 +241,7 @@ export function ContractForm({
                   name="newSoDt"
                   placeholder="0912345678"
                   required={tenantMode === "new"}
-                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
                 />
               </div>
 
@@ -254,7 +254,7 @@ export function ContractForm({
                   name="newCccd"
                   placeholder="079201012345"
                   required={tenantMode === "new"}
-                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
                 />
               </div>
 
@@ -266,11 +266,11 @@ export function ContractForm({
                   type="text"
                   name="newDiaChi"
                   placeholder="Quận/Huyện, Tỉnh/TP"
-                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
                 />
               </div>
 
-              <div style={{ gridColumn: "1 / -1", fontSize: 12, color: "#059669", display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ gridColumn: "1 / -1", fontSize: 12, color: "var(--status-success-text)", display: "flex", alignItems: "center", gap: 6 }}>
                 <ShieldCheck size={14} /> Hệ thống sẽ tự động tạo hồ sơ khách thuê và cấp tài khoản Mobile App với mật khẩu ngẫu nhiên 6 số.
               </div>
             </div>
@@ -280,7 +280,7 @@ export function ContractForm({
               name="maKhachDaiDien"
               defaultValue=""
               required={tenantMode === "existing"}
-              style={{ width: "100%", padding: "8px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+              style={{ width: "100%", padding: "8px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
             >
               <option value="">-- Chọn khách thuê đại diện --</option>
               {tenants.map((tenant) => (
@@ -319,7 +319,7 @@ export function ContractForm({
               id={`trangThai-${mode}`}
               value="Còn hạn"
               readOnly
-              style={{ background: "#f8fafc", color: "#059669", fontWeight: 700 }}
+              style={{ background: "var(--bg-subtle)", color: "var(--status-success-text)", fontWeight: 700 }}
             />
             <span className={styles.fieldHint}>
               Hợp đồng mới tạo luôn ở trạng thái Còn hạn (mặc định)
@@ -455,8 +455,8 @@ export function ContractForm({
         <div
           style={{
             gridColumn: "1 / -1",
-            background: "linear-gradient(135deg, #eff6ff, #e0e7ff)",
-            border: "1px solid #bfdbfe",
+            background: "var(--primary-subtle)",
+            border: "1px solid var(--primary-subtle)",
             borderRadius: 10,
             padding: 16,
             marginTop: 8,
@@ -468,7 +468,7 @@ export function ContractForm({
               alignItems: "center",
               gap: 8,
               fontWeight: 700,
-              color: "#1877f2",
+              color: "var(--primary)",
               fontSize: 14,
               marginBottom: 6,
             }}
@@ -478,7 +478,7 @@ export function ContractForm({
           <div
             style={{
               fontSize: 13,
-              color: "#334155",
+              color: "var(--text-main)",
               display: "flex",
               gap: 16,
               alignItems: "center",
@@ -496,7 +496,7 @@ export function ContractForm({
               <strong
                 style={{
                   fontFamily: "monospace",
-                  color: "#dc2626",
+                  color: "var(--status-danger-text)",
                   fontSize: 15,
                   letterSpacing: 2,
                 }}
@@ -508,8 +508,8 @@ export function ContractForm({
               type="button"
               onClick={handleCopy}
               style={{
-                background: "#4f46e5",
-                color: "#fff",
+                background: "var(--primary)",
+                color: "var(--bg-surface)",
                 border: "none",
                 borderRadius: 6,
                 padding: "6px 12px",
@@ -530,7 +530,7 @@ export function ContractForm({
                 style={{
                   fontSize: 12,
                   fontWeight: 600,
-                  color: "#4338ca",
+                  color: "var(--primary)",
                   textDecoration: "underline",
                   display: "inline-flex",
                   alignItems: "center",
@@ -683,8 +683,8 @@ export function AddOccupantForm({
         type="button"
         onClick={() => setOpen(!open)}
         style={{
-          background: "#4f46e5",
-          color: "#ffffff",
+          background: "var(--primary)",
+          color: "var(--bg-surface)",
           border: "none",
           borderRadius: 6,
           padding: "6px 12px",
@@ -703,8 +703,8 @@ export function AddOccupantForm({
         <form
           onSubmit={handleSubmit}
           style={{
-            background: "#f8fafc",
-            border: "1px solid #cbd5e1",
+            background: "var(--bg-subtle)",
+            border: "1px solid var(--border)",
             borderRadius: 8,
             padding: 14,
             marginTop: 10,
@@ -719,9 +719,9 @@ export function AddOccupantForm({
                 flex: 1,
                 padding: "6px 10px",
                 borderRadius: 6,
-                border: addMode === "new" ? "2px solid #4f46e5" : "1px solid #cbd5e1",
-                background: addMode === "new" ? "#eef2ff" : "#fff",
-                color: addMode === "new" ? "#4338ca" : "#475569",
+                border: addMode === "new" ? "2px solid var(--primary)" : "1px solid var(--border)",
+                background: addMode === "new" ? "var(--primary-subtle)" : "var(--bg-surface)",
+                color: addMode === "new" ? "var(--primary)" : "var(--text-muted)",
                 fontWeight: 600,
                 fontSize: 12,
                 cursor: "pointer",
@@ -736,9 +736,9 @@ export function AddOccupantForm({
                 flex: 1,
                 padding: "6px 10px",
                 borderRadius: 6,
-                border: addMode === "existing" ? "2px solid #4f46e5" : "1px solid #cbd5e1",
-                background: addMode === "existing" ? "#eef2ff" : "#fff",
-                color: addMode === "existing" ? "#4338ca" : "#475569",
+                border: addMode === "existing" ? "2px solid var(--primary)" : "1px solid var(--border)",
+                background: addMode === "existing" ? "var(--primary-subtle)" : "var(--bg-surface)",
+                color: addMode === "existing" ? "var(--primary)" : "var(--text-muted)",
                 fontWeight: 600,
                 fontSize: 12,
                 cursor: "pointer",
@@ -751,7 +751,7 @@ export function AddOccupantForm({
           {addMode === "new" ? (
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
               <div>
-                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "var(--text-main)", marginBottom: 4 }}>
                   Họ và tên bạn ở cùng *
                 </label>
                 <input
@@ -764,14 +764,14 @@ export function AddOccupantForm({
                     width: "100%",
                     height: 36,
                     borderRadius: 6,
-                    border: "1px solid #cbd5e1",
+                    border: "1px solid var(--border)",
                     fontSize: 13,
                     padding: "0 8px",
                   }}
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "var(--text-main)", marginBottom: 4 }}>
                   Số điện thoại *
                 </label>
                 <input
@@ -784,7 +784,7 @@ export function AddOccupantForm({
                     width: "100%",
                     height: 36,
                     borderRadius: 6,
-                    border: "1px solid #cbd5e1",
+                    border: "1px solid var(--border)",
                     fontSize: 13,
                     padding: "0 8px",
                   }}
@@ -793,7 +793,7 @@ export function AddOccupantForm({
             </div>
           ) : (
             <div style={{ marginBottom: 10 }}>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "var(--text-main)", marginBottom: 4 }}>
                 Chọn khách ở cùng *
               </label>
               <select
@@ -804,7 +804,7 @@ export function AddOccupantForm({
                   width: "100%",
                   height: 36,
                   borderRadius: 6,
-                  border: "1px solid #cbd5e1",
+                  border: "1px solid var(--border)",
                   fontSize: 13,
                   padding: "0 8px",
                 }}
@@ -820,7 +820,7 @@ export function AddOccupantForm({
           )}
 
           <div style={{ marginBottom: 10 }}>
-            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
+            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "var(--text-main)", marginBottom: 4 }}>
               Ngày vào ở
             </label>
             <input
@@ -832,7 +832,7 @@ export function AddOccupantForm({
                 width: "100%",
                 height: 36,
                 borderRadius: 6,
-                border: "1px solid #cbd5e1",
+                border: "1px solid var(--border)",
                 fontSize: 13,
                 padding: "0 8px",
               }}
@@ -840,7 +840,7 @@ export function AddOccupantForm({
           </div>
 
           {message && (
-            <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "#dc2626" }}>
+            <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "var(--status-danger-text)" }}>
               {message}
             </p>
           )}
@@ -852,8 +852,8 @@ export function AddOccupantForm({
               style={{
                 padding: "6px 12px",
                 borderRadius: 6,
-                border: "1px solid #cbd5e1",
-                background: "#f1f5f9",
+                border: "1px solid var(--border)",
+                background: "var(--bg-subtle)",
                 fontSize: 12,
                 cursor: "pointer",
               }}
@@ -867,8 +867,8 @@ export function AddOccupantForm({
                 padding: "6px 14px",
                 borderRadius: 6,
                 border: "none",
-                background: "#4f46e5",
-                color: "#fff",
+                background: "var(--primary)",
+                color: "var(--bg-surface)",
                 fontSize: 12,
                 fontWeight: 600,
                 cursor: "pointer",
@@ -929,9 +929,9 @@ export function ProvisionOccupantButton({
         onClick={handleProvision}
         disabled={isPending}
         style={{
-          background: "#ecfdf5",
-          color: "#065f46",
-          border: "1px solid #a7f3d0",
+          background: "var(--status-success-bg)",
+          color: "var(--status-success-text)",
+          border: "1px solid var(--status-success-border)",
           borderRadius: 6,
           padding: "4px 8px",
           fontSize: 12,
@@ -973,21 +973,21 @@ export function ProvisionOccupantButton({
         >
           <div
             style={{
-              background: "#ffffff",
+              background: "var(--bg-surface)",
               borderRadius: 14,
               maxWidth: 480,
               width: "100%",
               padding: 20,
               boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.15)",
-              border: "1px solid #cbd5e1",
+              border: "1px solid var(--border)",
             }}
           >
             {result.error ? (
               <div>
-                <h3 style={{ color: "#dc2626", margin: "0 0 10px", fontSize: 16 }}>
+                <h3 style={{ color: "var(--status-danger-text)", margin: "0 0 10px", fontSize: 16 }}>
                   Không thể cấp tài khoản
                 </h3>
-                <p style={{ fontSize: 13, color: "#475569" }}>{result.error}</p>
+                <p style={{ fontSize: 13, color: "var(--text-muted)" }}>{result.error}</p>
                 <div style={{ textAlign: "right", marginTop: 14 }}>
                   <button
                     type="button"
@@ -995,8 +995,8 @@ export function ProvisionOccupantButton({
                     style={{
                       padding: "6px 14px",
                       borderRadius: 6,
-                      border: "1px solid #cbd5e1",
-                      background: "#f8fafc",
+                      border: "1px solid var(--border)",
+                      background: "var(--bg-subtle)",
                       cursor: "pointer",
                     }}
                   >
@@ -1012,10 +1012,10 @@ export function ProvisionOccupantButton({
                     alignItems: "center",
                     gap: 10,
                     marginBottom: 12,
-                    color: "#065f46",
+                    color: "var(--status-success-text)",
                   }}
                 >
-                  <div style={{ background: "#d1fae5", padding: 8, borderRadius: 10 }}>
+                  <div style={{ background: "var(--status-success-bg)", padding: 8, borderRadius: 10 }}>
                     <Check size={20} />
                   </div>
                   <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800 }}>
@@ -1023,14 +1023,14 @@ export function ProvisionOccupantButton({
                   </h3>
                 </div>
 
-                <p style={{ fontSize: 13, color: "#334155", lineHeight: 1.5 }}>
+                <p style={{ fontSize: 13, color: "var(--text-main)", lineHeight: 1.5 }}>
                   Đã tạo tài khoản cho <strong>{hoTen}</strong> và lưu thông báo đến chủ phòng (để ứng dụng cư dân hiển thị). Quản lý cũng có thể sao chép thông tin đăng nhập bên dưới để gửi trực tiếp cho khách thuê.
                 </p>
 
                 <div
                   style={{
-                    background: "#f0fdf4",
-                    border: "1px solid #bbf7d0",
+                    background: "var(--status-success-bg)",
+                    border: "1px solid var(--status-success-border)",
                     borderRadius: 8,
                     padding: "10px 14px",
                     margin: "12px 0",
@@ -1042,7 +1042,7 @@ export function ProvisionOccupantButton({
                   </div>
                   <div style={{ marginTop: 4 }}>
                     Mật khẩu mặc định:{" "}
-                    <strong style={{ color: "#059669" }}>{result.tempPassword}</strong>
+                    <strong style={{ color: "var(--status-success-text)" }}>{result.tempPassword}</strong>
                   </div>
                 </div>
 
@@ -1059,8 +1059,8 @@ export function ProvisionOccupantButton({
                     type="button"
                     onClick={handleCopy}
                     style={{
-                      background: "#4f46e5",
-                      color: "#fff",
+                      background: "var(--primary)",
+                      color: "var(--bg-surface)",
                       border: "none",
                       borderRadius: 6,
                       padding: "7px 12px",
@@ -1081,8 +1081,8 @@ export function ProvisionOccupantButton({
                     style={{
                       padding: "7px 14px",
                       borderRadius: 6,
-                      border: "1px solid #cbd5e1",
-                      background: "#f8fafc",
+                      border: "1px solid var(--border)",
+                      background: "var(--bg-subtle)",
                       fontSize: 12.5,
                       cursor: "pointer",
                     }}
@@ -1128,7 +1128,7 @@ export function RemoveOccupantButton({
       style={{
         background: "none",
         border: "none",
-        color: "#ef4444",
+        color: "var(--status-danger-text)",
         cursor: "pointer",
         padding: 4,
       }}

@@ -44,7 +44,7 @@ async function ServicesContent() {
         </div>
         <div className={styles.miniCard}>
           <div className={styles.miniLabel}>Đang áp dụng</div>
-          <div className={styles.miniValue} style={{ color: "#16a34a" }}>
+          <div className={styles.miniValue} style={{ color: "var(--status-success-text)" }}>
             {activeCount}
           </div>
         </div>

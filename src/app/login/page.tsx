@@ -64,7 +64,7 @@ export default function LoginPage() {
               ))}
             </div>
             <div className={styles.leftFoot}>
-              Mã hóa mật khẩu chuẩn BCrypt • Bảo mật đám mây Supabase
+              Mã hóa mật khẩu chuẩn BCrypt — Bảo mật đám mây Supabase
             </div>
           </section>
 

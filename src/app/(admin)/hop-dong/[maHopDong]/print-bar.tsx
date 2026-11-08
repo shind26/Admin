@@ -96,7 +96,7 @@ export function ContractPrintBar({
             </>
           ) : exportSuccess ? (
             <>
-              <Check size={14} color="#16a34a" /> Đã tải xong PDF
+              <Check size={14} color="var(--status-success-text)" /> Đã tải xong PDF
             </>
           ) : (
             <>

@@ -137,8 +137,8 @@ export function RoomReservationManager({
       {trangThaiPhong === "Trống" && (
         <div
           style={{
-            background: "#ffffff",
-            border: "1px dashed #0284c7",
+            background: "var(--bg-surface)",
+            border: "1px dashed var(--status-info-text)",
             borderRadius: 12,
             padding: "14px 18px",
             marginTop: 14,
@@ -151,10 +151,10 @@ export function RoomReservationManager({
           }}
         >
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 700, color: "#0369a1", fontSize: 13.5 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 700, color: "var(--status-info-text)", fontSize: 13.5 }}>
               <Smartphone size={16} /> Sẵn sàng nhận đặt cọc qua Mobile App
             </div>
-            <div style={{ fontSize: 12, color: "#64748b", marginTop: 3 }}>
+            <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 3 }}>
               Khách vãng lai xem phòng & đặt cọc qua Mobile App. Khi thanh toán thành công, yêu cầu tạo hợp đồng sẽ hiển thị tại đây và đầu trang Hợp đồng.
             </div>
           </div>
@@ -167,9 +167,9 @@ export function RoomReservationManager({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
-                background: "#f0f9ff",
-                color: "#0284c7",
-                border: "1px solid #bae6fd",
+                background: "var(--status-info-bg)",
+                color: "var(--status-info-text)",
+                border: "1px solid var(--status-info-border)",
                 borderRadius: 8,
                 padding: "8px 14px",
                 fontSize: 12.5,
@@ -187,8 +187,8 @@ export function RoomReservationManager({
       {(trangThaiPhong === "Đã đặt cọc" || trangThaiPhong === "Đã cọc") && reservation && (
         <div
           style={{
-            background: "linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)",
-            border: "2px solid #86efac",
+            background: "linear-gradient(135deg, var(--status-success-bg) 0%, var(--status-success-bg) 100%)",
+            border: "2px solid var(--status-success-border)",
             borderRadius: 14,
             padding: "16px 20px",
             marginTop: 16,
@@ -210,8 +210,8 @@ export function RoomReservationManager({
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div
                 style={{
-                  background: "#dcfce7",
-                  color: "#15803d",
+                  background: "var(--status-success-bg)",
+                  color: "var(--status-success-text)",
                   width: 32,
                   height: 32,
                   borderRadius: "50%",
@@ -223,10 +223,10 @@ export function RoomReservationManager({
                 <CheckCircle2 size={18} />
               </div>
               <div>
-                <div style={{ fontSize: 14.5, fontWeight: 800, color: "#166534" }}>
+                <div style={{ fontSize: 14.5, fontWeight: 800, color: "var(--status-success-text)" }}>
                   ĐÃ CÓ KHÁCH ĐẶT CỌC GIỮ PHÒNG ({reservation.ma_giu_cho})
                 </div>
-                <div style={{ fontSize: 11.5, color: "#15803d" }}>
+                <div style={{ fontSize: 11.5, color: "var(--status-success-text)" }}>
                   Khách đã hoàn tất chuyển khoản VietQR giữ chỗ từ App Mobile
                 </div>
               </div>
@@ -238,9 +238,9 @@ export function RoomReservationManager({
                 fontWeight: 700,
                 padding: "4px 12px",
                 borderRadius: 999,
-                background: "#dcfce7",
-                color: "#166534",
-                border: "1px solid #86efac",
+                background: "var(--status-success-bg)",
+                color: "var(--status-success-text)",
+                border: "1px solid var(--status-success-border)",
               }}
             >
               ✓ Đã nhận cọc: {money(reservation.so_tien_the_chan)}
@@ -256,36 +256,36 @@ export function RoomReservationManager({
               fontSize: 13,
             }}
           >
-            <div style={{ background: "#ffffff", padding: "10px 14px", borderRadius: 8, border: "1px solid #d1fae5" }}>
-              <div style={{ fontSize: 11.5, color: "#64748b" }}>Khách đặt cọc</div>
-              <strong style={{ fontSize: 14, color: "#0f172a" }}>
+            <div style={{ background: "var(--bg-surface)", padding: "10px 14px", borderRadius: 8, border: "1px solid var(--status-success-bg)" }}>
+              <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Khách đặt cọc</div>
+              <strong style={{ fontSize: 14, color: "var(--text-main)" }}>
                 {reservation.ho_ten_khach || "—"}
               </strong>
-              <div style={{ fontSize: 12, color: "#475569" }}>SĐT: {reservation.so_dt || "—"}</div>
+              <div style={{ fontSize: 12, color: "var(--text-muted)" }}>SĐT: {reservation.so_dt || "—"}</div>
             </div>
 
-            <div style={{ background: "#ffffff", padding: "10px 14px", borderRadius: 8, border: "1px solid #d1fae5" }}>
-              <div style={{ fontSize: 11.5, color: "#64748b" }}>Ngày dự kiến vào ở</div>
-              <strong style={{ fontSize: 14, color: "#0369a1" }}>
+            <div style={{ background: "var(--bg-surface)", padding: "10px 14px", borderRadius: 8, border: "1px solid var(--status-success-bg)" }}>
+              <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Ngày dự kiến vào ở</div>
+              <strong style={{ fontSize: 14, color: "var(--status-info-text)" }}>
                 {date(reservation.ngay_du_kien_o || reservation.ngay_het_han)}
               </strong>
-              <div style={{ fontSize: 11.5, color: "#64748b" }}>Hạn giữ phòng</div>
+              <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Hạn giữ phòng</div>
             </div>
 
-            <div style={{ background: "#ffffff", padding: "10px 14px", borderRadius: 8, border: "1px solid #d1fae5" }}>
-              <div style={{ fontSize: 11.5, color: "#64748b" }}>Số người dự kiến ở</div>
-              <strong style={{ fontSize: 15, color: "#0f172a" }}>
+            <div style={{ background: "var(--bg-surface)", padding: "10px 14px", borderRadius: 8, border: "1px solid var(--status-success-bg)" }}>
+              <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Số người dự kiến ở</div>
+              <strong style={{ fontSize: 15, color: "var(--text-main)" }}>
                 {reservation.so_nguoi_o || 1} người
               </strong>
-              <div style={{ fontSize: 11.5, color: "#64748b" }}>Thông tin khách khai</div>
+              <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Thông tin khách khai</div>
             </div>
 
-            <div style={{ background: "#ffffff", padding: "10px 14px", borderRadius: 8, border: "1px solid #d1fae5" }}>
-              <div style={{ fontSize: 11.5, color: "#64748b" }}>Tiền cọc cần thu thêm</div>
-              <strong style={{ fontSize: 15, color: "#2563eb" }}>
+            <div style={{ background: "var(--bg-surface)", padding: "10px 14px", borderRadius: 8, border: "1px solid var(--status-success-bg)" }}>
+              <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Tiền cọc cần thu thêm</div>
+              <strong style={{ fontSize: 15, color: "var(--primary)" }}>
                 {money(tienCocConLai)}
               </strong>
-              <div style={{ fontSize: 11.5, color: "#64748b" }}>Tổng cọc: {money(tongCocHopDong)}</div>
+              <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Tổng cọc: {money(tongCocHopDong)}</div>
             </div>
           </div>
 
@@ -294,11 +294,11 @@ export function RoomReservationManager({
               style={{
                 marginTop: 10,
                 fontSize: 12.5,
-                color: "#166534",
-                background: "#ffffff",
+                color: "var(--status-success-text)",
+                background: "var(--bg-surface)",
                 padding: "8px 12px",
                 borderRadius: 8,
-                border: "1px solid #d1fae5",
+                border: "1px solid var(--status-success-bg)",
               }}
             >
               <strong>Ghi chú:</strong> {reservation.ghi_chu}
@@ -314,8 +314,8 @@ export function RoomReservationManager({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
-                background: "#059669",
-                color: "#ffffff",
+                background: "var(--status-success-text)",
+                color: "var(--bg-surface)",
                 border: "none",
                 borderRadius: 8,
                 padding: "9px 18px",
@@ -335,9 +335,9 @@ export function RoomReservationManager({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
-                background: "#ffffff",
-                color: "#dc2626",
-                border: "1px solid #fca5a5",
+                background: "var(--bg-surface)",
+                color: "var(--status-danger-text)",
+                border: "1px solid var(--status-danger-border)",
                 borderRadius: 8,
                 padding: "8px 14px",
                 fontSize: 12.5,
@@ -372,30 +372,30 @@ export function RoomReservationManager({
         >
           <div
             style={{
-              background: "#ffffff",
+              background: "var(--bg-surface)",
               borderRadius: 16,
               maxWidth: 620,
               width: "100%",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              border: "1px solid #e2e8f0",
+              border: "1px solid var(--border)",
               overflow: "hidden",
             }}
           >
             <div
               style={{
                 padding: "16px 20px",
-                borderBottom: "1px solid #e2e8f0",
+                borderBottom: "1px solid var(--border)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "#ecfdf5",
+                background: "var(--status-success-bg)",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <div
                   style={{
-                    background: "#d1fae5",
-                    color: "#059669",
+                    background: "var(--status-success-bg)",
+                    color: "var(--status-success-text)",
                     width: 36,
                     height: 36,
                     borderRadius: 10,
@@ -407,11 +407,12 @@ export function RoomReservationManager({
                   <FileCheck size={20} />
                 </div>
                 <div>
-                  <h2 style={{ fontSize: 16, fontWeight: 800, color: "#065f46", margin: 0 }}>
+                  <h2 style={{ fontSize: 16, fontWeight: 800, color: "var(--status-success-text)", margin: 0 }}>
                     Lập Hợp Đồng từ Cọc Giữ Chỗ Mobile
                   </h2>
-                  <p style={{ fontSize: 12, color: "#047857", margin: "2px 0 0" }}>
-                    Phòng {maPhong} • Khách: {reservation.ho_ten_khach} ({reservation.so_nguoi_o || 1} người ở)
+                  <p style={{ fontSize: 12, color: "var(--status-success-text)", margin: "2px 0 0", display: "flex", gap: 14, flexWrap: "wrap" }}>
+                    <span>Phòng {maPhong}</span>
+                    <span>Khách: {reservation.ho_ten_khach} ({reservation.so_nguoi_o || 1} người ở)</span>
                   </p>
                 </div>
               </div>
@@ -419,7 +420,7 @@ export function RoomReservationManager({
                 type="button"
                 onClick={() => setOpenConvertModal(false)}
                 disabled={contractPending}
-                style={{ background: "transparent", border: "none", cursor: "pointer", color: "#94a3b8" }}
+                style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--text-muted)" }}
               >
                 <X size={20} />
               </button>
@@ -430,7 +431,7 @@ export function RoomReservationManager({
               <input type="hidden" name="maPhong" value={maPhong} />
 
               {contractState.error && (
-                <div style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#b91c1c", padding: "10px", borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
+                <div style={{ background: "var(--status-danger-bg)", border: "1px solid var(--status-danger-border)", color: "var(--status-danger-text)", padding: "10px", borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
                   <AlertTriangle size={16} /> {contractState.error}
                 </div>
               )}
@@ -438,8 +439,8 @@ export function RoomReservationManager({
               {/* Thông tin kế thừa tự động từ mobile */}
               <div
                 style={{
-                  background: "#f8fafc",
-                  border: "1px solid #e2e8f0",
+                  background: "var(--bg-subtle)",
+                  border: "1px solid var(--border)",
                   borderRadius: 10,
                   padding: 12,
                   marginBottom: 14,
@@ -466,22 +467,22 @@ export function RoomReservationManager({
               {/* Bảng đối trừ cọc tự động */}
               <div
                 style={{
-                  background: "#f0fdf4",
-                  border: "1px solid #86efac",
+                  background: "var(--status-success-bg)",
+                  border: "1px solid var(--status-success-border)",
                   borderRadius: 10,
                   padding: 12,
                   marginBottom: 14,
                   fontSize: 12.5,
                 }}
               >
-                <div style={{ fontWeight: 700, color: "#166534", marginBottom: 6 }}>
+                <div style={{ fontWeight: 700, color: "var(--status-success-text)", marginBottom: 6 }}>
                   💰 Bảng đối trừ tiền đặt cọc
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                   <span>Tổng tiền cọc quy định:</span>
                   <strong>{money(tongCocHopDong)}</strong>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", color: "#059669", marginBottom: 4 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", color: "var(--status-success-text)", marginBottom: 4 }}>
                   <span>Đã thanh toán (Cọc giữ chỗ từ Mobile):</span>
                   <strong>- {money(tienCocGiu)}</strong>
                 </div>
@@ -489,10 +490,10 @@ export function RoomReservationManager({
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    borderTop: "1px dashed #86efac",
+                    borderTop: "1px dashed var(--status-success-border)",
                     paddingTop: 6,
                     fontSize: 14,
-                    color: "#15803d",
+                    color: "var(--status-success-text)",
                     fontWeight: 800,
                   }}
                 >
@@ -512,7 +513,7 @@ export function RoomReservationManager({
                     name="giaThueThoaThuan"
                     defaultValue={giaThueNiemYet ? Number(giaThueNiemYet) : 0}
                     required
-                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1", fontWeight: 700 }}
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)", fontWeight: 700 }}
                   />
                 </div>
 
@@ -525,7 +526,7 @@ export function RoomReservationManager({
                     name="tienDatCoc"
                     defaultValue={tongCocHopDong}
                     required
-                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1", fontWeight: 700 }}
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)", fontWeight: 700 }}
                   />
                 </div>
               </div>
@@ -541,9 +542,9 @@ export function RoomReservationManager({
                     value={ngayKy}
                     max={ngayBd || undefined}
                     onChange={(e) => setNgayKy(e.target.value)}
-                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
                   />
-                  <span style={{ fontSize: 11, color: "#64748b" }}>Ký trước/vào ngày ở</span>
+                  <span style={{ fontSize: 11, color: "var(--text-muted)" }}>Ký trước/vào ngày ở</span>
                 </div>
 
                 <div>
@@ -557,9 +558,9 @@ export function RoomReservationManager({
                     min={ngayKy || undefined}
                     onChange={(e) => handleNgayBdChange(e.target.value)}
                     required
-                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
                   />
-                  <span style={{ fontSize: 11, color: "#64748b" }}>Tính tiền từ ngày này</span>
+                  <span style={{ fontSize: 11, color: "var(--text-muted)" }}>Tính tiền từ ngày này</span>
                 </div>
 
                 <div>
@@ -573,9 +574,9 @@ export function RoomReservationManager({
                     min={dayAfter(ngayBd)}
                     onChange={(e) => setNgayKt(e.target.value)}
                     required
-                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
                   />
-                  <span style={{ fontSize: 11, color: "#64748b" }}>Sau ngày bắt đầu</span>
+                  <span style={{ fontSize: 11, color: "var(--text-muted)" }}>Sau ngày bắt đầu</span>
                 </div>
               </div>
 
@@ -590,14 +591,14 @@ export function RoomReservationManager({
               {contractState.tempPassword && contractState.username && (
                 <div
                   style={{
-                    background: "linear-gradient(135deg, #eff6ff, #e0e7ff)",
-                    border: "1px solid #bfdbfe",
+                    background: "var(--primary-subtle)",
+                    border: "1px solid var(--primary-subtle)",
                     borderRadius: 10,
                     padding: 14,
                     marginBottom: 16,
                   }}
                 >
-                  <div style={{ fontWeight: 700, color: "#1877f2", fontSize: 13, marginBottom: 6 }}>
+                  <div style={{ fontWeight: 700, color: "var(--primary)", fontSize: 13, marginBottom: 6 }}>
                     🎉 Đã kích hoạt Hợp đồng & Cấp User Mobile App cho cư dân:
                   </div>
                   <div style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap", fontSize: 13 }}>
@@ -606,14 +607,14 @@ export function RoomReservationManager({
                     </span>
                     <span>
                       Mật khẩu mặc định:{" "}
-                      <strong style={{ color: "#dc2626", letterSpacing: 1 }}>{contractState.tempPassword}</strong>
+                      <strong style={{ color: "var(--status-danger-text)", letterSpacing: 1 }}>{contractState.tempPassword}</strong>
                     </span>
                     <button
                       type="button"
                       onClick={handleCopyCredentials}
                       style={{
-                        background: "#4f46e5",
-                        color: "#fff",
+                        background: "var(--primary)",
+                        color: "var(--bg-surface)",
                         border: "none",
                         borderRadius: 6,
                         padding: "5px 12px",
@@ -630,7 +631,7 @@ export function RoomReservationManager({
                     {contractState.maHopDong && (
                       <Link
                         href={`/hop-dong/${contractState.maHopDong}`}
-                        style={{ fontSize: 12, color: "#4338ca", fontWeight: 700 }}
+                        style={{ fontSize: 12, color: "var(--primary)", fontWeight: 700 }}
                       >
                         Xem chi tiết HĐ →
                       </Link>
@@ -644,7 +645,7 @@ export function RoomReservationManager({
                   type="button"
                   onClick={() => setOpenConvertModal(false)}
                   disabled={contractPending}
-                  style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid #cbd5e1", background: "#fff", cursor: "pointer" }}
+                  style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid var(--border)", background: "var(--bg-surface)", cursor: "pointer" }}
                 >
                   Đóng
                 </button>
@@ -655,8 +656,8 @@ export function RoomReservationManager({
                     padding: "8px 18px",
                     borderRadius: 8,
                     border: "none",
-                    background: "#059669",
-                    color: "#fff",
+                    background: "var(--status-success-text)",
+                    color: "var(--bg-surface)",
                     fontWeight: 700,
                     cursor: contractPending ? "not-allowed" : "pointer",
                     display: "inline-flex",
@@ -694,30 +695,30 @@ export function RoomReservationManager({
         >
           <div
             style={{
-              background: "#ffffff",
+              background: "var(--bg-surface)",
               borderRadius: 16,
               maxWidth: 540,
               width: "100%",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              border: "1px solid #e2e8f0",
+              border: "1px solid var(--border)",
               overflow: "hidden",
             }}
           >
             <div
               style={{
                 padding: "16px 20px",
-                borderBottom: "1px solid #e2e8f0",
+                borderBottom: "1px solid var(--border)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "#fef2f2",
+                background: "var(--status-danger-bg)",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <div
                   style={{
-                    background: "#fee2e2",
-                    color: "#dc2626",
+                    background: "var(--status-danger-bg)",
+                    color: "var(--status-danger-text)",
                     width: 36,
                     height: 36,
                     borderRadius: 10,
@@ -729,11 +730,12 @@ export function RoomReservationManager({
                   <UserX size={20} />
                 </div>
                 <div>
-                  <h2 style={{ fontSize: 16, fontWeight: 800, color: "#991b1b", margin: 0 }}>
+                  <h2 style={{ fontSize: 16, fontWeight: 800, color: "var(--status-danger-text)", margin: 0 }}>
                     Xử lý Khách bỏ cọc / Hủy giữ chỗ
                   </h2>
-                  <p style={{ fontSize: 12, color: "#7f1d1d", margin: "2px 0 0" }}>
-                    Phòng {maPhong} • Khách: {reservation.ho_ten_khach}
+                  <p style={{ fontSize: 12, color: "var(--status-danger-text)", margin: "2px 0 0", display: "flex", gap: 14, flexWrap: "wrap" }}>
+                    <span>Phòng {maPhong}</span>
+                    <span>Khách: {reservation.ho_ten_khach}</span>
                   </p>
                 </div>
               </div>
@@ -741,7 +743,7 @@ export function RoomReservationManager({
                 type="button"
                 onClick={() => setOpenCancelModal(false)}
                 disabled={cancelPending}
-                style={{ background: "transparent", border: "none", cursor: "pointer", color: "#94a3b8" }}
+                style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--text-muted)" }}
               >
                 <X size={20} />
               </button>
@@ -759,13 +761,13 @@ export function RoomReservationManager({
               <input type="hidden" name="maPhong" value={maPhong} />
 
               {cancelState.error && (
-                <div style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#b91c1c", padding: "10px", borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
+                <div style={{ background: "var(--status-danger-bg)", border: "1px solid var(--status-danger-border)", color: "var(--status-danger-text)", padding: "10px", borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
                   <AlertTriangle size={16} /> {cancelState.error}
                 </div>
               )}
 
               <div style={{ marginBottom: 14 }}>
-                <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#334155", marginBottom: 6 }}>
+                <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "var(--text-main)", marginBottom: 6 }}>
                   Phương án xử lý tiền cọc ({money(reservation.so_tien_the_chan)}) *
                 </label>
                 <div style={{ display: "flex", gap: 10 }}>
@@ -774,8 +776,8 @@ export function RoomReservationManager({
                       flex: 1,
                       padding: 10,
                       borderRadius: 8,
-                      border: xuLyTienCoc === "TichThu" ? "2px solid #dc2626" : "1px solid #cbd5e1",
-                      background: xuLyTienCoc === "TichThu" ? "#fef2f2" : "#fff",
+                      border: xuLyTienCoc === "TichThu" ? "2px solid var(--status-danger-text)" : "1px solid var(--border)",
+                      background: xuLyTienCoc === "TichThu" ? "var(--status-danger-bg)" : "var(--bg-surface)",
                       cursor: "pointer",
                     }}
                   >
@@ -787,8 +789,8 @@ export function RoomReservationManager({
                       onChange={() => setXuLyTienCoc("TichThu")}
                       style={{ marginRight: 6 }}
                     />
-                    <strong style={{ color: "#991b1b" }}>Tịch thu tiền cọc</strong>
-                    <div style={{ fontSize: 11.5, color: "#64748b", marginTop: 4 }}>
+                    <strong style={{ color: "var(--status-danger-text)" }}>Tịch thu tiền cọc</strong>
+                    <div style={{ fontSize: 11.5, color: "var(--text-muted)", marginTop: 4 }}>
                       Khách bỏ cọc hoặc quá hạn hẹn. Tiền cọc sung quỹ tòa nhà.
                     </div>
                   </label>
@@ -798,8 +800,8 @@ export function RoomReservationManager({
                       flex: 1,
                       padding: 10,
                       borderRadius: 8,
-                      border: xuLyTienCoc === "HoanLai" ? "2px solid #059669" : "1px solid #cbd5e1",
-                      background: xuLyTienCoc === "HoanLai" ? "#ecfdf5" : "#fff",
+                      border: xuLyTienCoc === "HoanLai" ? "2px solid var(--status-success-text)" : "1px solid var(--border)",
+                      background: xuLyTienCoc === "HoanLai" ? "var(--status-success-bg)" : "var(--bg-surface)",
                       cursor: "pointer",
                     }}
                   >
@@ -811,8 +813,8 @@ export function RoomReservationManager({
                       onChange={() => setXuLyTienCoc("HoanLai")}
                       style={{ marginRight: 6 }}
                     />
-                    <strong style={{ color: "#065f46" }}>Hoàn trả lại cọc</strong>
-                    <div style={{ fontSize: 11.5, color: "#64748b", marginTop: 4 }}>
+                    <strong style={{ color: "var(--status-success-text)" }}>Hoàn trả lại cọc</strong>
+                    <div style={{ fontSize: 11.5, color: "var(--text-muted)", marginTop: 4 }}>
                       Thỏa thuận hoàn trả toàn bộ hoặc một phần cho khách.
                     </div>
                   </label>
@@ -821,7 +823,7 @@ export function RoomReservationManager({
 
               {xuLyTienCoc === "HoanLai" && (
                 <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "var(--text-main)", marginBottom: 4 }}>
                     Số tiền hoàn trả lại cho khách (VNĐ)
                   </label>
                   <input
@@ -831,28 +833,28 @@ export function RoomReservationManager({
                     max={Number(reservation.so_tien_the_chan)}
                     value={soTienHoanLai}
                     onChange={(e) => setSoTienHoanLai(Number(e.target.value) || 0)}
-                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1", fontWeight: 700 }}
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)", fontWeight: 700 }}
                   />
                 </div>
               )}
 
               <div style={{ marginBottom: 14 }}>
-                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "var(--text-main)", marginBottom: 4 }}>
                   Lý do hủy giữ chỗ / bỏ cọc
                 </label>
                 <textarea
                   name="lyDoHuy"
                   rows={2}
                   placeholder="Khách thay đổi kế hoạch không thuê nữa..."
-                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
                 />
               </div>
 
               <div
                 style={{
                   fontSize: 12,
-                  color: "#991b1b",
-                  background: "#fef2f2",
+                  color: "var(--status-danger-text)",
+                  background: "var(--status-danger-bg)",
                   padding: "10px 12px",
                   borderRadius: 8,
                   marginBottom: 16,
@@ -869,7 +871,7 @@ export function RoomReservationManager({
                   type="button"
                   onClick={() => setOpenCancelModal(false)}
                   disabled={cancelPending}
-                  style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid #cbd5e1", background: "#fff", cursor: "pointer" }}
+                  style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid var(--border)", background: "var(--bg-surface)", cursor: "pointer" }}
                 >
                   Đóng
                 </button>
@@ -880,8 +882,8 @@ export function RoomReservationManager({
                     padding: "8px 18px",
                     borderRadius: 8,
                     border: "none",
-                    background: "#dc2626",
-                    color: "#fff",
+                    background: "var(--status-danger-text)",
+                    color: "var(--bg-surface)",
                     fontWeight: 700,
                     cursor: cancelPending ? "not-allowed" : "pointer",
                     display: "inline-flex",
@@ -919,34 +921,34 @@ export function RoomReservationManager({
         >
           <div
             style={{
-              background: "#ffffff",
+              background: "var(--bg-surface)",
               borderRadius: 16,
               maxWidth: 580,
               width: "100%",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              border: "1px solid #e2e8f0",
+              border: "1px solid var(--border)",
               overflow: "hidden",
             }}
           >
             <div
               style={{
                 padding: "16px 20px",
-                borderBottom: "1px solid #e2e8f0",
+                borderBottom: "1px solid var(--border)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "#f0f9ff",
+                background: "var(--status-info-bg)",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ background: "#e0f2fe", color: "#0284c7", width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ background: "var(--status-info-bg)", color: "var(--status-info-text)", width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <BookmarkCheck size={20} />
                 </div>
                 <div>
-                  <h2 style={{ fontSize: 16, fontWeight: 800, color: "#0369a1", margin: 0 }}>
+                  <h2 style={{ fontSize: 16, fontWeight: 800, color: "var(--status-info-text)", margin: 0 }}>
                     Nhận cọc trực tiếp tại quầy (Tiền mặt)
                   </h2>
-                  <p style={{ fontSize: 12, color: "#0284c7", margin: "2px 0 0" }}>
+                  <p style={{ fontSize: 12, color: "var(--status-info-text)", margin: "2px 0 0" }}>
                     Phòng {tenPhong} ({maPhong})
                   </p>
                 </div>
@@ -955,7 +957,7 @@ export function RoomReservationManager({
                 type="button"
                 onClick={() => setOpenManualReserveModal(false)}
                 disabled={resPending}
-                style={{ background: "transparent", border: "none", cursor: "pointer", color: "#94a3b8" }}
+                style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--text-muted)" }}
               >
                 <X size={20} />
               </button>
@@ -974,7 +976,7 @@ export function RoomReservationManager({
               <input type="hidden" name="hinhThucThanhToan" value="TrucTiep" />
 
               {resState.error && (
-                <div style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#b91c1c", padding: "10px", borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
+                <div style={{ background: "var(--status-danger-bg)", border: "1px solid var(--status-danger-border)", color: "var(--status-danger-text)", padding: "10px", borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
                   <AlertTriangle size={16} /> {resState.error}
                 </div>
               )}
@@ -990,7 +992,7 @@ export function RoomReservationManager({
                     name="newHoTen"
                     placeholder="Nguyễn Văn A"
                     required
-                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
                   />
                 </div>
                 <div>
@@ -1002,7 +1004,7 @@ export function RoomReservationManager({
                     name="newSoDt"
                     placeholder="0912345678"
                     required
-                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
                   />
                 </div>
               </div>
@@ -1018,7 +1020,7 @@ export function RoomReservationManager({
                     value={soTienTheChan}
                     onChange={(e) => setSoTienTheChan(e.target.value)}
                     required
-                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1", fontWeight: 700 }}
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)", fontWeight: 700 }}
                   />
                 </div>
                 <div>
@@ -1031,7 +1033,7 @@ export function RoomReservationManager({
                     value={ngayHetHan}
                     onChange={(e) => setNgayHetHan(e.target.value)}
                     required
-                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
                   />
                 </div>
               </div>
@@ -1044,7 +1046,7 @@ export function RoomReservationManager({
                   type="text"
                   name="ghiChu"
                   placeholder="Khách đưa tiền mặt tại quầy..."
-                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
+                  style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid var(--border)" }}
                 />
               </div>
 
@@ -1053,7 +1055,7 @@ export function RoomReservationManager({
                   type="button"
                   onClick={() => setOpenManualReserveModal(false)}
                   disabled={resPending}
-                  style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid #cbd5e1", background: "#fff", cursor: "pointer" }}
+                  style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid var(--border)", background: "var(--bg-surface)", cursor: "pointer" }}
                 >
                   Đóng
                 </button>
@@ -1064,8 +1066,8 @@ export function RoomReservationManager({
                     padding: "8px 18px",
                     borderRadius: 8,
                     border: "none",
-                    background: "#059669",
-                    color: "#fff",
+                    background: "var(--status-success-text)",
+                    color: "var(--bg-surface)",
                     fontWeight: 700,
                     cursor: resPending ? "not-allowed" : "pointer",
                     display: "inline-flex",

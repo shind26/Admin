@@ -56,21 +56,21 @@ export function TenantForm({
         {/* Thông tin tóm tắt của khách (Read-only) */}
         <div
           style={{
-            background: "#f8fafc",
-            border: "1px solid #e2e8f0",
+            background: "var(--bg-subtle)",
+            border: "1px solid var(--border)",
             borderRadius: 8,
             padding: "10px 14px",
             fontSize: 13,
-            color: "#334155",
+            color: "var(--text-main)",
           }}
         >
-          <div style={{ fontWeight: 700, color: "#1e293b", marginBottom: 2 }}>
+          <div style={{ fontWeight: 700, color: "var(--text-main)", marginBottom: 2 }}>
             {tenant?.hoTenKhach}{" "}
-            <span style={{ fontWeight: 400, color: "#64748b" }}>
+            <span style={{ fontWeight: 400, color: "var(--text-muted)" }}>
               ({tenant?.soDt || "Chưa có SĐT"} — CCCD: {tenant?.cccd || "—"})
             </span>
           </div>
-          <div style={{ fontSize: 11.5, color: "#64748b" }}>
+          <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>
             * Thông tin cá nhân (CCCD, địa chỉ, số điện thoại...) do cư dân quản lý và cập nhật qua Mobile App. Quản lý chỉ lưu Ghi chú nội bộ bên dưới.
           </div>
         </div>
@@ -88,7 +88,7 @@ export function TenantForm({
               width: "100%",
               padding: "8px 12px",
               borderRadius: 6,
-              border: "1px solid #cbd5e1",
+              border: "1px solid var(--border)",
               fontSize: 13,
               lineHeight: 1.5,
               resize: "vertical",
@@ -244,14 +244,14 @@ export function TenantForm({
             gap: 8,
             cursor: "pointer",
             fontWeight: 600,
-            color: "#3730a3",
+            color: "var(--primary)",
           }}
         >
           <input
             type="checkbox"
             name="capTaiKhoanApp"
             defaultChecked
-            style={{ width: 18, height: 18, accentColor: "#4f46e5" }}
+            style={{ width: 18, height: 18, accentColor: "var(--primary)" }}
           />
           <Smartphone size={16} /> Tự động cấp tài khoản Mobile App ngay khi tạo (Username = SĐT, Mật khẩu tạm 6 số)
         </label>
@@ -276,25 +276,25 @@ export function TenantForm({
         <div
           style={{
             gridColumn: "1 / -1",
-            background: "#eff6ff",
-            border: "1px solid #bfdbfe",
+            background: "var(--primary-subtle)",
+            border: "1px solid var(--primary-subtle)",
             borderRadius: 8,
             padding: 14,
             marginTop: 6,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 700, color: "#1877f2", marginBottom: 6 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 700, color: "var(--primary)", marginBottom: 6 }}>
             <ShieldCheck size={18} /> Đã cấp tài khoản Mobile App cho khách:
           </div>
-          <div style={{ fontSize: 13, color: "#334155", display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+          <div style={{ fontSize: 13, color: "var(--text-main)", display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
             <span>Tên đăng nhập: <strong style={{ fontFamily: "monospace" }}>{state.username}</strong></span>
-            <span>Mật khẩu mặc định: <strong style={{ fontFamily: "monospace", color: "#dc2626" }}>{state.tempPassword}</strong></span>
+            <span>Mật khẩu mặc định: <strong style={{ fontFamily: "monospace", color: "var(--status-danger-text)" }}>{state.tempPassword}</strong></span>
             <button
               type="button"
               onClick={handleCopy}
               style={{
-                background: "#4f46e5",
-                color: "#fff",
+                background: "var(--primary)",
+                color: "var(--bg-surface)",
                 border: "none",
                 borderRadius: 6,
                 padding: "4px 10px",

@@ -139,7 +139,7 @@ export function RoomPhotoUpload() {
   return (
     <div className={styles.photoBox}>
       <span className={styles.photoLabel}>
-        Tải ảnh lên (Supabase Storage) — nhập Mã phòng trước khi chọn ảnh
+        Tải ảnh lên - nhập Mã phòng trước khi chọn ảnh
       </span>
 
       <div className={styles.photoRow}>

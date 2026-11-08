@@ -1,39 +1,41 @@
 /* ─────────────────────────────────────────────────────────────
-   DASHBOARD STYLES (SKY BLUE PMS - FINANCIAL COMMAND CENTER)
+   DASHBOARD STYLES (HANDCRAFTED MINIMALIST COMMAND CENTER)
+   Đồng bộ Dark / Light mode, dùng biến CSS toàn cục
 ───────────────────────────────────────────────────────────── */
 
 .dashboardContainer {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
-/* ── 1. DASHBOARD HEADER & QUICK ACTIONS ── */
+/* ── 1. HEADER & THAO TÁC NHANH ── */
 .dashHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
-  background: #ffffff;
-  padding: 18px 24px;
-  border-radius: 14px;
-  border: 1px solid #e4e6eb;
-  box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
+  gap: 14px;
+  background: var(--bg-surface);
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 .dashTitleCol h1 {
-  font-size: 21px;
-  font-weight: 800;
-  color: #1877f2;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text-main);
   margin: 0;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
 }
 
 .dashSub {
-  font-size: 13px;
-  color: #1c1e21;
-  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 3px;
 }
 
 .dashQuickActions {
@@ -47,68 +49,100 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #1877f2;
+  background: var(--primary);
   color: #ffffff;
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 7px 14px;
+  border-radius: var(--radius-md);
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
-  transition: all 0.15s ease;
-  box-shadow: 0 2px 6px rgba(24, 119, 242, 0.2);
+  transition: all 0.12s ease;
+  white-space: nowrap;
 }
 
 .btnActionPrimary:hover {
-  background: #166fe5;
-  transform: translateY(-1px);
+  background: var(--primary-hover);
 }
 
 .btnActionSecondary {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #ffffff;
-  color: #1c1e21;
-  border: 1px solid #ced0d4;
-  padding: 8px 14px;
-  border-radius: 8px;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 7px 12px;
+  border-radius: var(--radius-md);
   font-size: 12.5px;
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
-  transition: all 0.15s ease;
+  transition: all 0.12s ease;
+  white-space: nowrap;
 }
 
 .btnActionSecondary:hover {
-  background: #f0f2f5;
-  border-color: #1877f2;
-  color: #1877f2;
+  background: var(--bg-subtle);
+  color: var(--text-main);
+  border-color: var(--border-strong);
 }
 
-/* ── 2. FINANCIAL KPI CARDS GRID ── */
+/* ── 2. CẢNH BÁO HÀNG ĐỢI GIỮ CHỖ ── */
+.pendingQueueAlert {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: var(--status-info-bg);
+  border: 1px solid var(--status-info-border);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+}
+
+.pendingAlertLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pendingAlertText h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--status-info-text);
+  margin: 0;
+}
+
+.btnAlertAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--status-info-text);
+  text-decoration: underline;
+}
+
+/* ── 3. KHỐI THẺ THỐNG KÊ TÀI CHÍNH (KPI) ── */
 .financialGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 12px;
 }
 
 .kpiCard {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 20px;
-  border: 1px solid #e4e6eb;
-  box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .kpiCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(24, 119, 242, 0.1);
-  border-color: #ced0d4;
+  border-color: var(--border-strong);
 }
 
 .kpiHead {
@@ -119,93 +153,81 @@
 }
 
 .kpiLabel {
-  font-size: 12px;
-  font-weight: 700;
-  color: #65676b;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
 }
 
 .kpiIconBox {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
 }
 
 .kpiValue {
-  font-size: 24px;
-  font-weight: 800;
-  color: #050505;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
   letter-spacing: -0.02em;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .kpiFoot {
-  font-size: 12px;
-  color: #1c1e21;
+  font-size: 11.5px;
+  color: var(--text-muted);
   display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-subtle);
 }
 
-/* Progress bar inside KPI */
-.progressTrack {
-  width: 100%;
-  height: 6px;
-  background: #f0f2f5;
-  border-radius: 999px;
-  overflow: hidden;
-  margin: 6px 0 8px;
-}
-
-.progressFill {
-  height: 100%;
-  border-radius: 999px;
-  transition: width 0.3s ease;
+.kpiFoot strong {
+  color: var(--text-main);
+  font-weight: 600;
 }
 
 .kpiBadgeUp {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: #e6f4ea;
-  color: #166534;
-  font-weight: 700;
+  gap: 3px;
+  color: var(--status-success-text);
+  font-weight: 600;
   font-size: 11px;
 }
 
 .kpiBadgeDown {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: #fde8e8;
-  color: #991b1b;
-  font-weight: 700;
+  gap: 3px;
+  color: var(--status-danger-text);
+  font-weight: 600;
   font-size: 11px;
 }
 
-/* ── 3. CHARTS GRID (BAR & DONUT) ── */
+/* ── 4. KHỐI BIỂU ĐỒ ── */
 .chartsGrid {
   display: grid;
-  grid-template-columns: 1.6fr 1.1fr;
-  gap: 20px;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 12px;
 }
 
 .chartCard {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 22px;
-  border: 1px solid #e4e6eb;
-  box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
 }
@@ -213,296 +235,224 @@
 .chartHeader {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 18px;
+  align-items: center;
+  margin-bottom: 14px;
+  gap: 12px;
   flex-wrap: wrap;
-  gap: 10px;
 }
 
 .chartTitle {
-  font-size: 15px;
-  font-weight: 800;
-  color: #050505;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-main);
   margin: 0;
-}
-
-.chartSub {
-  font-size: 12px;
-  color: #65676b;
-  margin: 3px 0 0;
 }
 
 .chartLegend {
   display: flex;
   align-items: center;
-  gap: 14px;
-  font-size: 12px;
-  color: #1c1e21;
+  gap: 12px;
+  font-size: 11.5px;
+  color: var(--text-muted);
 }
 
 .legendItem {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-weight: 600;
+  gap: 5px;
 }
 
 .legendDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .dotCollected {
-  background: #1877f2;
+  background: var(--primary);
 }
 
 .dotDebt {
   background: #f59e0b;
 }
 
-/* SVG Bar Chart */
 .svgWrapper {
-  position: relative;
   width: 100%;
+  position: relative;
 }
 
 .chartSvg {
   width: 100%;
   height: auto;
-  overflow: visible;
+  max-height: 240px;
+  display: block;
 }
 
-.barTransition {
-  transition: all 0.2s ease;
-}
-
-/* Tooltip floating box */
 .tooltipBox {
   position: absolute;
-  top: 15px;
-  transform: translateX(-50%);
-  background: #050505;
-  color: #ffffff;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
   padding: 8px 12px;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(35, 67, 88, 0.25);
+  font-size: 12px;
+  z-index: 10;
   pointer-events: none;
-  z-index: 20;
-  font-size: 11.5px;
-  min-width: 170px;
-  animation: fadeIn 0.15s ease;
+  white-space: nowrap;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -4px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
+/* ── 5. KHỐI BẢNG VÀ VẬN HÀNH DƯỚI CÙNG ── */
+.bottomGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 12px;
 }
 
-.tooltipTitle {
-  font-weight: 700;
-  color: #e7f3ff;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-  font-size: 10.5px;
+.tableCard,
+.opPanelCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
 }
 
-.tooltipRow {
+.tableHeadRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  margin: 3px 0;
-}
-
-.tooltipDotOk {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #1877f2;
-  display: inline-block;
-}
-
-.tooltipDotWarn {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #f59e0b;
-  display: inline-block;
-}
-
-.tooltipDivider {
-  height: 1px;
-  background: #1c1e21;
-  margin: 6px 0;
-}
-
-/* Donut Chart Layout */
-.donutLayout {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-
-.donutSvgContainer {
-  position: relative;
-  width: 160px;
-  height: 160px;
-  flex-shrink: 0;
-}
-
-.donutSvg {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-}
-
-.donutSegment {
-  transition: stroke-dasharray 0.3s ease;
-}
-
-.donutCenter {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-}
-
-.donutCenterLabel {
-  font-size: 10.5px;
-  font-weight: 700;
-  color: #65676b;
-  text-transform: uppercase;
-}
-
-.donutCenterVal {
-  font-size: 16px;
-  font-weight: 800;
-  color: #050505;
-}
-
-.donutLegendList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  flex: 1;
-  min-width: 180px;
-}
-
-.donutLegendRow {
-  display: flex;
-  align-items: center;
+  margin-bottom: 12px;
   gap: 10px;
 }
 
-.legendColorBox {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
+.tableTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iconBadgeBlue,
+.iconBadgeWarn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
 }
 
-.legendTextCol {
-  flex: 1;
-}
-
-.legendCategory {
-  font-size: 12px;
-  color: #1c1e21;
-  font-weight: 600;
-}
-
-.legendAmount {
-  font-size: 13px;
-  font-weight: 800;
-  color: #050505;
-}
-
-.legendPercentBadge {
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-/* ── 4. FINANCIAL TABLES GRID ── */
-.tablesGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-/* ── 4. FINANCIAL TABLES & BOTTOM GRID ── */
-.bottomGrid {
-  display: grid;
-  grid-template-columns: 1.6fr 1.1fr;
-  gap: 20px;
-  align-items: stretch;
-}
-
-.opPanelCard {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 20px;
-  border: 1px solid #e4e6eb;
-  box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
-  display: flex;
-  flex-direction: column;
-}
-
 .iconBadgeBlue {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: #e7f3ff;
-  color: #1877f2;
-  display: grid;
-  place-items: center;
+  background: var(--primary-subtle);
+  color: var(--primary);
 }
 
+.iconBadgeWarn {
+  background: var(--status-warning-bg);
+  color: var(--status-warning-text);
+}
+
+.tableTitle {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.viewAllLink {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--primary-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.viewAllLink:hover {
+  text-decoration: underline;
+}
+
+.tableScroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dashTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.dashTable thead th {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dashTable tbody td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+.dashTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dashTable tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.emptyCell {
+  padding: 24px 10px !important;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.emptyBanner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+/* ── 6. VẬN HÀNH PHÒNG (MINI GRID) ── */
 .opMiniGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 10px;
-  flex: 1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .opMiniCard {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
   text-decoration: none;
-  transition: all 0.15s ease;
+  color: var(--text-main);
+  transition: border-color 0.12s, background-color 0.12s;
 }
 
 .opMiniCard:hover {
-  background: #ffffff;
-  border-color: #1877f2;
-  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.08);
-  transform: translateY(-1px);
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
 }
 
 .opIconBox {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -515,397 +465,45 @@
 }
 
 .opMiniLabel {
-  font-size: 11.5px;
-  color: #64748b;
-  font-weight: 600;
+  font-size: 11px;
+  color: var(--text-muted);
 }
 
 .opMiniValue {
-  font-size: 14.5px;
-  font-weight: 800;
-  color: #0f172a;
-  margin-top: 2px;
-  white-space: nowrap;
-}
-
-.tableCard {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 20px;
-  border: 1px solid #e4e6eb;
-  box-shadow: 0 2px 10px rgba(66, 91, 107, 0.03);
-  display: flex;
-  flex-direction: column;
-}
-
-.tableHeadRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.tableTitleGroup {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.iconBadgeWarn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: #f6e6b4;
-  color: #854d0e;
-  display: grid;
-  place-items: center;
-}
-
-.iconBadgeOk {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: #e6f4ea;
-  color: #166534;
-  display: grid;
-  place-items: center;
-}
-
-.tableTitle {
-  font-size: 14.5px;
-  font-weight: 800;
-  color: #050505;
-  margin: 0;
-}
-
-.tableSub {
-  font-size: 11.5px;
-  color: #65676b;
-  margin: 2px 0 0;
-}
-
-.viewAllLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #1877f2;
-  text-decoration: none;
-}
-
-.viewAllLink:hover {
-  text-decoration: underline;
-  color: #166fe5;
-}
-
-.tableScroll {
-  overflow-x: auto;
-}
-
-.dashTable {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12.5px;
-}
-
-.dashTable th {
-  text-align: left;
-  padding: 10px 12px;
-  background: #1877f2;
-  color: #ffffff;
-  font-weight: 700;
-  border-bottom: 1px solid #166fe5;
-  white-space: nowrap;
-}
-
-.dashTable tbody tr:nth-child(odd) {
-  background: #ffffff;
-}
-
-.dashTable tbody tr:nth-child(even) {
-  background: #f0f2f5;
-}
-
-.dashTable tbody tr:hover {
-  background: #e4e6eb;
-}
-
-.dashTable td {
-  padding: 11px 12px;
-  border-bottom: 1px solid #eaf1f6;
-  color: #1c1e21;
-  vertical-align: middle;
-}
-
-.dashTable tr:last-child td {
-  border-bottom: none;
-}
-
-.strongText {
-  font-weight: 700;
-  color: #050505;
-}
-
-.mutedText {
-  font-size: 11px;
-  color: #65676b;
-}
-
-.invoiceBadge {
-  font-family: monospace;
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #1877f2;
-  background: #e7f3ff;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-.debtHighlight {
-  color: #dc2626;
-  font-weight: 800;
   font-size: 13px;
-  background: #fef2f2;
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px solid #fecaca;
-  display: inline-block;
-}
-
-.collectedHighlight {
-  color: #166534;
-  font-weight: 800;
-  font-size: 13px;
-}
-
-.dateCell {
-  color: #65676b;
-  font-size: 11.5px;
-  white-space: nowrap;
-}
-
-.actionRow {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.btnQuickPay {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: #1877f2;
-  color: #ffffff;
-  padding: 4px 9px;
-  border-radius: 5px;
-  font-size: 11px;
-  font-weight: 700;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: all 0.15s ease;
-}
-
-.btnQuickPay:hover {
-  background: #166fe5;
-}
-
-.btnViewInv {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  background: #f0f2f5;
-  color: #1c1e21;
-  border: 1px solid #ced0d4;
-  padding: 4px 8px;
-  border-radius: 5px;
-  font-size: 11px;
   font-weight: 600;
-  text-decoration: none;
-  transition: all 0.15s ease;
+  color: var(--text-main);
 }
 
-.btnViewInv:hover {
-  background: #f0f2f5;
-  color: #1877f2;
-}
-
-.methodBadge {
-  background: #e7f3ff;
-  color: #1877f2;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.statusOk {
-  background: #e6f4ea;
-  color: #166534;
-  border: 1px solid #c6e7d0;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.statusWarn {
-  background: #f6e6b4;
-  color: #854d0e;
-  border: 1px solid #eed793;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.emptyCell {
-  text-align: center;
-  padding: 28px 12px;
-  color: #65676b;
-}
-
-.emptyBanner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: #166534;
-  font-weight: 600;
-  font-size: 13px;
-}
-
-/* ── 5. OPERATIONS & ALERT BANNER ── */
-.operationsRow {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.opCard {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 14px 18px;
-  border: 1px solid #e4e6eb;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  text-decoration: none;
-  transition: all 0.15s ease;
-  box-shadow: 0 1px 3px rgba(66, 91, 107, 0.03);
-}
-
-.opCard:hover {
-  border-color: #1877f2;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.1);
-}
-
-.opLeft {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.opIcon {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-}
-
-.opLabel {
-  font-size: 12px;
-  color: #65676b;
-}
-
-.opValue {
-  font-size: 16px;
-  font-weight: 800;
-  color: #050505;
-}
-
-/* Banner nhắc cọc chờ duyệt */
-.pendingQueueAlert {
-  background: linear-gradient(135deg, #e6f4ea 0%, #f0f2f5 100%);
-  border: 1px solid #c6e7d0;
-  border-radius: 14px;
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.pendingAlertLeft {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.pendingAlertText h4 {
-  font-size: 14px;
-  font-weight: 800;
-  color: #166534;
-  margin: 0;
-}
-
-.pendingAlertText p {
-  font-size: 12px;
-  color: #1c1e21;
-  margin: 2px 0 0;
-}
-
-.btnAlertAction {
-  background: #1877f2;
-  color: #ffffff;
-  padding: 7px 14px;
-  border-radius: 7px;
-  font-size: 12.5px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background 0.15s ease;
-}
-
-.btnAlertAction:hover {
-  background: #166fe5;
-}
-
-/* Responsive */
-@media (max-width: 1200px) {
+/* ── 7. RESPONSIVE BREAKPOINTS ── */
+@media (max-width: 1080px) {
   .financialGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .chartsGrid {
     grid-template-columns: 1fr;
   }
+
+  .chartsGrid,
   .bottomGrid {
     grid-template-columns: 1fr;
-  }
-  .tablesGrid {
-    grid-template-columns: 1fr;
-  }
-  .operationsRow {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
-  .financialGrid {
-    grid-template-columns: 1fr;
-  }
-  .operationsRow {
-    grid-template-columns: 1fr;
-  }
-  .opMiniGrid {
-    grid-template-columns: 1fr;
-  }
   .dashHeader {
     flex-direction: column;
     align-items: flex-start;
   }
-}
 
+  .dashQuickActions {
+    width: 100%;
+  }
+
+  .btnActionPrimary,
+  .btnActionSecondary {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .opMiniGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -143,26 +143,26 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
                       <MeterPhotoViewer reading={reading} />
                     </td>
                     <td>
-                      <div style={{ fontSize: 12.5, color: "#334155" }}>
+                      <div style={{ fontSize: 12.5, color: "var(--text-main)" }}>
                         {reading.chi_so_dien_cu ?? "-"} → <strong>{reading.chi_so_dien_moi ?? "-"}</strong>
                       </div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#d97706", marginTop: 2 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--status-warning-text)", marginTop: 2 }}>
                         +{reading.dien_tieu_thu} kWh
                         {reading.dien_ky_truoc !== null && reading.dien_ky_truoc !== undefined && (
-                          <span style={{ fontSize: 11, color: "#94a3b8", fontWeight: 400, marginLeft: 4 }}>
+                          <span style={{ fontSize: 11, color: "var(--text-muted)", fontWeight: 400, marginLeft: 4 }}>
                             (kỳ trước: {reading.dien_ky_truoc})
                           </span>
                         )}
                       </div>
                     </td>
                     <td>
-                      <div style={{ fontSize: 12.5, color: "#334155" }}>
+                      <div style={{ fontSize: 12.5, color: "var(--text-main)" }}>
                         {reading.chi_so_nuoc_cu ?? "-"} → <strong>{reading.chi_so_nuoc_moi ?? "-"}</strong>
                       </div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#0284c7", marginTop: 2 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--status-info-text)", marginTop: 2 }}>
                         +{reading.nuoc_tieu_thu} m³
                         {reading.nuoc_ky_truoc !== null && reading.nuoc_ky_truoc !== undefined && (
-                          <span style={{ fontSize: 11, color: "#94a3b8", fontWeight: 400, marginLeft: 4 }}>
+                          <span style={{ fontSize: 11, color: "var(--text-muted)", fontWeight: 400, marginLeft: 4 }}>
                             (kỳ trước: {reading.nuoc_ky_truoc})
                           </span>
                         )}

@@ -15,11 +15,12 @@ import {
 import { ScopeQuery } from "@/lib/scope";
 import { requireScope } from "@/lib/session";
 import type { RoomFormData } from "../room-forms";
-import { DeleteRoomDetailButton, EditRoomButton } from "./detail-actions";
+import { DeleteRoomDetailButton } from "./detail-actions";
 import { RoomDetailTabs } from "./room-detail-tabs";
 import styles from "./room-detail.module.css";
 
 type Params = Promise<{ maPhong: string }>;
+type SearchParams = Promise<{ tab?: string }>;
 
 function text(value: string | number | null) {
   if (value === null || value === "") return "—";
@@ -76,10 +77,22 @@ function toForm(room: {
   };
 }
 
-async function RoomDetailContent({ params }: { params: Params }) {
+async function RoomDetailContent({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams?: SearchParams;
+}) {
   const { scope } = await requireScope();
   const scopeQuery = new ScopeQuery(scope);
   const { maPhong } = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const tabParam = resolvedSearchParams?.tab;
+  const initialTab =
+    tabParam === "edit" || tabParam === "tenants" || tabParam === "utilities"
+      ? tabParam
+      : "info";
 
   const [
     room,
@@ -149,14 +162,6 @@ async function RoomDetailContent({ params }: { params: Params }) {
               </div>
             )}
           </div>
-          <div className={styles.photoActions}>
-            <EditRoomButton
-              room={toForm(room)}
-              buildings={buildings}
-              roomTypes={roomTypes}
-              editableBuilding={scope.allBuildings}
-            />
-          </div>
         </div>
 
         {/* ── Cột thông tin ── */}
@@ -164,13 +169,14 @@ async function RoomDetailContent({ params }: { params: Params }) {
           <div className={styles.headCard}>
             <div>
               <h1 className={styles.roomCode}>
-                {room.ten_hien_thi || room.ma_phong}
+                {(room.ten_hien_thi || room.ma_phong).replace(/\s*•\s*/g, "  ")}
               </h1>
-              <p className={styles.roomSub}>
-                Mã phòng: {room.ma_phong} • Cơ sở: {text(room.toa_nha)}
-                {room.tang !== null ? ` • Tầng ${room.tang}` : ""} • Loại:{" "}
-                {text(room.ten_loai_phong)}
-              </p>
+              <div className={styles.roomSub}>
+                <span>Mã phòng: {room.ma_phong}</span>
+                <span>Cơ sở: {text(room.toa_nha)}</span>
+                {room.tang !== null && <span>Tầng {room.tang}</span>}
+                <span>Loại: {text(room.ten_loai_phong)}</span>
+              </div>
             </div>
             <div className={styles.actions}>
               <span
@@ -194,13 +200,18 @@ async function RoomDetailContent({ params }: { params: Params }) {
             </p>
           )}
 
-          {/* ── 3 Tab Tinh Gọn ── */}
+          {/* ── Các Tab Chi Tiết & Chỉnh Sửa Phòng ── */}
           <RoomDetailTabs
             room={room}
             rentalHistory={rentalHistory}
             utilitySummary={utilitySummary}
             reservation={reservation}
             tenants={tenants}
+            buildings={buildings}
+            roomTypes={roomTypes}
+            editableBuilding={scope.allBuildings}
+            formData={toForm(room)}
+            initialTab={initialTab}
           />
         </div>
       </div>
@@ -208,10 +219,16 @@ async function RoomDetailContent({ params }: { params: Params }) {
   );
 }
 
-export default function RoomDetailPage({ params }: { params: Params }) {
+export default function RoomDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams?: SearchParams;
+}) {
   return (
     <Suspense fallback={<AdminPageSkeleton />}>
-      <RoomDetailContent params={params} />
+      <RoomDetailContent params={params} searchParams={searchParams} />
     </Suspense>
   );
 }

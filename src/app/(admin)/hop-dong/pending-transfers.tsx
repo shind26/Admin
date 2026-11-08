@@ -30,17 +30,17 @@ export function PendingTransfersQueue({
     <section
       style={{
         marginBottom: 20,
-        background: "#ffffff",
+        background: "var(--bg-surface)",
         borderRadius: 10,
-        border: "1px solid #e2e8f0",
+        border: "1px solid var(--border)",
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
       }}
     >
       {/* Header */}
       <div
         style={{
-          background: "#f8fafc",
-          borderBottom: "1px solid #e2e8f0",
+          background: "var(--bg-subtle)",
+          borderBottom: "1px solid var(--border)",
           padding: "12px 18px",
           display: "flex",
           justifyContent: "space-between",
@@ -52,8 +52,8 @@ export function PendingTransfersQueue({
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div
             style={{
-              background: "#1877f2",
-              color: "#ffffff",
+              background: "var(--primary)",
+              color: "var(--bg-surface)",
               width: 28,
               height: 28,
               borderRadius: 6,
@@ -64,18 +64,18 @@ export function PendingTransfersQueue({
           >
             <ArrowRightLeft size={15} />
           </div>
-          <h2 style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h2 style={{ fontSize: 14, fontWeight: 700, color: "var(--text-main)", margin: 0 }}>
             Yêu cầu đổi phòng
           </h2>
           <span
             style={{
-              background: "#eff6ff",
-              color: "#1d4ed8",
+              background: "var(--primary-subtle)",
+              color: "var(--primary)",
               fontSize: 12,
               fontWeight: 600,
               padding: "2px 8px",
               borderRadius: 999,
-              border: "1px solid #bfdbfe",
+              border: "1px solid var(--primary-subtle)",
             }}
           >
             {requests.length} yêu cầu cần duyệt
@@ -90,7 +90,7 @@ export function PendingTransfersQueue({
             key={req.ma_yeu_cau}
             style={{
               padding: "16px 18px",
-              borderTop: idx > 0 ? "1px solid #f1f5f9" : "none",
+              borderTop: idx > 0 ? "1px solid var(--bg-subtle)" : "none",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
@@ -102,17 +102,17 @@ export function PendingTransfersQueue({
             <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1, minWidth: 300 }}>
               {/* Dòng 1: Tên khách + HĐ + Tòa */}
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", fontSize: 13 }}>
-                <strong style={{ color: "#0f172a", fontSize: 14 }}>
+                <strong style={{ color: "var(--text-main)", fontSize: 14 }}>
                   {req.ten_khach || "Cư dân"}
                 </strong>
                 {req.so_dt && (
-                  <span style={{ color: "#64748b" }}>• {req.so_dt}</span>
+                  <span style={{ color: "var(--text-muted)" }}>{req.so_dt}</span>
                 )}
-                <span style={{ color: "#64748b" }}>
-                  • HĐ:{" "}
+                <span style={{ color: "var(--text-muted)" }}>
+                  HĐ:{" "}
                   <Link
                     href={`/hop-dong/${encodeURIComponent(req.ma_hop_dong)}`}
-                    style={{ color: "#1877f2", fontWeight: 600, textDecoration: "underline" }}
+                    style={{ color: "var(--primary)", fontWeight: 600, textDecoration: "underline" }}
                   >
                     {req.ma_hop_dong}
                   </Link>{" "}
@@ -121,31 +121,31 @@ export function PendingTransfersQueue({
               </div>
 
               {/* Dòng 2: Lộ trình phòng */}
-              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, flexWrap: "wrap" }}>
-                <span style={{ color: "#475569" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13, flexWrap: "wrap" }}>
+                <span style={{ color: "var(--text-muted)" }}>
                   Phòng cũ: <strong>{req.ten_phong_cu || req.ma_phong_cu}</strong> ({money(req.gia_phong_cu)}/th)
                 </span>
-                <span style={{ color: "#1877f2", fontWeight: 700 }}>➔</span>
-                <span style={{ color: "#059669" }}>
+                <span style={{ color: "var(--primary)", fontWeight: 700 }}>➔</span>
+                <span style={{ color: "var(--status-success-text)" }}>
                   Phòng mới: <strong>{req.ten_phong_moi || req.ma_phong_moi}</strong> ({money(req.gia_phong_moi)}/th)
                 </span>
-                <span style={{ color: "#64748b", fontSize: 12 }}>
-                  • Ngày hẹn dọn: <strong>{date(req.thoi_gian_hen)}</strong>
+                <span style={{ color: "var(--text-muted)", fontSize: 12 }}>
+                  Ngày hẹn dọn: <strong>{date(req.thoi_gian_hen)}</strong>
                 </span>
               </div>
 
               {/* Dòng 3: Lý do & Tiền cọc */}
-              <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 12, color: "#64748b", flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 12, color: "var(--text-muted)", flexWrap: "wrap" }}>
                 {req.ly_do_chuyen && (
                   <span>
-                    Lý do: <span style={{ color: "#334155" }}>&ldquo;{req.ly_do_chuyen}&rdquo;</span>
+                    Lý do: <span style={{ color: "var(--text-main)" }}>&ldquo;{req.ly_do_chuyen}&rdquo;</span>
                   </span>
                 )}
-                <span>• Cọc bảo lưu: <strong style={{ color: "#0f172a" }}>{money(req.tien_coc_bao_luu)}</strong></span>
+                <span>Cọc bảo lưu: <strong style={{ color: "var(--text-main)" }}>{money(req.tien_coc_bao_luu)}</strong></span>
                 {req.unpaid_total > 0 ? (
-                  <span style={{ color: "#dc2626", fontWeight: 600 }}>• Còn nợ: {money(req.unpaid_total)}</span>
+                  <span style={{ color: "var(--status-danger-text)", fontWeight: 600 }}>Còn nợ: {money(req.unpaid_total)}</span>
                 ) : (
-                  <span style={{ color: "#16a34a" }}>• Nợ cũ: 0 đ</span>
+                  <span style={{ color: "var(--status-success-text)" }}>Nợ cũ: 0 đ</span>
                 )}
               </div>
             </div>
@@ -160,9 +160,9 @@ export function PendingTransfersQueue({
                   gap: 5,
                   padding: "7px 13px",
                   borderRadius: 6,
-                  border: "1px solid #cbd5e1",
-                  background: "#ffffff",
-                  color: "#334155",
+                  border: "1px solid var(--border)",
+                  background: "var(--bg-surface)",
+                  color: "var(--text-main)",
                   fontSize: 12.5,
                   fontWeight: 600,
                   textDecoration: "none",

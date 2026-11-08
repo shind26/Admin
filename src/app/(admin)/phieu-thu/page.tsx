@@ -108,7 +108,7 @@ async function ReceiptsContent({
         </div>
         <div className={styles.miniCard}>
           <div className={styles.miniLabel}>Tổng tiền đã thu</div>
-          <div className={styles.miniValue} style={{ color: "#16a34a", fontWeight: 700 }}>
+          <div className={styles.miniValue} style={{ color: "var(--status-success-text)", fontWeight: 700 }}>
             {formatMoney(String(totalCollected))}
           </div>
         </div>
@@ -219,7 +219,7 @@ async function ReceiptsContent({
                         </div>
                       )}
                     </td>
-                    <td className={styles.strong} style={{ color: "#0f766e" }}>
+                    <td className={styles.strong} style={{ color: "var(--status-success-text)" }}>
                       {formatMoney(receipt.so_tien_thu)}
                     </td>
                     <td>{formatDate(receipt.ngay_thu)}</td>
