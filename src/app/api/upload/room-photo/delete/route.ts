@@ -4,6 +4,7 @@ import {
   getStorageConfig,
   objectPathFromPublicUrl,
   removeObjects,
+  safeRoomFolder,
 } from "@/lib/storage";
 
 /**
@@ -48,7 +49,10 @@ export async function POST(request: Request) {
   // Quản lý tòa chỉ được xóa ảnh của phòng thuộc tòa mình.
   const scope = getAccessScope(account);
   const maPhong = (payload.maPhong ?? "").trim();
-  if (!scope.allBuildings && maPhong) {
+  if (!maPhong || !objectPath.startsWith(`${safeRoomFolder(maPhong)}/`)) {
+    return NextResponse.json({ error: "Đường dẫn ảnh không thuộc phòng được chọn." }, { status: 403 });
+  }
+  if (!scope.allBuildings) {
     const { getDbPool } = await import("@/lib/db");
     const { rows } = await getDbPool().query<{ ok: number }>(
       `SELECT 1 AS ok FROM public.phong WHERE ma_phong = $1 AND toa_nha = $2 LIMIT 1`,

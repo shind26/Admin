@@ -44,9 +44,13 @@ export function objectPathFromPublicUrl(
   if (!url) return null;
   const prefix = `${config.baseUrl}/storage/v1/object/public/${config.bucket}/`;
   if (!url.startsWith(prefix)) return null;
-  const path = url.slice(prefix.length);
-  if (!path || path.includes("..")) return null;
-  return decodeURIComponent(path);
+  try {
+    const path = decodeURIComponent(url.slice(prefix.length));
+    if (!path || path.includes("\\") || path.includes("\0") || path.split("/").some((part) => !part || part === "." || part === "..")) return null;
+    return path;
+  } catch {
+    return null;
+  }
 }
 
 /** Xóa nhiều object trong một lần gọi. Trả về danh sách đường dẫn đã xóa được. */

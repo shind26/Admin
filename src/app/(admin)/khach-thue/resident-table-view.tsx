@@ -2,20 +2,11 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import {
-  Eye,
-  Smartphone,
-  ShieldCheck,
-  Car,
-  DoorOpen,
-  UserCheck,
-  AlertCircle,
-  LoaderCircle,
-} from "lucide-react";
+import { Eye, Smartphone, ShieldCheck, Car, DoorOpen, UserCheck, AlertCircle, LoaderCircle } from "lucide-react";
 import type { TenantRow, VehicleRow, TenantContractHistoryRow } from "@/lib/queries";
 import { getResidentDetails } from "./actions";
 import { ResidentDrawer } from "./resident-drawer";
-import { TenantEditorToggle, DeleteTenantButton, type TenantFormData } from "./tenant-forms";
+import { TenantEditorToggle, DeleteTenantButton } from "./tenant-forms";
 import styles from "@/components/business.module.css";
 
 export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
@@ -358,6 +349,7 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
       {/* Drawer hồ sơ chi tiết */}
       {selectedTenant && (
         <ResidentDrawer
+          key={selectedTenant.ma_khach}
           tenant={selectedTenant}
           vehicles={residentVehicles}
           contracts={residentContracts}

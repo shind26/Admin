@@ -14,7 +14,7 @@ import type { InvoiceRow, ReceiptRow } from "@/lib/queries";
 import styles from "@/components/business.module.css";
 import receiptStyles from "./receipt-detail.module.css";
 
-const RECEIPT_STATUSES = ["Đã xác nhận", "Chờ xác nhận", "Từ chối"];
+const RECEIPT_STATUSES = ["Đã xác nhận", "Chờ xác nhận", "Đã hủy"];
 const PAYMENT_METHODS = ["Tiền mặt", "Chuyển khoản", "VietQR"];
 const initialState: ReceiptFormState = { error: null, success: null };
 
@@ -196,7 +196,7 @@ export function ReceiptForm({
         <input
           id={`ghiChu-${mode}`}
           name="ghiChu"
-          defaultValue={receipt?.ghi_chu ?? ""}
+          defaultValue=""
           placeholder="Ví dụ: Đóng tiền phòng đợt 1, thanh toán qua ngân hàng..."
           maxLength={255}
           disabled={isConfirmed}

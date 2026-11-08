@@ -1,28 +1,8 @@
 "use client";
 
-import { useActionState, useState, useEffect } from "react";
-import {
-  LogOut,
-  AlertTriangle,
-  Calculator,
-  CheckCircle2,
-  LoaderCircle,
-  X,
-  FileCheck,
-  Zap,
-  Droplets,
-  Receipt,
-  ShieldAlert,
-  Ban,
-  Clock,
-  Info,
-} from "lucide-react";
-import {
-  liquidateContract,
-  rejectLiquidationRequest,
-  type LiquidationFormState,
-  type RejectLiquidationState,
-} from "../actions";
+import { useActionState, useState } from "react";
+import { LogOut, AlertTriangle, Calculator, CheckCircle2, LoaderCircle, X, FileCheck, Zap, Droplets, Receipt, ShieldAlert, Ban, Clock } from "lucide-react";
+import { liquidateContract, rejectLiquidationRequest, type LiquidationFormState, type RejectLiquidationState } from "../actions";
 
 const initialLiquidationState: LiquidationFormState = { error: null, success: null };
 const initialRejectState: RejectLiquidationState = { error: null, success: null };

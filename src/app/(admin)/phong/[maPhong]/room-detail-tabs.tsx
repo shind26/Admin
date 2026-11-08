@@ -1,19 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import {
-  Droplets,
-  Home,
-  Users,
-  Zap,
-} from "lucide-react";
-import type {
-  RoomRentalHistoryRow,
-  RoomReservationDetail,
-  RoomUtilitySummary,
-  TenantOption,
-} from "@/lib/queries";
+
+import { Droplets, Home, Users, Zap } from "lucide-react";
+import type { RoomRentalHistoryRow, RoomReservationDetail, RoomUtilitySummary, TenantOption } from "@/lib/queries";
 import { RoomRentalHistory } from "./rental-history";
 import { RoomUtilitySummaryCard } from "./room-utility-summary";
 import { RoomReservationManager } from "./room-reservation";
@@ -38,7 +28,7 @@ type RoomDetailTabsProps = {
     ten_loai_phong: string | null;
     mo_ta_ngan: string | null;
     noi_that_san_co: string[] | null;
-    loai_phong_tien_ich: string[] | null;
+    loai_phong_tien_ich?: string[] | null;
     chi_so_dien?: string | null;
     chi_so_nuoc?: string | null;
     khach_thue?: string | null;
@@ -46,7 +36,7 @@ type RoomDetailTabsProps = {
     giu_cho_trang_thai?: string | null;
   };
   rentalHistory: RoomRentalHistoryRow[];
-  utilitySummary: RoomUtilitySummary[];
+  utilitySummary: RoomUtilitySummary;
   reservation: RoomReservationDetail | null;
   tenants: TenantOption[];
 };

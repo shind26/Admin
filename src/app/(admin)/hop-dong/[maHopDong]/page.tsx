@@ -73,7 +73,7 @@ function daysLeft(ngayKt: string | null) {
 }
 
 function statusTone(status: string | null, remaining: number | null) {
-  if (status === "Đã kết thúc") return styles.badgeMuted;
+  if (status === "Đã thanh lý") return styles.badgeMuted;
   if (remaining !== null && remaining <= 30) return styles.badgeWarn;
   if (status === "Còn hạn" || status === "Đang thuê") return styles.badgeOk;
   if (status === "Đã đặt cọc") return styles.badgeInfo;
@@ -147,7 +147,7 @@ async function ContractBody({ params }: { params: Params }) {
   const trangThaiHienThi =
     remaining !== null &&
     remaining <= 30 &&
-    hopDong.trang_thai !== "Đã kết thúc"
+    hopDong.trang_thai !== "Đã thanh lý"
       ? remaining <= 0
         ? "Đã hết hạn"
         : `Sắp hết hạn (còn ${remaining} ngày)`
@@ -185,7 +185,7 @@ async function ContractBody({ params }: { params: Params }) {
         </div>
         <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-            {hopDong.trang_thai !== "Đã kết thúc" && (
+            {hopDong.trang_thai !== "Đã thanh lý" && (
               <>
                 <RoomTransferDialog
                   maHopDong={hopDong.ma_hop_dong}
@@ -341,7 +341,7 @@ async function ContractBody({ params }: { params: Params }) {
       )}
 
       {/* ── Thẻ hiển thị Biên bản thanh lý nếu hợp đồng đã kết thúc hoặc đã duyệt ── */}
-      {bienBanThanhLy && (bienBanThanhLy.trang_thai === "DA_DUYET" || hopDong.trang_thai === "Đã kết thúc") && (
+      {bienBanThanhLy && (bienBanThanhLy.trang_thai === "DA_DUYET" || hopDong.trang_thai === "Đã thanh lý") && (
         <div
           style={{
             background: "#f0f2f5",

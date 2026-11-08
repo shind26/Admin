@@ -27,7 +27,7 @@ const STATUS_OPTIONS = [
   "Đã xác nhận",
   "Đã khớp lệnh",
   "Chờ xác nhận",
-  "Từ chối",
+  "Đã hủy",
 ];
 
 function formatMoney(value: string | null) {
@@ -42,7 +42,7 @@ function formatDate(value: string | null) {
 
 function statusClass(status: string | null) {
   if (status === "Đã xác nhận" || status === "Đã khớp lệnh" || status === "Đã thanh toán") return styles.badgeOk;
-  if (status === "Từ chối") return styles.badgeMuted;
+  if (status === "Đã hủy") return styles.badgeMuted;
   return styles.badgeWarn;
 }
 

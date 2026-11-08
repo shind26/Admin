@@ -1,36 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  LoaderCircle,
-  Check,
-  X,
-  Eye,
-  Pencil,
-  Zap,
-  Droplets,
-  AlertTriangle,
-  ExternalLink,
-  CheckCircle2,
-  Lock,
-  Image as ImageIcon,
-  Clock,
-  Bell,
-  Send,
-  FileText,
-  Plus,
-} from "lucide-react";
-import {
-  createMeterReading,
-  deleteMeterReading,
-  updateMeterReading,
-  approveMeterReading,
-  rejectMeterReading,
-  remindTenantToSubmitMeter,
-  type MeterFormState,
-} from "./actions";
+import { LoaderCircle, Check, X, Pencil, Zap, Droplets, AlertTriangle, ExternalLink, CheckCircle2, Lock, Image as ImageIcon, Clock, Bell, Send, FileText, Plus } from "lucide-react";
+import { createMeterReading, deleteMeterReading, updateMeterReading, approveMeterReading, rejectMeterReading, remindTenantToSubmitMeter, type MeterFormState } from "./actions";
 import type { ContractOption, MeterProgressData, MeterRow } from "@/lib/queries";
 import { detectMeterAnomaly } from "@/lib/meter-utils";
 import styles from "@/components/business.module.css";
@@ -935,7 +909,6 @@ export function MeterPhotoViewer({ reading }: { reading: MeterRow }) {
  */
 export function MeterEditorToggle({
   reading,
-  contracts,
 }: {
   reading: MeterRow;
   contracts: ContractOption[];

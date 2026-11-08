@@ -143,10 +143,32 @@ export async function assertTenantInScope(
      WHERE k.ma_khach = $1 AND EXISTS (
        SELECT 1 FROM public.hop_dong hd
        JOIN public.phong p ON p.ma_phong = hd.ma_phong
-       WHERE hd.ma_khach_dai_dien = k.ma_khach AND p.toa_nha = $2
+       WHERE (hd.ma_khach_dai_dien = k.ma_khach OR EXISTS (
+         SELECT 1 FROM public.chi_tiet_hop_dong_khach_thue ct
+         WHERE ct.ma_hop_dong = hd.ma_hop_dong AND ct.ma_khach = k.ma_khach
+       )) AND p.toa_nha = $2
+     ) OR k.ma_khach = $1 AND EXISTS (
+       SELECT 1 FROM public.giu_cho gc JOIN public.phong p ON p.ma_phong = gc.ma_phong
+       WHERE gc.ma_khach = k.ma_khach AND p.toa_nha = $2
      )
      LIMIT 1`,
     [maKhach, scope.building],
   );
   return rows.length > 0 ? null : "Bạn không có quyền thao tác trên khách thuê của cơ sở khác.";
+}
+
+/** Phương tiện phải thuộc cư dân và phòng trong cơ sở được gán. */
+export async function assertVehicleInScope(
+  maPhuongTien: string,
+  scope: AccessScope,
+): Promise<string | null> {
+  if (scope.allBuildings) return null;
+  const { rows } = await getDbPool().query<{ ma_khach: string; ma_phong: string | null }>(
+    "SELECT ma_khach, ma_phong FROM public.phuong_tien WHERE ma_phuong_tien = $1",
+    [maPhuongTien],
+  );
+  if (!rows[0]) return "Không tìm thấy phương tiện.";
+  const tenantError = await assertTenantInScope(rows[0].ma_khach, scope);
+  if (tenantError) return tenantError;
+  return rows[0].ma_phong ? assertRoomInScope(rows[0].ma_phong, scope) : null;
 }

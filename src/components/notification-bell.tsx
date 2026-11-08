@@ -30,7 +30,6 @@ function formatRelativeTime(dateStr: string | null): string {
 export function NotificationBell() {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<NotificationItem[]>([]);
-  const [mounted, setMounted] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
 
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -66,15 +65,17 @@ export function NotificationBell() {
   };
 
   useEffect(() => {
-    setMounted(true);
-    fetchNotifications();
+    const controller = new AbortController();
+    fetch("/api/notifications", { signal: controller.signal })
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => { if (data) setItems(data.items || []); })
+      .catch(() => {});
     const interval = setInterval(fetchNotifications, 60000);
-    return () => clearInterval(interval);
+    return () => { controller.abort(); clearInterval(interval); };
   }, []);
 
   useEffect(() => {
     if (open) {
-      updatePosition();
       window.addEventListener("resize", updatePosition);
       window.addEventListener("scroll", updatePosition, true);
     }
@@ -116,7 +117,7 @@ export function NotificationBell() {
 
   const total = items.length;
 
-  const popoverContent = open && mounted ? (
+  const popoverContent = open ? (
     <div
       ref={popoverRef}
       className={styles.popover}
@@ -165,11 +166,8 @@ export function NotificationBell() {
         type="button"
         className={`${styles.bellButton} ${open ? styles.bellActive : ""}`}
         onClick={() => {
-          setOpen((prev) => {
-            const next = !prev;
-            if (next) updatePosition();
-            return next;
-          });
+          if (!open) updatePosition();
+          setOpen(!open);
           if (!open) fetchNotifications();
         }}
         title="Thông báo"
@@ -180,7 +178,7 @@ export function NotificationBell() {
         {total > 0 && <span className={styles.badge}>{total > 99 ? "99+" : total}</span>}
       </button>
 
-      {mounted && popoverContent ? createPortal(popoverContent, document.body) : null}
+      {popoverContent && typeof document !== "undefined" ? createPortal(popoverContent, document.body) : null}
     </div>
   );
 }

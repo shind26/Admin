@@ -3,6 +3,7 @@
 import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import type { PoolClient } from "pg";
+import { createNotification } from "@/lib/notifications";
 import { getDbPool } from "@/lib/db";
 import { assertContractInScope, assertMeterInScope, assertRoomInScope } from "@/lib/guards";
 import { getCurrentAccount, requireScope } from "@/lib/session";
@@ -33,7 +34,9 @@ async function validate(
   chiSoNuocMoi: number | null,
   trangThai: string,
   currentId?: string,
+  db: Pick<PoolClient, "query"> = getDbPool(),
 ): Promise<string | null> {
+  if ([chiSoDienCu, chiSoDienMoi, chiSoNuocCu, chiSoNuocMoi].some(value => value === null || !Number.isFinite(value) || value < 0)) return "Chỉ số điện nước phải là số không âm và không được bỏ trống.";
   if (
     chiSoDienCu !== null &&
     chiSoDienMoi !== null &&
@@ -51,15 +54,17 @@ async function validate(
   if (!METER_STATUSES.includes(trangThai))
     return "Trạng thái duyệt không hợp lệ.";
 
-  const { rows: contractRows } = await getDbPool().query(
+  const { rows: contractRows } = await db.query(
     "SELECT 1 FROM public.hop_dong WHERE ma_hop_dong = $1 LIMIT 1",
     [maHopDong],
   );
   if (contractRows.length === 0) return "Hợp đồng không tồn tại.";
 
-  const { rows: duplicateRows } = await getDbPool().query(
+  const { rows: duplicateRows } = await db.query(
     `SELECT 1 FROM public.chi_so_dien_nuoc
-     WHERE ma_hop_dong = $1 AND thang_nam = $2 AND ($3::text IS NULL OR ma_ky <> $3)
+     WHERE ma_hop_dong = $1
+       AND (CASE WHEN thang_nam LIKE '__/____' THEN substring(thang_nam FROM 4) || '-' || substring(thang_nam FROM 1 FOR 2) ELSE thang_nam END) = $2
+       AND ($3::text IS NULL OR ma_ky <> $3)
      LIMIT 1`,
     [maHopDong, thangNam, currentId ?? null],
   );
@@ -69,235 +74,98 @@ async function validate(
 }
 
 /** Ghi chỉ số theo MeterController.Create. */
-export async function createMeterReading(
-  _previous: MeterFormState,
-  formData: FormData,
-): Promise<MeterFormState> {
+class MeterInputError extends Error {}
+
+async function saveMeterReading(formData: FormData, editing: boolean): Promise<MeterFormState> {
   const account = await getCurrentAccount();
   if (!account) return { error: "Phiên đăng nhập đã hết hạn.", success: null };
   const { scope } = await requireScope();
-
   const maHopDong = text(formData, "maHopDong");
-  const thangNam = text(formData, "thangNam");
-  if (!maHopDong) return { error: "Vui lòng chọn hợp đồng.", success: null };
-
-  const contractGuard = await assertContractInScope(maHopDong, scope);
-  if (contractGuard) return { error: contractGuard, success: null };
-  if (!/^(\d{4}-\d{2}|\d{2}\/\d{4})$/.test(thangNam))
-    return { error: "Kỳ ghi chỉ số phải theo dạng YYYY-MM hoặc MM/YYYY.", success: null };
-
-  const trangThai = text(formData, "trangThai") || "Chờ duyệt";
-  const chiSoDienCu = number(formData, "chiSoDienCu");
-  const chiSoDienMoi = number(formData, "chiSoDienMoi");
-  const chiSoNuocCu = number(formData, "chiSoNuocCu");
-  const chiSoNuocMoi = number(formData, "chiSoNuocMoi");
-
-  try {
-    const problem = await validate(
-      maHopDong,
-      thangNam,
-      chiSoDienCu,
-      chiSoDienMoi,
-      chiSoNuocCu,
-      chiSoNuocMoi,
-      trangThai,
-    );
-    if (problem) return { error: problem, success: null };
-
-    const maKyNew = "DN" + crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase();
-    await getDbPool().query(
-      `INSERT INTO public.chi_so_dien_nuoc
-         (ma_ky, ma_hop_dong, thang_nam, chi_so_dien_cu, chi_so_dien_moi,
-          chi_so_nuoc_cu, chi_so_nuoc_moi, ngay_ghi_nhan, trang_thai_duyet,
-          anh_dien, anh_nuoc)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
-      [
-        maKyNew,
-        maHopDong,
-        thangNam,
-        chiSoDienCu,
-        chiSoDienMoi,
-        chiSoNuocCu,
-        chiSoNuocMoi,
-        text(formData, "ngayGhiNhan") || null,
-        trangThai,
-        text(formData, "anhCongToDien") || null,
-        text(formData, "anhCongToNuoc") || null,
-      ],
-    );
-
-    if (trangThai === "Đã duyệt") {
-      const client = await getDbPool().connect();
-      try {
-        await client.query("BEGIN");
-        // Cập nhật chỉ số vào phòng
-        const { rows: roomRows } = await client.query<{ ma_phong: string }>(
-          "SELECT ma_phong FROM public.hop_dong WHERE ma_hop_dong = $1 LIMIT 1",
-          [maHopDong],
-        );
-        if (roomRows.length > 0 && roomRows[0].ma_phong) {
-          await client.query(
-            `UPDATE public.phong
-             SET 
-               chi_so_dien = COALESCE($1, chi_so_dien),
-               chi_so_nuoc = COALESCE($2, chi_so_nuoc),
-               ngay_cap_nhat_chi_so = NOW()
-             WHERE ma_phong = $3`,
-            [chiSoDienMoi, chiSoNuocMoi, roomRows[0].ma_phong],
-          );
-        }
-        await syncMeterToInvoice(client, maKyNew);
-        await client.query("COMMIT");
-      } catch (err) {
-        await client.query("ROLLBACK");
-        console.error("Auto billing / room meter sync in create error:", err);
-      } finally {
-        client.release();
-      }
-    }
-  } catch {
-    return {
-      error: "Không thể lưu chỉ số. Hãy kiểm tra dữ liệu và thử lại.",
-      success: null,
-    };
+  const maKy = editing ? text(formData, "maKy") : "DN" + crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase();
+  if (!maKy || !maHopDong) return { error: "Thiếu mã kỳ hoặc hợp đồng.", success: null };
+  const guard = await assertContractInScope(maHopDong, scope);
+  if (guard) return { error: guard, success: null };
+  if (editing) {
+    const meterGuard = await assertMeterInScope(maKy, scope);
+    if (meterGuard) return { error: meterGuard, success: null };
   }
-
+  const rawPeriod = text(formData, "thangNam");
+  const thangNam = /^\d{2}\/\d{4}$/.test(rawPeriod) ? rawPeriod.slice(3) + "-" + rawPeriod.slice(0, 2) : rawPeriod;
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(thangNam)) return { error: "Kỳ ghi chỉ số phải theo dạng YYYY-MM hoặc MM/YYYY hợp lệ.", success: null };
+  const client = await getDbPool().connect();
+  try {
+    await client.query("BEGIN");
+    // Serialize periods of a contract, including validation and invoice generation.
+    await client.query("SELECT ma_hop_dong FROM public.hop_dong WHERE ma_hop_dong = $1 FOR UPDATE", [maHopDong]);
+    let oldDien = number(formData, "chiSoDienCu");
+    let oldNuoc = number(formData, "chiSoNuocCu");
+    let status = text(formData, "trangThai") || "Chờ duyệt";
+    if (editing) {
+      const { rows } = await client.query<{
+        trang_thai_duyet: string; chi_so_dien_cu: string; chi_so_nuoc_cu: string; ma_hop_dong: string; thang_nam: string;
+      }>("SELECT * FROM public.chi_so_dien_nuoc WHERE ma_ky = $1 FOR UPDATE", [maKy]);
+      if (!rows[0]) throw new MeterInputError("Không tìm thấy kỳ ghi chỉ số.");
+      const current = rows[0];
+      const currentPeriod = current.thang_nam.replace(/^(\d{2})\/(\d{4})$/, "$2-$1");
+      if (current.trang_thai_duyet !== "Chờ duyệt" && (status !== current.trang_thai_duyet || maHopDong !== current.ma_hop_dong || thangNam !== currentPeriod)) {
+        throw new MeterInputError("Không thể đổi trạng thái, hợp đồng hoặc kỳ của chỉ số đã duyệt/từ chối.");
+      }
+      oldDien = Number(current.chi_so_dien_cu);
+      oldNuoc = Number(current.chi_so_nuoc_cu);
+      status = text(formData, "trangThai") || current.trang_thai_duyet;
+    }
+    const newDien = number(formData, "chiSoDienMoi");
+    const newNuoc = number(formData, "chiSoNuocMoi");
+    const problem = await validate(maHopDong, thangNam, oldDien, newDien, oldNuoc, newNuoc, status, editing ? maKy : undefined, client);
+    if (problem) throw new MeterInputError(problem);
+    const recordedAt = text(formData, "ngayGhiNhan") || new Date().toISOString();
+    const anhDien = text(formData, "anhDien") || text(formData, "anhCongToDien") || null;
+    const anhNuoc = text(formData, "anhNuoc") || text(formData, "anhCongToNuoc") || null;
+    if (editing) {
+      await client.query(
+        `UPDATE public.chi_so_dien_nuoc SET ma_hop_dong=$2, thang_nam=$3,
+         chi_so_dien_moi=$4, chi_so_nuoc_moi=$5, ngay_ghi_nhan=$6, trang_thai_duyet=$7,
+         anh_dien=COALESCE($8,anh_dien), anh_nuoc=COALESCE($9,anh_nuoc) WHERE ma_ky=$1`,
+        [maKy, maHopDong, thangNam, newDien, newNuoc, recordedAt, status, anhDien, anhNuoc],
+      );
+    } else {
+      await client.query(
+        `INSERT INTO public.chi_so_dien_nuoc
+         (ma_ky,ma_hop_dong,thang_nam,chi_so_dien_cu,chi_so_dien_moi,chi_so_nuoc_cu,chi_so_nuoc_moi,ngay_ghi_nhan,trang_thai_duyet,anh_dien,anh_nuoc)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+        [maKy, maHopDong, thangNam, oldDien, newDien, oldNuoc, newNuoc, recordedAt, status, anhDien, anhNuoc],
+      );
+    }
+    if (status === "Đã duyệt") {
+      await syncMeterToInvoice(client, maKy);
+      await client.query(
+        `UPDATE public.phong SET chi_so_dien=$1, chi_so_nuoc=$2, ngay_cap_nhat_chi_so=NOW()
+         WHERE ma_phong=(SELECT ma_phong FROM public.hop_dong WHERE ma_hop_dong=$3)`,
+        [newDien, newNuoc, maHopDong],
+      );
+    }
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    if (!(error instanceof MeterInputError)) console.error("Save meter reading:", error);
+    return { error: error instanceof MeterInputError ? error.message : "Không thể lưu chỉ số và đồng bộ hóa đơn. Vui lòng thử lại.", success: null };
+  } finally {
+    client.release();
+  }
   revalidatePath("/dien-nuoc");
   revalidatePath("/phong");
   revalidatePath("/hoa-don");
   return { error: null, success: "Lưu chỉ số điện nước thành công." };
 }
 
-/** Cập nhật chỉ số theo MeterController.Edit: Không cho sửa chỉ số cũ; khóa trạng thái nếu đã duyệt hoặc từ chối */
-export async function updateMeterReading(
-  _previous: MeterFormState,
-  formData: FormData,
-): Promise<MeterFormState> {
-  const account = await getCurrentAccount();
-  if (!account) return { error: "Phiên đăng nhập đã hết hạn.", success: null };
-  const { scope } = await requireScope();
-
-  const maKy = text(formData, "maKy");
-  const maHopDong = text(formData, "maHopDong");
-  const thangNam = text(formData, "thangNam");
-  if (!maKy) return { error: "Thiếu mã kỳ.", success: null };
-
-  const meterGuard = await assertMeterInScope(maKy, scope);
-  if (meterGuard) return { error: meterGuard, success: null };
-  const contractGuard = await assertContractInScope(maHopDong, scope);
-  if (contractGuard) return { error: contractGuard, success: null };
-  if (!maHopDong) return { error: "Vui lòng chọn hợp đồng.", success: null };
-  if (!/^(\d{4}-\d{2}|\d{2}\/\d{4})$/.test(thangNam))
-    return { error: "Kỳ ghi chỉ số phải theo dạng YYYY-MM hoặc MM/YYYY.", success: null };
-
-  // 1. Kiểm tra bản ghi hiện tại trong DB
-  const { rows: currentRows } = await getDbPool().query<{
-    trang_thai_duyet: string;
-    chi_so_dien_cu: string;
-    chi_so_nuoc_cu: string;
-  }>(
-    "SELECT trang_thai_duyet, chi_so_dien_cu::text AS chi_so_dien_cu, chi_so_nuoc_cu::text AS chi_so_nuoc_cu FROM public.chi_so_dien_nuoc WHERE ma_ky = $1 LIMIT 1",
-    [maKy],
-  );
-  if (currentRows.length === 0) return { error: "Không tìm thấy kỳ ghi chỉ số.", success: null };
-
-  const currentStatus = currentRows[0].trang_thai_duyet;
-  const requestedStatus = text(formData, "trangThai") || currentStatus;
-
-  // 2. Xét tính hợp lý của trạng thái: Đã duyệt hoặc Từ chối thì KHÔNG cho chỉnh trạng thái nữa
-  let finalStatus = requestedStatus;
-  if (currentStatus === "Đã duyệt" || currentStatus === "Từ chối") {
-    if (requestedStatus !== currentStatus) {
-      return {
-        error: `Kỳ chỉ số này đã ở trạng thái "${currentStatus}", không thể thay đổi trạng thái nữa.`,
-        success: null,
-      };
-    }
-    finalStatus = currentStatus;
-  }
-
-  // 3. Không được sửa chỉ số cũ: Lấy cố định từ DB
-  const chiSoDienCu = Number(currentRows[0].chi_so_dien_cu);
-  const chiSoNuocCu = Number(currentRows[0].chi_so_nuoc_cu);
-  const chiSoDienMoi = number(formData, "chiSoDienMoi");
-  const chiSoNuocMoi = number(formData, "chiSoNuocMoi");
-
-  try {
-    const problem = await validate(
-      maHopDong,
-      thangNam,
-      chiSoDienCu,
-      chiSoDienMoi,
-      chiSoNuocCu,
-      chiSoNuocMoi,
-      finalStatus,
-      maKy,
-    );
-    if (problem) return { error: problem, success: null };
-
-    const anhDienVal = text(formData, "anhDien") || text(formData, "anhCongToDien") || null;
-    const anhNuocVal = text(formData, "anhNuoc") || text(formData, "anhCongToNuoc") || null;
-
-    const { rowCount } = await getDbPool().query(
-      `UPDATE public.chi_so_dien_nuoc
-       SET ma_hop_dong = $2, thang_nam = $3, chi_so_dien_moi = $4,
-           chi_so_nuoc_moi = $5, ngay_ghi_nhan = $6,
-           trang_thai_duyet = $7,
-           anh_dien = COALESCE($8, anh_dien),
-           anh_nuoc = COALESCE($9, anh_nuoc)
-       WHERE ma_ky = $1`,
-      [
-        maKy,
-        maHopDong,
-        thangNam,
-        chiSoDienMoi,
-        chiSoNuocMoi,
-        text(formData, "ngayGhiNhan") || null,
-        finalStatus,
-        anhDienVal,
-        anhNuocVal,
-      ],
-    );
-    if (rowCount === 0)
-      return { error: "Không tìm thấy kỳ ghi chỉ số.", success: null };
-    if (finalStatus === "Đã duyệt") {
-      const client = await getDbPool().connect();
-      try {
-        await client.query("BEGIN");
-        // Cập nhật chỉ số vào phòng
-        const { rows: roomRows } = await client.query<{ ma_phong: string }>(
-          "SELECT ma_phong FROM public.hop_dong WHERE ma_hop_dong = $1 LIMIT 1",
-          [maHopDong],
-        );
-        if (roomRows.length > 0 && roomRows[0].ma_phong) {
-          await client.query(
-            `UPDATE public.phong
-             SET 
-               chi_so_dien = COALESCE($1, chi_so_dien),
-               chi_so_nuoc = COALESCE($2, chi_so_nuoc),
-               ngay_cap_nhat_chi_so = NOW()
-             WHERE ma_phong = $3`,
-            [chiSoDienMoi, chiSoNuocMoi, roomRows[0].ma_phong],
-          );
-        }
-        await syncMeterToInvoice(client, maKy);
-        await client.query("COMMIT");
-      } catch (err) {
-        await client.query("ROLLBACK");
-        console.error("Auto billing / room meter sync in update error:", err);
-      } finally {
-        client.release();
-      }
-    }
-  } catch {
-    return { error: "Không thể cập nhật chỉ số. Hãy thử lại.", success: null };
-  }
-
-  revalidatePath("/dien-nuoc");
-  revalidatePath("/phong");
-  revalidatePath("/hoa-don");
-  return { error: null, success: "Cập nhật chỉ số điện nước thành công." };
+export async function createMeterReading(_previous: MeterFormState, formData: FormData): Promise<MeterFormState> {
+  return saveMeterReading(formData, false);
 }
+
+export async function updateMeterReading(_previous: MeterFormState, formData: FormData): Promise<MeterFormState> {
+  return saveMeterReading(formData, true);
+}
+
 
 /** Xóa kỳ ghi chỉ số theo MeterController.Delete (chặn khi có chi tiết dịch vụ). */
 export async function deleteMeterReading(
@@ -507,13 +375,11 @@ async function syncMeterToInvoice(
         `Tiền thuê phòng kỳ ${m.thang_nam}`,
         tienPhong,
         cthdD,
-        targetInvoiceId,
         `Tiền điện (${dienTieuThu} kWh)`,
         dienTieuThu,
         donGiaDien,
         tienDien,
         cthdN,
-        targetInvoiceId,
         `Tiền nước (${nuocTieuThu} m³)`,
         nuocTieuThu,
         donGiaNuoc,
@@ -542,7 +408,7 @@ export async function approveMeterReading(
     await client.query("BEGIN");
 
     const { rows: currentRows } = await client.query<{ trang_thai_duyet: string }>(
-      "SELECT trang_thai_duyet FROM public.chi_so_dien_nuoc WHERE ma_ky = $1 LIMIT 1",
+      "SELECT trang_thai_duyet FROM public.chi_so_dien_nuoc WHERE ma_ky = $1 FOR UPDATE",
       [maKy],
     );
     if (currentRows.length === 0) {
@@ -675,6 +541,14 @@ export async function batchApproveMeterReadings(
   const client = await getDbPool().connect();
   try {
     await client.query("BEGIN");
+    const { rows: pending } = await client.query<{ ma_ky: string }>(
+      "SELECT ma_ky FROM public.chi_so_dien_nuoc WHERE ma_ky = ANY($1::text[]) AND trang_thai_duyet = 'Chờ duyệt' ORDER BY ma_ky FOR UPDATE", [maKyList],
+    );
+    if (pending.length !== new Set(maKyList).size) {
+      await client.query("ROLLBACK");
+      return { error: "Chỉ được duyệt các kỳ đang chờ duyệt và còn tồn tại.", success: null };
+    }
+
     await client.query(
       `UPDATE public.chi_so_dien_nuoc
        SET trang_thai_duyet = 'Đã duyệt'
@@ -797,8 +671,22 @@ export async function remindTenantToSubmitMeter(
   const contractGuard = await assertContractInScope(maHopDong, scope);
   if (contractGuard) return { success: false, message: contractGuard };
 
+  const { rows } = await getDbPool().query<{ ma_tai_khoan: string | null; ma_phong: string; toa_nha: string | null }>(
+    `SELECT k.ma_tai_khoan, p.ma_phong, p.toa_nha FROM public.hop_dong hd
+     JOIN public.phong p ON p.ma_phong=hd.ma_phong JOIN public.khach_thue k ON k.ma_khach=hd.ma_khach_dai_dien
+     WHERE hd.ma_hop_dong=$1 AND hd.ma_phong=$2`, [maHopDong, maPhong],
+  );
+  if (!rows[0]?.ma_tai_khoan) return { success: false, message: "Không tìm thấy cư dân có tài khoản App trong phòng này." };
+  try {
+    await createNotification({ maTaiKhoan: rows[0].ma_tai_khoan, maPhong, toaNha: rows[0].toa_nha,
+      tieuDe: "Nhắc gửi chỉ số điện nước", noiDung: `Vui lòng gửi ảnh công tơ phòng ${maPhong} cho kỳ ${thangNam}.`,
+      loaiThongBao: "HoaDon", duLieuDinhKem: { ma_hop_dong: maHopDong, thang_nam: thangNam } });
+  } catch (error) {
+    console.error("Meter reminder:", error);
+    return { success: false, message: "Không gửi được thông báo. Vui lòng thử lại." };
+  }
   return {
     success: true,
-    message: `Đã gửi thông báo đẩy nhắc phòng ${maPhong} chụp ảnh công tơ kỳ ${thangNam} qua ứng dụng di động!`,
+    message: `Đã gửi thông báo nhắc phòng ${maPhong} chụp ảnh công tơ kỳ ${thangNam} qua ứng dụng di động!`,
   };
 }

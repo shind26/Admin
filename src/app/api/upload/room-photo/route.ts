@@ -102,6 +102,10 @@ export async function POST(request: Request) {
 
   // Ảnh cũ gửi kèm (nếu có) sẽ bị xóa sau khi ảnh mới lên thành công.
   const previousUrl = typeof form.get("previousUrl") === "string" ? String(form.get("previousUrl")) : null;
+  const previousPath = objectPathFromPublicUrl(config, previousUrl);
+  if (previousPath && !previousPath.startsWith(`${safeRoom}/`)) {
+    return NextResponse.json({ error: "Ảnh cũ không thuộc phòng được chọn." }, { status: 403 });
+  }
 
   try {
     const upload = await fetch(
@@ -131,7 +135,6 @@ export async function POST(request: Request) {
     }
 
     // Dọn ảnh cũ để tránh rác trong bucket; lỗi ở bước này không làm hỏng kết quả tải lên.
-    const previousPath = objectPathFromPublicUrl(config, previousUrl);
     if (previousPath && previousPath !== objectPath) {
       await removeObjects(config, [previousPath]);
     }

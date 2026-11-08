@@ -1,14 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { PoolClient } from "pg";
+import { ensureResidentAccount } from "@/lib/resident-account";
+import { contractStatus } from "@/lib/business-status";
 import { getDbPool } from "@/lib/db";
-import {
-  assertContractInScope,
-  assertRoomInScope,
-  assertTenantInScope,
-} from "@/lib/guards";
+import { assertContractInScope, assertRoomInScope, assertTenantInScope } from "@/lib/guards";
 import { getCurrentAccount, requireScope } from "@/lib/session";
-import { hashPassword, DEFAULT_CUSTOMER_PASSWORD } from "@/lib/password";
 import { saveHandoverAssets } from "@/lib/handover";
 import { createNotification } from "@/lib/notifications";
 
@@ -21,7 +19,7 @@ export type ContractFormState = {
   tenantName?: string | null;
 };
 
-const CONTRACT_STATUSES = ["Còn hạn", "Đã đặt cọc", "Đã kết thúc"];
+const CONTRACT_STATUSES = ["Còn hạn", "Đã đặt cọc", "Đã thanh lý"];
 
 function text(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -41,8 +39,16 @@ function newId(prefix: string) {
   );
 }
 
-function generateTempPassword() {
-  return DEFAULT_CUSTOMER_PASSWORD;
+async function contractChildMatches(kind: "liquidation" | "transfer" | "extension", id: string, contractId: string): Promise<boolean> {
+  const resource = {
+    liquidation: ["bien_ban_thanh_ly", "ma_thanh_ly", "ma_hop_dong"],
+    transfer: ["yeu_cau_chuyen_phong", "ma_yeu_cau", "ma_hop_dong_ht"],
+    extension: ["phu_luc_hop_dong", "ma_phu_luc", "ma_hop_dong"],
+  }[kind];
+  const { rows } = await getDbPool().query(
+    `SELECT 1 FROM public.${resource[0]} WHERE ${resource[1]} = $1 AND ${resource[2]} = $2`, [id, contractId],
+  );
+  return rows.length > 0;
 }
 
 /** Kiểm tra theo ContractController.ValidateForm. */
@@ -54,6 +60,7 @@ async function validate(
   ngayKy: string | null | undefined,
   trangThai: string,
   currentId?: string,
+  db: Pick<PoolClient, "query"> = getDbPool(),
 ): Promise<string | null> {
   if (!ngayBd || !ngayKt) return "Vui lòng nhập ngày bắt đầu và ngày kết thúc hợp đồng.";
   if (ngayKt <= ngayBd) return "Ngày kết thúc hợp đồng phải sau ngày bắt đầu vào ở.";
@@ -64,7 +71,7 @@ async function validate(
       return "Ngày ký hợp đồng không thể sau ngày bắt đầu vào ở (bàn giao phòng).";
   }
 
-  const { rows: roomRows } = await getDbPool().query<{
+  const { rows: roomRows } = await db.query<{
     trang_thai: string | null;
   }>("SELECT trang_thai FROM public.phong WHERE ma_phong = $1 LIMIT 1", [
     maPhong,
@@ -82,14 +89,14 @@ async function validate(
       return "Không thể chọn phòng đã đặt cọc để tạo hợp đồng mới. Vui lòng xác nhận qua hàng đợi giữ chỗ hoặc chờ giải phóng cọc.";
   }
 
-  const { rows: tenantRows } = await getDbPool().query(
+  const { rows: tenantRows } = await db.query(
     "SELECT 1 FROM public.khach_thue WHERE ma_khach = $1 LIMIT 1",
     [maKhach],
   );
   if (tenantRows.length === 0) return "Khách thuê không tồn tại.";
 
   if (trangThai === "Còn hạn" || trangThai === "Đang thuê") {
-    const { rows: overlap } = await getDbPool().query(
+    const { rows: overlap } = await db.query(
       `SELECT 1 FROM public.hop_dong
        WHERE ma_phong = $1 AND trang_thai IN ('Còn hạn', 'Đang thuê')
          AND ($4::text IS NULL OR ma_hop_dong <> $4)
@@ -112,14 +119,15 @@ async function syncRoomStatus(
   maPhong: string,
   contractId: string,
   pendingActive: boolean,
+  db: Pick<PoolClient, "query"> = getDbPool(),
 ) {
-  const { rows } = await getDbPool().query<{ trang_thai: string | null }>(
+  const { rows } = await db.query<{ trang_thai: string | null }>(
     "SELECT trang_thai FROM public.phong WHERE ma_phong = $1 LIMIT 1",
     [maPhong],
   );
   if (rows.length === 0 || rows[0].trang_thai === "Đang bảo trì") return;
 
-  const { rows: otherRows } = await getDbPool().query(
+  const { rows: otherRows } = await db.query(
     `SELECT 1 FROM public.hop_dong
      WHERE ma_phong = $1 AND ma_hop_dong <> $2
        AND trang_thai IN ('Còn hạn', 'Đang thuê')
@@ -129,7 +137,7 @@ async function syncRoomStatus(
   );
 
   const occupied = pendingActive || otherRows.length > 0;
-  await getDbPool().query(
+  await db.query(
     "UPDATE public.phong SET trang_thai = $2 WHERE ma_phong = $1",
     [maPhong, occupied ? "Đang thuê" : "Trống"],
   );
@@ -199,7 +207,7 @@ export async function createContract(
 
     // 1. Lấy thông tin tòa nhà của phòng
     const { rows: roomRows } = await client.query<{ toa_nha: string | null }>(
-      "SELECT toa_nha FROM public.phong WHERE ma_phong = $1 LIMIT 1",
+      "SELECT toa_nha FROM public.phong WHERE ma_phong = $1 FOR UPDATE",
       [maPhong],
     );
     const building = roomRows[0]?.toa_nha ?? null;
@@ -234,7 +242,7 @@ export async function createContract(
       }
     }
 
-    const problem = await validate(maPhong, maKhach, ngayBd, ngayKt, ngayKy, trangThai);
+    const problem = await validate(maPhong, maKhach, ngayBd, ngayKt, ngayKy, trangThai, undefined, client);
     if (problem) {
       await client.query("ROLLBACK");
       return { error: problem, success: null };
@@ -256,50 +264,12 @@ export async function createContract(
 
     tenantPhone = tenantRows[0].so_dt;
     finalTenantName = tenantRows[0].ho_ten_khach;
-    let finalAccountId = tenantRows[0].ma_tai_khoan;
 
-    // 4. Xử lý cấp tài khoản hoặc cập nhật cơ sở vận hành cho tài khoản
-    if (!finalAccountId) {
-      // Kiểm tra xem SĐT này đã có tài khoản trong tai_khoan chưa
-      const { rows: existingAcc } = await client.query<{ ma_tai_khoan: string }>(
-        "SELECT ma_tai_khoan FROM public.tai_khoan WHERE ten_dang_nhap = $1 LIMIT 1",
-        [tenantPhone],
-      );
-
-      if (existingAcc.length > 0) {
-        finalAccountId = existingAcc[0].ma_tai_khoan;
-        tempPassCreated = DEFAULT_CUSTOMER_PASSWORD;
-        const hashed = await hashPassword(DEFAULT_CUSTOMER_PASSWORD);
-        await client.query(
-          `UPDATE public.tai_khoan
-           SET mat_khau = $1, co_so_van_hanh = $2, vai_tro = 'KhachThue', trang_thai = 'HoatDong', da_doi_mat_khau = false
-           WHERE ma_tai_khoan = $3`,
-          [hashed, building, finalAccountId],
-        );
-      } else {
-        // Tự động cấp tài khoản App mới với username = SĐT
-        tempPassCreated = DEFAULT_CUSTOMER_PASSWORD;
-        const hashed = await hashPassword(tempPassCreated);
-        finalAccountId = newId("TK");
-        await client.query(
-          `INSERT INTO public.tai_khoan
-            (ma_tai_khoan, ten_dang_nhap, mat_khau, vai_tro, co_so_van_hanh, trang_thai, da_doi_mat_khau, ho_ten)
-           VALUES ($1, $2, $3, 'KhachThue', $4, 'HoatDong', false, $5)`,
-          [finalAccountId, tenantPhone, hashed, building, finalTenantName],
-        );
-      }
-
-      await client.query(
-        "UPDATE public.khach_thue SET ma_tai_khoan = $1 WHERE ma_khach = $2",
-        [finalAccountId, maKhach],
-      );
-    } else {
-      // Đã có tài khoản: cập nhật co_so_van_hanh theo tòa nhà đang thuê
-      await client.query(
-        "UPDATE public.tai_khoan SET co_so_van_hanh = $1 WHERE ma_tai_khoan = $2",
-        [building, finalAccountId],
-      );
-    }
+    const residentAccount = await ensureResidentAccount(client, {
+      accountId: tenantRows[0].ma_tai_khoan, phone: tenantPhone!, name: finalTenantName!, building,
+    });
+    tempPassCreated = residentAccount.tempPassword;
+    await client.query("UPDATE public.khach_thue SET ma_tai_khoan = $1 WHERE ma_khach = $2", [residentAccount.accountId, maKhach]);
 
     // 5. Tạo bản ghi hợp đồng
     await client.query(
@@ -397,7 +367,7 @@ export async function updateContract(
   const maKhach = text(formData, "maKhachDaiDien");
   const ngayBd = text(formData, "ngayBd");
   const ngayKt = text(formData, "ngayKt");
-  const trangThai = text(formData, "trangThai");
+  const trangThai = contractStatus(text(formData, "trangThai"));
 
   if (!maHopDong) return { error: "Thiếu mã hợp đồng.", success: null };
   if (!maPhong || !maKhach || !ngayBd || !ngayKt) {
@@ -468,7 +438,7 @@ export async function updateContract(
     );
 
     // Xử lý khi Hợp đồng ĐÃ KẾT THÚC (Check-out)
-    if (trangThai === "Đã kết thúc") {
+    if (trangThai === "Đã thanh lý") {
       // 1. Cập nhật trạng thái người ở sang 'DaRoiDi'
       await client.query(
         "UPDATE public.chi_tiet_hop_dong_khach_thue SET trang_thai_luu_tru = 'Đã rời đi' WHERE ma_hop_dong = $1",
@@ -479,7 +449,7 @@ export async function updateContract(
       const { rows: allContractTenants } = await client.query<{ ma_khach: string }>(
         `SELECT DISTINCT ma_khach FROM public.chi_tiet_hop_dong_khach_thue WHERE ma_hop_dong = $1
          UNION
-         SELECT $2 AS ma_khach`,
+         SELECT $2::text AS ma_khach`,
         [maHopDong, maKhach],
       );
 
@@ -552,8 +522,11 @@ export async function deleteContract(
   const contractGuard = await assertContractInScope(maHopDong, scope);
   if (contractGuard) return { error: contractGuard, success: null };
 
+  const client = await getDbPool().connect();
+  let committed = false;
   try {
-    const { rows: usedRows } = await getDbPool().query<{ used: number }>(
+    await client.query("BEGIN");
+    const { rows: usedRows } = await client.query<{ used: number }>(
       `SELECT (
          EXISTS(SELECT 1 FROM public.hoa_don WHERE ma_hop_dong = $1)
          OR EXISTS(SELECT 1 FROM public.phu_luc_hop_dong WHERE ma_hop_dong = $1)
@@ -567,7 +540,7 @@ export async function deleteContract(
       };
     }
 
-    const { rows: contractRows } = await getDbPool().query<{
+    const { rows: contractRows } = await client.query<{
       ma_phong: string | null;
       ma_khach_dai_dien: string | null;
     }>(
@@ -578,20 +551,20 @@ export async function deleteContract(
       return { error: "Không tìm thấy hợp đồng.", success: null };
 
     // Thu thập danh sách khách trong hợp đồng
-    const { rows: contractTenants } = await getDbPool().query<{ ma_khach: string }>(
+    const { rows: contractTenants } = await client.query<{ ma_khach: string }>(
       `SELECT DISTINCT ma_khach FROM public.chi_tiet_hop_dong_khach_thue WHERE ma_hop_dong = $1
        UNION
-       SELECT $2 AS ma_khach WHERE $2 IS NOT NULL`,
+       SELECT $2::text AS ma_khach WHERE $2 IS NOT NULL`,
       [maHopDong, contractRows[0].ma_khach_dai_dien],
     );
 
     // Xóa liên kết người ở cùng
-    await getDbPool().query(
+    await client.query(
       "DELETE FROM public.chi_tiet_hop_dong_khach_thue WHERE ma_hop_dong = $1",
       [maHopDong],
     );
 
-    await getDbPool().query(
+    await client.query(
       "DELETE FROM public.hop_dong WHERE ma_hop_dong = $1",
       [maHopDong],
     );
@@ -599,7 +572,7 @@ export async function deleteContract(
     // Kiểm tra & cập nhật co_so_van_hanh = NULL cho khách không còn hợp đồng hiệu lực
     for (const t of contractTenants) {
       if (!t.ma_khach) continue;
-      const { rows: otherActive } = await getDbPool().query(
+      const { rows: otherActive } = await client.query(
         `SELECT 1 FROM public.hop_dong hd
          LEFT JOIN public.chi_tiet_hop_dong_khach_thue ct ON ct.ma_hop_dong = hd.ma_hop_dong
          WHERE (hd.ma_khach_dai_dien = $1 OR (ct.ma_khach = $1 AND ct.trang_thai_luu_tru IN ('Đang ở', 'DangO')))
@@ -609,7 +582,7 @@ export async function deleteContract(
       );
 
       if (otherActive.length === 0) {
-        await getDbPool().query(
+        await client.query(
           `UPDATE public.tai_khoan tk
            SET co_so_van_hanh = NULL
            FROM public.khach_thue kt
@@ -620,12 +593,17 @@ export async function deleteContract(
     }
 
     const maPhong = contractRows[0].ma_phong;
-    if (maPhong) await syncRoomStatus(maPhong, maHopDong, false);
+    if (maPhong) await syncRoomStatus(maPhong, maHopDong, false, client);
+    await client.query("COMMIT");
+    committed = true;
   } catch {
     return {
       error: "Không thể xóa hợp đồng đang có dữ liệu liên quan.",
       success: null,
     };
+  } finally {
+    if (!committed) await client.query("ROLLBACK");
+    client.release();
   }
 
   revalidatePath("/hop-dong");
@@ -664,8 +642,9 @@ export async function provisionOccupantAccount(
       so_dt: string;
       ma_tai_khoan: string | null;
     }>(
-      `SELECT ho_ten_khach, so_dt, ma_tai_khoan FROM public.khach_thue WHERE ma_khach = $1 LIMIT 1`,
-      [maKhach],
+      `SELECT k.ho_ten_khach, k.so_dt, k.ma_tai_khoan FROM public.khach_thue k
+       WHERE k.ma_khach = $1 AND EXISTS (SELECT 1 FROM public.chi_tiet_hop_dong_khach_thue ct WHERE ct.ma_hop_dong = $2 AND ct.ma_khach = k.ma_khach) LIMIT 1`,
+      [maKhach, maHopDong],
     );
     if (occupantRows.length === 0) {
       await client.query("ROLLBACK");
@@ -699,46 +678,12 @@ export async function provisionOccupantAccount(
     }
     const contract = contractRows[0];
 
-    // 3. Tạo tài khoản hoặc kích hoạt
-    const tempPassword = DEFAULT_CUSTOMER_PASSWORD;
-    const hashed = await hashPassword(tempPassword);
-    let finalAccountId = occupant.ma_tai_khoan;
-
-    if (!finalAccountId) {
-      const { rows: existingAcc } = await client.query<{ ma_tai_khoan: string }>(
-        `SELECT ma_tai_khoan FROM public.tai_khoan WHERE ten_dang_nhap = $1 LIMIT 1`,
-        [occupant.so_dt],
-      );
-      if (existingAcc.length > 0) {
-        finalAccountId = existingAcc[0].ma_tai_khoan;
-        await client.query(
-          `UPDATE public.tai_khoan
-           SET mat_khau = $1, da_doi_mat_khau = false, trang_thai = 'HoatDong', co_so_van_hanh = $2
-           WHERE ma_tai_khoan = $3`,
-          [hashed, contract.toa_nha, finalAccountId],
-        );
-      } else {
-        finalAccountId = newId("TK");
-        await client.query(
-          `INSERT INTO public.tai_khoan
-            (ma_tai_khoan, ten_dang_nhap, mat_khau, vai_tro, trang_thai, da_doi_mat_khau, ho_ten, co_so_van_hanh)
-           VALUES ($1, $2, $3, 'KhachThue', 'HoatDong', false, $4, $5)`,
-          [finalAccountId, occupant.so_dt, hashed, occupant.ho_ten_khach, contract.toa_nha],
-        );
-      }
-
-      await client.query(
-        `UPDATE public.khach_thue SET ma_tai_khoan = $1 WHERE ma_khach = $2`,
-        [finalAccountId, maKhach],
-      );
-    } else {
-      await client.query(
-        `UPDATE public.tai_khoan
-         SET mat_khau = $1, da_doi_mat_khau = false, trang_thai = 'HoatDong', co_so_van_hanh = $2
-         WHERE ma_tai_khoan = $3`,
-        [hashed, contract.toa_nha, finalAccountId],
-      );
-    }
+    const residentAccount = await ensureResidentAccount(client, {
+      accountId: occupant.ma_tai_khoan, phone: occupant.so_dt, name: occupant.ho_ten_khach, building: contract.toa_nha,
+    }, true);
+    const finalAccountId = residentAccount.accountId;
+    const tempPassword = residentAccount.tempPassword!;
+    await client.query("UPDATE public.khach_thue SET ma_tai_khoan = $1 WHERE ma_khach = $2", [finalAccountId, maKhach]);
 
     // 4. Cập nhật chi tiết hợp đồng sang 'Đang ở'
     await client.query(
@@ -909,6 +854,12 @@ export async function removeContractOccupant(
   const contractGuard = await assertContractInScope(maHopDong, scope);
   if (contractGuard) return { error: contractGuard, success: null };
 
+  const { rows: representative } = await getDbPool().query<{ ma_khach_dai_dien: string }>(
+    "SELECT ma_khach_dai_dien FROM public.hop_dong WHERE ma_hop_dong = $1", [maHopDong],
+  );
+  if (representative[0]?.ma_khach_dai_dien === maKhach) {
+    return { error: "Không thể xóa người đại diện; hãy đổi đại diện hoặc thanh lý hợp đồng.", success: null };
+  }
   try {
     await getDbPool().query(
       `UPDATE public.chi_tiet_hop_dong_khach_thue
@@ -981,6 +932,9 @@ export async function liquidateContract(
   if (contractGuard) return { error: contractGuard, success: null };
 
   const existingMaThanhLy = text(formData, "maThanhLy");
+  if (existingMaThanhLy && !await contractChildMatches("liquidation", existingMaThanhLy, maHopDong)) {
+    return { error: "Biên bản không thuộc hợp đồng được chọn.", success: null };
+  }
   const maThanhLy = existingMaThanhLy || newId("TL");
   const client = await getDbPool().connect();
 
@@ -1002,7 +956,7 @@ export async function liquidateContract(
        FROM public.hop_dong hd
        LEFT JOIN public.phong p ON p.ma_phong = hd.ma_phong
        LEFT JOIN public.khach_thue kt ON kt.ma_khach = hd.ma_khach_dai_dien
-       WHERE hd.ma_hop_dong = $1 LIMIT 1`,
+       WHERE hd.ma_hop_dong = $1 FOR UPDATE OF hd`,
       [maHopDong],
     );
     if (contractRows.length === 0) {
@@ -1010,7 +964,7 @@ export async function liquidateContract(
       return { error: "Không tìm thấy hợp đồng.", success: null };
     }
     const contract = contractRows[0];
-    if (contract.trang_thai === "Đã kết thúc") {
+    if (contract.trang_thai === "Đã thanh lý") {
       await client.query("ROLLBACK");
       return { error: "Hợp đồng này đã được thanh lý trước đó.", success: null };
     }
@@ -1065,9 +1019,9 @@ export async function liquidateContract(
       );
     }
 
-    // 3. Cập nhật trạng thái hợp đồng thành 'Đã kết thúc'
+    // 3. Cập nhật trạng thái hợp đồng thành 'Đã thanh lý'
     await client.query(
-      "UPDATE public.hop_dong SET trang_thai = 'Đã kết thúc' WHERE ma_hop_dong = $1",
+      "UPDATE public.hop_dong SET trang_thai = 'Đã thanh lý' WHERE ma_hop_dong = $1",
       [maHopDong],
     );
 
@@ -1081,7 +1035,7 @@ export async function liquidateContract(
     const { rows: allContractTenants } = await client.query<{ ma_khach: string }>(
       `SELECT DISTINCT ma_khach FROM public.chi_tiet_hop_dong_khach_thue WHERE ma_hop_dong = $1
        UNION
-       SELECT $2 AS ma_khach WHERE $2 IS NOT NULL`,
+       SELECT $2::text AS ma_khach WHERE $2 IS NOT NULL`,
       [maHopDong, contract.ma_khach_dai_dien],
     );
 
@@ -1110,7 +1064,7 @@ export async function liquidateContract(
     }
 
     // 7. Giải phóng phòng về trạng thái 'Trống'
-    await syncRoomStatus(contract.ma_phong, maHopDong, false);
+    await syncRoomStatus(contract.ma_phong, maHopDong, false, client);
 
     // 8. Gửi thông báo tới cư dân
     if (contract.ma_tai_khoan) {
@@ -1183,6 +1137,9 @@ export async function rejectLiquidationRequest(
   const contractGuard = await assertContractInScope(maHopDong, scope);
   if (contractGuard) return { error: contractGuard, success: null };
 
+  if (!await contractChildMatches("liquidation", maThanhLy, maHopDong)) {
+    return { error: "Yêu cầu không thuộc hợp đồng được chọn.", success: null };
+  }
   const client = await getDbPool().connect();
   try {
     await client.query("BEGIN");
@@ -1303,8 +1260,13 @@ export async function approveRoomTransfer(
   const roomGuard = await assertRoomInScope(maPhongMoi, scope);
   if (roomGuard) return { error: roomGuard, success: null };
 
+  if (maYeuCau && !await contractChildMatches("transfer", maYeuCau, maHopDong)) {
+    return { error: "Yêu cầu chuyển phòng không thuộc hợp đồng được chọn.", success: null };
+  }
+  const { rows: currentRoom } = await getDbPool().query("SELECT 1 FROM public.hop_dong WHERE ma_hop_dong=$1 AND ma_phong=$2", [maHopDong, maPhongCu]);
+  if (!currentRoom.length) return { error: "Phòng cũ không khớp hợp đồng.", success: null };
   const client = await getDbPool().connect();
-  const maPhuLuc = `PLCP_${maHopDong.replace(/\s+/g, "")}_${newId("PL").slice(0, 6)}`;
+  const maPhuLuc = newId("PL");
 
   try {
     await client.query("BEGIN");
@@ -1316,7 +1278,7 @@ export async function approveRoomTransfer(
       toa_nha: string | null;
       gia_thue: number | null;
     }>(
-      "SELECT trang_thai, ten_hien_thi, toa_nha, gia_thue FROM public.phong WHERE ma_phong = $1 LIMIT 1",
+      "SELECT trang_thai, ten_hien_thi, toa_nha, gia_thue FROM public.phong WHERE ma_phong = $1 FOR UPDATE",
       [maPhongMoi],
     );
     if (newRoomRows.length === 0) {
@@ -1465,6 +1427,9 @@ export async function rejectRoomTransfer(
   const contractGuard = await assertContractInScope(maHopDong, scope);
   if (contractGuard) return { error: contractGuard, success: null };
 
+  if (!await contractChildMatches("transfer", maYeuCau, maHopDong)) {
+    return { error: "Yêu cầu không thuộc hợp đồng được chọn.", success: null };
+  }
   const client = await getDbPool().connect();
   try {
     await client.query("BEGIN");
@@ -1553,6 +1518,9 @@ export async function approveContractExtension(
   const contractGuard = await assertContractInScope(maHopDong, scope);
   if (contractGuard) return { error: contractGuard, success: null };
 
+  if (!await contractChildMatches("extension", maPhuLuc, maHopDong)) {
+    return { error: "Yêu cầu không thuộc hợp đồng được chọn.", success: null };
+  }
   const client = await getDbPool().connect();
   try {
     await client.query("BEGIN");
@@ -1693,6 +1661,9 @@ export async function rejectContractExtension(
   const contractGuard = await assertContractInScope(maHopDong, scope);
   if (contractGuard) return { error: contractGuard, success: null };
 
+  if (!await contractChildMatches("extension", maPhuLuc, maHopDong)) {
+    return { error: "Yêu cầu không thuộc hợp đồng được chọn.", success: null };
+  }
   const client = await getDbPool().connect();
   try {
     await client.query("BEGIN");

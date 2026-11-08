@@ -1,5 +1,6 @@
 "use server";
 
+import { stayStatus } from "@/lib/business-status";
 import { revalidatePath } from "next/cache";
 import { getDbPool } from "@/lib/db";
 import { assertContractInScope, assertStayInScope } from "@/lib/guards";
@@ -7,7 +8,7 @@ import { getCurrentAccount, requireScope } from "@/lib/session";
 
 export type StayFormState = { error: string | null; success: string | null };
 
-export const STAY_STATUSES = ["Chờ duyệt", "Chờ xác nhận", "Đã duyệt", "Hoàn tất", "Từ chối"];
+export const STAY_STATUSES = ["Chờ duyệt", "Đã duyệt", "Hết hạn", "Từ chối", "Đã hủy"];
 
 function text(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -49,7 +50,7 @@ export async function createStay(
   const cccd = text(formData, "cccdKhachNgoai");
   const tuNgay = text(formData, "tuNgay");
   const denNgay = text(formData, "denNgay");
-  const trangThai = text(formData, "trangThai") || "Chờ duyệt";
+  const trangThai = stayStatus(text(formData, "trangThai") || "Chờ duyệt");
   const camKet = formData.get("camKetAnNinh") === "on";
 
   const contractGuard = await assertContractInScope(maHopDong, scope);
@@ -131,7 +132,7 @@ export async function updateStay(
   const cccd = text(formData, "cccdKhachNgoai");
   const tuNgay = text(formData, "tuNgay");
   const denNgay = text(formData, "denNgay");
-  const trangThai = text(formData, "trangThai");
+  const trangThai = stayStatus(text(formData, "trangThai"));
   const camKet = formData.get("camKetAnNinh") === "on";
 
   if (!maDangKy) return { error: "Thiếu mã đăng ký.", success: null };

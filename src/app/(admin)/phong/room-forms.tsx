@@ -61,7 +61,7 @@ export function RoomForm({
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const action = mode === "create" ? createRoom : updateRoom;
-  const [state, formAction, pending] = useActionState(action, initialState);
+
 
   const defaultRoomType =
     room?.maLoaiPhong ||
@@ -71,14 +71,14 @@ export function RoomForm({
   const [selectedType, setSelectedType] = useState(defaultRoomType);
   const [noiThatVal, setNoiThatVal] = useState(room?.noiThat ?? "");
 
-  const [prevSuccess, setPrevSuccess] = useState(state.success);
-  if (state.success && state.success !== prevSuccess) {
-    setPrevSuccess(state.success);
-    if (mode === "create") {
+  const [state, formAction, pending] = useActionState(async (previous: RoomFormState, data: FormData) => {
+    const result = await action(previous, data);
+    if (result.success && mode === "create") {
       formRef.current?.reset();
       setNoiThatVal("");
     }
-  }
+    return result;
+  }, initialState);
 
   const selectedTypeObj = roomTypes.find((t) => t.ma_loai_phong === selectedType);
 

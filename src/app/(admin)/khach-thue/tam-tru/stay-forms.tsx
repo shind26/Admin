@@ -11,7 +11,7 @@ import {
 import type { ContractOption, StayRow } from "@/lib/queries";
 import styles from "@/components/business.module.css";
 
-const STAY_STATUSES = ["Chờ duyệt", "Chờ xác nhận", "Đã duyệt", "Hoàn tất", "Từ chối"];
+const STAY_STATUSES = ["Chờ duyệt", "Đã duyệt", "Hết hạn", "Từ chối"];
 const initialState: StayFormState = { error: null, success: null };
 
 function today() {
@@ -104,7 +104,7 @@ export function StayForm({
         <select
           id={`trangThai-${mode}`}
           name="trangThai"
-          defaultValue={stay?.trang_thai ?? "Chờ xác nhận"}
+          defaultValue={stay?.trang_thai ?? "Chờ duyệt"}
         >
           {STAY_STATUSES.map((status) => (
             <option key={status} value={status}>

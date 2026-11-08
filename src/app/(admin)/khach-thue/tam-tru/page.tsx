@@ -11,14 +11,14 @@ type SearchParams = Promise<{ status?: string; keyword?: string }>;
 
 const STATUS_OPTIONS = [
   "All",
-  "Chờ xác nhận",
+  "Chờ duyệt",
   "Đã duyệt",
-  "Hoàn tất",
+  "Hết hạn",
   "Từ chối",
 ];
 
 function statusClass(status: string | null) {
-  if (status === "Đã duyệt" || status === "Hoàn tất") return styles.badgeOk;
+  if (status === "Đã duyệt" || status === "Hết hạn") return styles.badgeOk;
   if (status === "Từ chối") return styles.badgeMuted;
   return styles.badgeWarn;
 }
@@ -41,7 +41,7 @@ async function StaysContent({ searchParams }: { searchParams: SearchParams }) {
   ]);
 
   const pending = stays.filter(
-    (stay) => stay.trang_thai === "Chờ xác nhận",
+    (stay) => stay.trang_thai === "Chờ duyệt",
   ).length;
   const approved = stays.filter(
     (stay) => stay.trang_thai === "Đã duyệt",

@@ -153,6 +153,9 @@ export async function updateAccount(
 
     // Tài khoản Admin luôn toàn quyền nên không gán tòa.
     const isAdmin = rows[0].vai_tro === "Admin";
+    if (!isAdmin && !toaNha) {
+      return { error: "Quản lý phải được gán một cơ sở.", success: null };
+    }
     if (!isAdmin && toaNha) {
       const { rows: roomRows } = await getDbPool().query<{ ok: number }>(
         `SELECT 1 AS ok FROM public.phong WHERE toa_nha = $1 LIMIT 1`,

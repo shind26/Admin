@@ -91,7 +91,7 @@ export async function createInvoice(
       ],
     );
 
-    const maCthd = "CTHD" + crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase();
+    const maCthd = "CT" + crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase();
     await client.query(
       `INSERT INTO public.chi_tiet_hoa_don
          (ma_cthd, ma_hoa_don, ten_khoan_thu, so_luong, don_gia, thanh_tien)
@@ -155,11 +155,12 @@ export async function deleteInvoice(
   try {
     await client.query("BEGIN");
 
-    const { rows } = await client.query<{ hasReceipt: number }>(
-      `SELECT COUNT(*)::int AS hasReceipt FROM public.phieu_thu WHERE ma_hoa_don = $1`,
+    await client.query("SELECT ma_hoa_don FROM public.hoa_don WHERE ma_hoa_don = $1 FOR UPDATE", [maHoaDon]);
+    const { rows } = await client.query<{ has_receipt: number }>(
+      `SELECT COUNT(*)::int AS has_receipt FROM public.phieu_thu WHERE ma_hoa_don = $1`,
       [maHoaDon],
     );
-    if ((rows[0]?.hasReceipt ?? 0) > 0) {
+    if ((rows[0]?.has_receipt ?? 0) > 0) {
       await client.query("ROLLBACK");
       return {
         error: "Không thể xóa hóa đơn đã có phiếu thu thanh toán.",

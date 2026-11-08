@@ -24,7 +24,7 @@ function parseDateComponents(dateStr: string | null | undefined) {
 
 function statusBadgeClass(status: string | null) {
   if (status === "Đã xác nhận" || status === "Đã khớp lệnh") return busStyles.badgeOk;
-  if (status === "Từ chối") return busStyles.badgeMuted;
+  if (status === "Đã hủy") return busStyles.badgeMuted;
   return busStyles.badgeWarn;
 }
 

@@ -3,24 +3,10 @@ import { Suspense } from "react";
 import { AdminShell } from "@/components/admin-shell";
 import { AdminPageSkeleton } from "@/components/admin-skeleton";
 import { requireScope } from "@/lib/session";
-import {
-  getActiveContracts,
-  getMeterClosingProgress,
-  getMeterReadings,
-} from "@/lib/queries";
+import { getActiveContracts, getMeterClosingProgress, getMeterReadings } from "@/lib/queries";
 import { ScopeQuery } from "@/lib/scope";
 import { detectMeterAnomaly } from "@/lib/meter-utils";
-import {
-  ClosingProgressCard,
-  CreateMeterModal,
-  DeleteMeterButton,
-  MeterAnomalyBadge,
-  MeterEditorToggle,
-  MeterInvoiceLink,
-  MeterPhotoViewer,
-  QuickApproveButton,
-  QuickRejectButton,
-} from "./meter-forms";
+import { ClosingProgressCard, CreateMeterModal, DeleteMeterButton, MeterAnomalyBadge, MeterEditorToggle, MeterInvoiceLink, MeterPhotoViewer, QuickApproveButton, QuickRejectButton } from "./meter-forms";
 import styles from "@/components/business.module.css";
 
 type SearchParams = Promise<{ status?: string; keyword?: string; period?: string }>;
@@ -60,15 +46,6 @@ async function MeterContent({ searchParams }: { searchParams: SearchParams }) {
       ? readingsRaw.filter((reading) => detectMeterAnomaly(reading).hasAnomaly)
       : readingsRaw;
 
-  const pending = readingsRaw.filter(
-    (reading) => reading.trang_thai_duyet === "Chờ duyệt",
-  ).length;
-  const approved = readingsRaw.filter(
-    (reading) => reading.trang_thai_duyet === "Đã duyệt",
-  ).length;
-  const anomalyCount = readingsRaw.filter(
-    (reading) => detectMeterAnomaly(reading).hasAnomaly,
-  ).length;
 
   return (
     <AdminShell active="meter">

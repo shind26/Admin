@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Plus, Trash2, PackageCheck } from "lucide-react";
 
 export type HandoverItem = {
@@ -55,7 +55,7 @@ export function HandoverItemsEditor({
         furnitureList
           .filter((s) => s && s.trim())
           .map((item, idx) => ({
-            id: `init-${Date.now()}-${idx}`,
+            id: `init-${idx}-${item}`,
             tenTaiSan: item.trim(),
             soLuong: 1,
             tinhTrang: "Hoạt động tốt",

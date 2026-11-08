@@ -242,13 +242,13 @@ export function InvoiceDetailView({
           <tbody>
             {hasLineItems ? (
               invoice.chi_tiet!.map((item, idx) => (
-                <tr key={item.id ?? idx}>
+                <tr key={item.ma_cthd}>
                   <td className={styles.textCenter}>{idx + 1}</td>
-                  <td>{item.tenKhoanThu}</td>
-                  <td className={styles.textCenter}>{item.soLuong ?? 1}</td>
-                  <td className={styles.textRight}>{formatMoney(item.donGia)}</td>
+                  <td>{item.ten_khoan_thu}</td>
+                  <td className={styles.textCenter}>{item.so_luong ?? 1}</td>
+                  <td className={styles.textRight}>{formatMoney(item.don_gia)}</td>
                   <td className={`${styles.textRight} ${styles.infoValue}`}>
-                    {formatMoney(item.thanhTien)}
+                    {formatMoney(item.thanh_tien)}
                   </td>
                 </tr>
               ))

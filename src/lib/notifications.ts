@@ -33,6 +33,16 @@ export type NotificationRow = {
   ngay_tao: string;
 };
 
+const DATABASE_TYPES: Record<NotificationType, string> = {
+  TaiKhoan: "HeThong",
+  HoaDon: "HoaDon",
+  SuCo: "SuCo",
+  HopDong: "HeThong",
+  ToaNha: "Chung",
+  Xe: "HeThong",
+  BanGiao: "HeThong",
+};
+
 function newId(prefix: string = "TB") {
   return prefix + crypto.randomUUID().replace(/-/g, "").slice(0, 10).toUpperCase();
 }
@@ -59,8 +69,8 @@ export async function createNotification(
       params.toaNha ?? null,
       params.tieuDe,
       params.noiDung,
-      params.loaiThongBao,
-      params.duLieuDinhKem ? JSON.stringify(params.duLieuDinhKem) : null,
+      DATABASE_TYPES[params.loaiThongBao],
+      JSON.stringify({ ...params.duLieuDinhKem, loai_nghiep_vu: params.loaiThongBao }),
     ],
   );
 

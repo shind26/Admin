@@ -60,7 +60,7 @@ export function ResidentDrawer({
     }
     return null;
   });
-  const [loadingCccd, setLoadingCccd] = useState(false);
+  const [loadingCccd, setLoadingCccd] = useState(Boolean((tenant.co_anh_cccd_truoc || tenant.co_anh_cccd_sau) && !cccdImages));
 
   useEffect(() => {
     // Tải ảnh CCCD theo nhu cầu khi mở Drawer mà chưa có ảnh
@@ -73,7 +73,6 @@ export function ResidentDrawer({
     if (!hasPhotos || cccdImages) return;
 
     let active = true;
-    setLoadingCccd(true);
     getResidentCccdImages(tenant.ma_khach)
       .then((res) => {
         if (active) {
@@ -182,7 +181,7 @@ export function ResidentDrawer({
             loai_xe: loaiXe,
             bien_so_xe: bienSoXe.toUpperCase().trim(),
             ma_the_xe: maTheXe.trim() || null,
-            trang_thai: "DaDuyet",
+            trang_thai: "HoatDong",
             ngay_dang_ky: new Date().toISOString(),
           },
           ...vehicles,
@@ -196,13 +195,13 @@ export function ResidentDrawer({
 
   const handleApproveVehicle = (maPhuongTien: string) => {
     startTransition(async () => {
-      const res = await updateVehicleStatus(maPhuongTien, "DaDuyet");
+      const res = await updateVehicleStatus(maPhuongTien, "HoatDong");
       if (res.error) {
         setActionMessage({ text: res.error, ok: false });
       } else {
         setVehicles(
           vehicles.map((v) =>
-            v.ma_phuong_tien === maPhuongTien ? { ...v, trang_thai: "DaDuyet" } : v,
+            v.ma_phuong_tien === maPhuongTien ? { ...v, trang_thai: "HoatDong" } : v,
           ),
         );
         setActionMessage({ text: "Đã duyệt phương tiện thành công", ok: true });
@@ -713,7 +712,7 @@ export function ResidentDrawer({
                         </td>
                         <td>{v.ma_the_xe || <span style={{ color: "#94a3b8" }}>Chưa gán</span>}</td>
                         <td>
-                          {["DaDuyet", "Đang sử dụng", "Hoạt động", "Đã duyệt"].includes(v.trang_thai) ? (
+                          {["HoatDong", "Đang sử dụng", "Hoạt động", "Đã duyệt"].includes(v.trang_thai) ? (
                             <span className={`${styles.badgePill} ${styles.badgeGreen}`}>
                               Đã duyệt
                             </span>

@@ -26,7 +26,7 @@ import type { ContractRow, RoomOption, TenantOption } from "@/lib/queries";
 import { HandoverItemsEditor } from "@/components/handover-items-editor";
 import styles from "@/components/business.module.css";
 
-const CONTRACT_STATUSES = ["Còn hạn", "Đã đặt cọc", "Đã kết thúc"];
+const CONTRACT_STATUSES = ["Còn hạn", "Đã đặt cọc", "Đã thanh lý"];
 const initialState: ContractFormState = { error: null, success: null };
 
 function today() {

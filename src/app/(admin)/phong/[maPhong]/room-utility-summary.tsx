@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2, AlertCircle } from "lucide-react";
+
 import type { RoomUtilitySummary } from "@/lib/queries";
 import styles from "./room-utility-summary.module.css";
 

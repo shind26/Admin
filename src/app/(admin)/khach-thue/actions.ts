@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { getDbPool } from "@/lib/db";
+import { assertRoomInScope, assertTenantInScope, assertVehicleInScope } from "@/lib/guards";
+import { vehicleStatus } from "@/lib/business-status";
 import { getCurrentAccount, requireScope } from "@/lib/session";
 import { hashPassword, DEFAULT_CUSTOMER_PASSWORD } from "@/lib/password";
 import { getTenantVehicles, getTenantRentalHistory } from "@/lib/queries";
@@ -95,21 +97,17 @@ export async function createTenant(
 
     if (capTaiKhoanApp) {
       // Kiểm tra xem SĐT đã có tài khoản trong tai_khoan chưa
-      const { rows: existingAcc } = await client.query<{ ma_tai_khoan: string }>(
-        `SELECT ma_tai_khoan FROM public.tai_khoan WHERE ten_dang_nhap = $1 LIMIT 1`,
+      const { rows: existingAcc } = await client.query<{ ma_tai_khoan: string; vai_tro: string }>(
+        `SELECT ma_tai_khoan, vai_tro FROM public.tai_khoan WHERE ten_dang_nhap = $1 LIMIT 1`,
         [soDt],
       );
 
       if (existingAcc.length > 0) {
+        if (existingAcc[0].vai_tro !== "KhachThue") {
+          await client.query("ROLLBACK");
+          return { error: "Số điện thoại này đã được dùng cho tài khoản nhân viên.", success: null };
+        }
         maTaiKhoan = existingAcc[0].ma_tai_khoan;
-        tempPassCreated = DEFAULT_CUSTOMER_PASSWORD;
-        const hashed = await hashPassword(DEFAULT_CUSTOMER_PASSWORD);
-        await client.query(
-          `UPDATE public.tai_khoan
-           SET mat_khau = $1, da_doi_mat_khau = false, trang_thai = 'HoatDong'
-           WHERE ma_tai_khoan = $2`,
-          [hashed, maTaiKhoan],
-        );
       } else {
         // Sinh tài khoản mới
         tempPassCreated = DEFAULT_CUSTOMER_PASSWORD;
@@ -265,6 +263,9 @@ export async function verifyTenantEkyc(
 ): Promise<{ error: string | null; success: string | null }> {
   const account = await getCurrentAccount();
   if (!account) return { error: "Phiên đăng nhập đã hết hạn.", success: null };
+  const { scope } = await requireScope();
+  const denied = await assertTenantInScope(maKhach, scope);
+  if (denied) return { error: denied, success: null };
 
   try {
     await getDbPool().query(
@@ -299,6 +300,10 @@ export async function resetTenantPassword(maKhach: string): Promise<{
   if (!account)
     return { error: "Phiên đăng nhập đã hết hạn.", success: false };
 
+  const { scope } = await requireScope();
+  const denied = await assertTenantInScope(maKhach, scope);
+  if (denied) return { error: denied, success: false };
+
   const client = await getDbPool().connect();
   try {
     await client.query("BEGIN");
@@ -318,6 +323,13 @@ export async function resetTenantPassword(maKhach: string): Promise<{
     }
 
     const { so_dt, ho_ten_khach, ma_tai_khoan } = rows[0];
+    if (ma_tai_khoan) {
+      const { rows: linked } = await client.query<{ vai_tro: string }>("SELECT vai_tro FROM public.tai_khoan WHERE ma_tai_khoan = $1", [ma_tai_khoan]);
+      if (linked[0]?.vai_tro !== "KhachThue") {
+        await client.query("ROLLBACK");
+        return { error: "Không thể đặt lại tài khoản nhân viên qua hồ sơ cư dân.", success: false };
+      }
+    }
     const tempPassword = generateTempPassword();
     const hashed = await hashPassword(tempPassword);
 
@@ -325,12 +337,16 @@ export async function resetTenantPassword(maKhach: string): Promise<{
 
     if (!finalAccId) {
       // Kiểm tra xem SĐT đã có tài khoản chưa
-      const { rows: existingAcc } = await client.query<{ ma_tai_khoan: string }>(
-        `SELECT ma_tai_khoan FROM public.tai_khoan WHERE ten_dang_nhap = $1 LIMIT 1`,
+      const { rows: existingAcc } = await client.query<{ ma_tai_khoan: string; vai_tro: string }>(
+        `SELECT ma_tai_khoan, vai_tro FROM public.tai_khoan WHERE ten_dang_nhap = $1 LIMIT 1`,
         [so_dt],
       );
 
       if (existingAcc.length > 0) {
+        if (existingAcc[0].vai_tro !== "KhachThue") {
+          await client.query("ROLLBACK");
+          return { error: "Số điện thoại này thuộc tài khoản nhân viên.", success: false };
+        }
         finalAccId = existingAcc[0].ma_tai_khoan;
         await client.query(
           `UPDATE public.tai_khoan
@@ -396,12 +412,20 @@ export async function addTenantVehicle(formData: FormData): Promise<{
     return { error: "Vui lòng nhập biển số xe.", success: null };
   }
 
+  const { scope } = await requireScope();
+  const denied = await assertTenantInScope(maKhach, scope);
+  if (denied) return { error: denied, success: null };
+  if (maPhong) {
+    const roomError = await assertRoomInScope(maPhong, scope);
+    if (roomError) return { error: roomError, success: null };
+  }
+
   try {
     const maPhuongTien = newId("PT");
     await getDbPool().query(
       `INSERT INTO public.phuong_tien
         (ma_phuong_tien, ma_khach, ma_phong, loai_xe, bien_so_xe, ma_the_xe, trang_thai)
-       VALUES ($1, $2, $3, $4, $5, $6, 'DaDuyet')`,
+       VALUES ($1, $2, $3, $4, $5, $6, 'HoatDong')`,
       [maPhuongTien, maKhach, maPhong, loaiXe, bienSoXe, maTheXe],
     );
     revalidatePath("/khach-thue");
@@ -415,19 +439,24 @@ export async function addTenantVehicle(formData: FormData): Promise<{
 /** Duyệt hoặc cập nhật thẻ xe cho phương tiện */
 export async function updateVehicleStatus(
   maPhuongTien: string,
-  trangThai: "DaDuyet" | "DaHuy" | "ChoDuyet",
+  trangThai: "HoatDong" | "DaDuyet" | "DaHuy" | "ChoDuyet",
   maTheXe?: string,
 ): Promise<{ error: string | null; success: string | null }> {
   const account = await getCurrentAccount();
   if (!account) return { error: "Phiên đăng nhập đã hết hạn.", success: null };
 
+  const { scope } = await requireScope();
+  const denied = await assertVehicleInScope(maPhuongTien, scope);
+  if (denied) return { error: denied, success: null };
+  const status = vehicleStatus(trangThai);
+  if (!["HoatDong", "DaHuy", "ChoDuyet"].includes(status)) return { error: "Trạng thái xe không hợp lệ.", success: null };
   try {
     await getDbPool().query(
       `UPDATE public.phuong_tien
        SET trang_thai = $2,
            ma_the_xe = COALESCE($3, ma_the_xe)
        WHERE ma_phuong_tien = $1`,
-      [maPhuongTien, trangThai, maTheXe ?? null],
+      [maPhuongTien, status, maTheXe ?? null],
     );
     revalidatePath("/khach-thue");
     return { error: null, success: "Cập nhật phương tiện thành công." };
@@ -444,6 +473,9 @@ export async function deleteTenantVehicle(maPhuongTien: string): Promise<{
 }> {
   const account = await getCurrentAccount();
   if (!account) return { error: "Phiên đăng nhập đã hết hạn.", success: null };
+  const { scope } = await requireScope();
+  const denied = await assertVehicleInScope(maPhuongTien, scope);
+  if (denied) return { error: denied, success: null };
 
   try {
     await getDbPool().query(
@@ -463,9 +495,11 @@ export async function getResidentDetails(maKhach: string) {
   const account = await getCurrentAccount();
   if (!account) return { vehicles: [], contracts: [] };
 
+  const { scope } = await requireScope();
+  if (await assertTenantInScope(maKhach, scope)) return { vehicles: [], contracts: [] };
   const [vehicles, contracts] = await Promise.all([
-    getTenantVehicles(maKhach),
-    getTenantRentalHistory(maKhach),
+    getTenantVehicles(maKhach, scope),
+    getTenantRentalHistory(maKhach, scope),
   ]);
   return { vehicles, contracts };
 }
@@ -478,6 +512,8 @@ export async function getResidentCccdImages(maKhach: string) {
   const account = await getCurrentAccount();
   if (!account) return { anh_cccd_mat_truoc: null, anh_cccd_mat_sau: null };
 
+  const { scope } = await requireScope();
+  if (await assertTenantInScope(maKhach, scope)) return { anh_cccd_mat_truoc: null, anh_cccd_mat_sau: null };
   const { rows } = await getDbPool().query<{
     anh_cccd_mat_truoc: string | null;
     anh_cccd_mat_sau: string | null;

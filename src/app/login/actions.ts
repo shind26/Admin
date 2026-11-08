@@ -4,16 +4,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getDbPool } from "@/lib/db";
 import { hashPassword, verifyPassword } from "@/lib/password";
-import {
-  checkLoginRateLimit,
-  recordFailedLogin,
-  resetLoginRateLimit,
-} from "@/lib/rate-limit";
-import {
-  createSessionToken,
-  getCurrentAccount,
-  setSessionCookie,
-} from "@/lib/session";
+import { checkLoginRateLimit, recordFailedLogin, resetLoginRateLimit } from "@/lib/rate-limit";
+import { createSessionToken, setSessionCookie } from "@/lib/session";
 
 export type LoginState = { error: string | null };
 

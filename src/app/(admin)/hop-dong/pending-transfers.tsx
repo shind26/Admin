@@ -174,7 +174,7 @@ export function PendingTransfersQueue({
               <RoomTransferDialog
                 maHopDong={req.ma_hop_dong}
                 maPhongCu={req.ma_phong_cu}
-                tenPhongCu={req.ten_phong_cu}
+                tenPhongCu={req.ten_phong_cu ?? undefined}
                 tenKhach={req.ten_khach || "Cư dân"}
                 giaThueCu={req.gia_phong_cu}
                 tienDatCocCu={req.tien_coc_bao_luu}

@@ -1,5 +1,7 @@
 import "server-only";
+import type { AccessScope } from "@/lib/session";
 import { getDbPool } from "@/lib/db";
+import { contractStatus, stayStatus, receiptStatus } from "@/lib/business-status";
 import { ScopeQuery } from "@/lib/scope";
 
 export const ALL_BUILDINGS = "all";
@@ -228,7 +230,7 @@ export async function getFinancialDashboardData(
 
   // 5. Total Deposits
   const depQ = cloneScope(scope);
-  const depConds = [`c.trang_thai IN ('Còn hạn', 'Đang thuê', 'Đã đặt cọc')`];
+  const depConds = [`c.trang_thai::text IN ('Còn hạn', 'Đang thuê', 'Đã đặt cọc')`];
   const depScope = depQ.condition("p.toa_nha");
   if (depScope) depConds.push(depScope);
   if (buildingFilter && buildingFilter !== ALL_BUILDINGS) {
@@ -643,6 +645,7 @@ export async function getDashboardStats(
 
 export type RoomRow = {
   ma_phong: string;
+  ma_hop_dong?: string | null;
   ten_hien_thi: string | null;
   tang: number | null;
   dien_tich: number | null;
@@ -690,7 +693,7 @@ export async function autoExpirePendingHolds(): Promise<number> {
       UPDATE public.giu_cho
       SET trang_thai = 'HetHan',
           ghi_chu = COALESCE(ghi_chu || ' | ', '') || '[Hết hạn 15 phút thanh toán QR]'
-      WHERE trang_thai IN ('ChoThanhToan', 'Chờ thanh toán')
+      WHERE trang_thai::text IN ('ChoThanhToan', 'Chờ thanh toán')
         AND expires_at IS NOT NULL
         AND expires_at < now()
     `);
@@ -700,7 +703,7 @@ export async function autoExpirePendingHolds(): Promise<number> {
       UPDATE public.giu_cho
       SET trang_thai = 'MatCoc',
           ghi_chu = COALESCE(ghi_chu || ' | ', '') || '[Quá hạn 5 ngày giữ chỗ - Tự động mất cọc]'
-      WHERE trang_thai IN ('DangGiu', 'DaThanhToan', 'Đã thanh toán', 'Đang giữ')
+      WHERE trang_thai::text IN ('DangGiu', 'DaThanhToan', 'Đã thanh toán', 'Đang giữ')
         AND (
           (ngay_het_han IS NOT NULL AND ngay_het_han < now())
           OR (ngay_het_han IS NULL AND thoi_gian_giu_cho + INTERVAL '5 days' < now())
@@ -711,18 +714,18 @@ export async function autoExpirePendingHolds(): Promise<number> {
     const { rowCount } = await client.query(`
       UPDATE public.phong p
       SET trang_thai = 'Trống'
-      WHERE p.trang_thai IN ('Đã đặt cọc', 'Đã cọc')
+      WHERE p.trang_thai::text IN ('Đã đặt cọc', 'Đã cọc')
         AND NOT EXISTS (
           SELECT 1 FROM public.giu_cho gc
           WHERE gc.ma_phong = p.ma_phong
-            AND gc.trang_thai IN ('DangGiu', 'DaThanhToan', 'ChoThanhToan', 'Đã thanh toán', 'Đang giữ', 'Chờ thanh toán')
+            AND gc.trang_thai::text IN ('DangGiu', 'DaThanhToan', 'ChoThanhToan', 'Đã thanh toán', 'Đang giữ', 'Chờ thanh toán')
             AND (gc.ngay_het_han IS NULL OR gc.ngay_het_han >= now())
             AND (gc.expires_at IS NULL OR gc.expires_at >= now())
         )
         AND NOT EXISTS (
           SELECT 1 FROM public.hop_dong hd
           WHERE hd.ma_phong = p.ma_phong
-            AND hd.trang_thai IN ('Còn hạn', 'Đang thuê', 'Chờ TL', 'Chờ thanh lý')
+            AND hd.trang_thai::text IN ('Còn hạn', 'Đang thuê', 'Chờ TL', 'Chờ thanh lý')
         )
     `);
 
@@ -730,18 +733,18 @@ export async function autoExpirePendingHolds(): Promise<number> {
     await client.query(`
       UPDATE public.phong p
       SET trang_thai = 'Đang thuê'
-      WHERE p.trang_thai IN ('Đã đặt cọc', 'Đã cọc', 'Trống')
+      WHERE p.trang_thai::text IN ('Đã đặt cọc', 'Đã cọc', 'Trống')
         AND NOT EXISTS (
           SELECT 1 FROM public.giu_cho gc
           WHERE gc.ma_phong = p.ma_phong
-            AND gc.trang_thai IN ('DangGiu', 'DaThanhToan', 'ChoThanhToan', 'Đã thanh toán', 'Đang giữ', 'Chờ thanh toán')
+            AND gc.trang_thai::text IN ('DangGiu', 'DaThanhToan', 'ChoThanhToan', 'Đã thanh toán', 'Đang giữ', 'Chờ thanh toán')
             AND (gc.ngay_het_han IS NULL OR gc.ngay_het_han >= now())
             AND (gc.expires_at IS NULL OR gc.expires_at >= now())
         )
         AND EXISTS (
           SELECT 1 FROM public.hop_dong hd
           WHERE hd.ma_phong = p.ma_phong
-            AND hd.trang_thai IN ('Còn hạn', 'Đang thuê', 'Chờ TL', 'Chờ thanh lý')
+            AND hd.trang_thai::text IN ('Còn hạn', 'Đang thuê', 'Chờ TL', 'Chờ thanh lý')
         )
     `);
 
@@ -783,7 +786,7 @@ export async function getRooms(filters: RoomFilters): Promise<RoomRow[]> {
     query.params.push(`%${filters.keyword.trim().toLowerCase()}%`);
     const index = query.params.length;
     conditions.push(
-      `(LOWER(COALESCE(p.ten_hien_thi, p.ma_phong)) LIKE $${index} OR LOWER(COALESCE(k.ho_ten_khach, '')) LIKE $${index})`,
+      `(LOWER(p.ma_phong) LIKE $${index} OR LOWER(COALESCE(p.ten_hien_thi, '')) LIKE $${index} OR LOWER(COALESCE(k.ho_ten_khach, '')) LIKE $${index})`,
     );
   }
 
@@ -808,15 +811,16 @@ export async function getRooms(filters: RoomFilters): Promise<RoomRow[]> {
        COALESCE(k.ho_ten_khach, kgc.ho_ten_khach) AS khach_thue,
        gc.trang_thai AS giu_cho_trang_thai,
        gc.expires_at::text AS giu_cho_expires_at,
+       h.ma_hop_dong,
        h.ngay_kt::text AS ngay_kt,
        sc.danh_muc AS su_co_dang_mo
      FROM public.phong p
      LEFT JOIN public.loai_phong lp ON lp.ma_loai_phong = p.ma_loai_phong
      LEFT JOIN LATERAL (
-       SELECT hd.ma_khach_dai_dien, hd.ngay_kt
+       SELECT hd.ma_hop_dong, hd.ma_khach_dai_dien, hd.ngay_kt
        FROM public.hop_dong hd
        WHERE hd.ma_phong = p.ma_phong
-         AND hd.trang_thai IN ('Còn hạn', 'Đang thuê', 'Đã đặt cọc')
+         AND hd.trang_thai::text IN ('Còn hạn', 'Đang thuê', 'Đã đặt cọc')
        ORDER BY hd.ngay_bd DESC NULLS LAST
        LIMIT 1
      ) h ON true
@@ -1093,13 +1097,15 @@ export async function getTenants(
 }
 
 /** Danh sách phương tiện của một khách thuê */
-export async function getTenantVehicles(maKhach: string): Promise<VehicleRow[]> {
+export async function getTenantVehicles(maKhach: string, scope: AccessScope): Promise<VehicleRow[]> {
   const { rows } = await getDbPool().query<VehicleRow>(
     `SELECT ma_phuong_tien, ma_khach, ma_phong, loai_xe, bien_so_xe, ma_the_xe, trang_thai, ngay_dang_ky::text AS ngay_dang_ky
-     FROM public.phuong_tien
-     WHERE ma_khach = $1
+     FROM public.phuong_tien v
+     WHERE ma_khach = $1 AND ($2::boolean OR v.ma_phong IS NULL OR EXISTS (
+       SELECT 1 FROM public.phong p WHERE p.ma_phong = v.ma_phong AND p.toa_nha = $3
+     ))
      ORDER BY ngay_dang_ky DESC`,
-    [maKhach],
+    [maKhach, scope.allBuildings, scope.building],
   );
   return rows;
 }
@@ -1107,6 +1113,7 @@ export async function getTenantVehicles(maKhach: string): Promise<VehicleRow[]> 
 /** Lịch sử các hợp đồng của một cư dân */
 export async function getTenantRentalHistory(
   maKhach: string,
+  scope: AccessScope,
 ): Promise<TenantContractHistoryRow[]> {
   const { rows } = await getDbPool().query<TenantContractHistoryRow>(
     `SELECT
@@ -1120,13 +1127,13 @@ export async function getTenantRentalHistory(
        hd.trang_thai
      FROM public.hop_dong hd
      JOIN public.phong p ON p.ma_phong = hd.ma_phong
-     WHERE hd.ma_khach_dai_dien = $1
+     WHERE (hd.ma_khach_dai_dien = $1
         OR EXISTS (
           SELECT 1 FROM public.chi_tiet_hop_dong_khach_thue ct
           WHERE ct.ma_hop_dong = hd.ma_hop_dong AND ct.ma_khach = $1
-        )
+        )) AND ($2::boolean OR p.toa_nha = $3)
      ORDER BY hd.ngay_bd DESC NULLS LAST`,
-    [maKhach],
+    [maKhach, scope.allBuildings, scope.building],
   );
   return rows;
 }
@@ -1155,8 +1162,8 @@ export async function getOvernightStays(
     filters.status !== ALL_BUILDINGS &&
     filters.status !== "All"
   ) {
-    query.params.push(filters.status);
-    conditions.push(`d.trang_thai = $${query.params.length}`);
+    query.params.push(stayStatus(filters.status));
+    conditions.push(`d.trang_thai::text = $${query.params.length}`);
   }
   if (filters.keyword?.trim()) {
     query.params.push(`%${filters.keyword.trim()}%`);
@@ -1253,8 +1260,8 @@ export async function getContracts(
   const conditions: string[] = [];
 
   if (filters.status && filters.status !== "All") {
-    query.params.push(filters.status);
-    conditions.push(`hd.trang_thai = $${query.params.length}`);
+    query.params.push(contractStatus(filters.status));
+    conditions.push(`hd.trang_thai::text = $${query.params.length}`);
   }
   if (filters.keyword?.trim()) {
     query.params.push(`%${filters.keyword.trim()}%`);
@@ -1644,8 +1651,8 @@ export async function getReceipts(
   const conditions: string[] = [];
 
   if (filters.status && filters.status !== "All") {
-    query.params.push(filters.status);
-    conditions.push(`pt.trang_thai = $${query.params.length}`);
+    query.params.push(receiptStatus(filters.status));
+    conditions.push(`pt.trang_thai::text = $${query.params.length}`);
   }
   if (filters.invoiceId) {
     query.params.push(filters.invoiceId);
@@ -2192,15 +2199,16 @@ export async function getRoomDetail(
        COALESCE(k.ho_ten_khach, kgc.ho_ten_khach) AS khach_thue,
        gc.trang_thai AS giu_cho_trang_thai,
        gc.expires_at::text AS giu_cho_expires_at,
+       h.ma_hop_dong,
        h.ngay_kt::text AS ngay_kt,
        sc.danh_muc AS su_co_dang_mo
      FROM public.phong p
      LEFT JOIN public.loai_phong lp ON lp.ma_loai_phong = p.ma_loai_phong
      LEFT JOIN LATERAL (
-       SELECT hd.ma_khach_dai_dien, hd.ngay_kt
+       SELECT hd.ma_hop_dong, hd.ma_khach_dai_dien, hd.ngay_kt
        FROM public.hop_dong hd
        WHERE hd.ma_phong = p.ma_phong
-         AND hd.trang_thai IN ('Còn hạn', 'Đang thuê', 'Đã đặt cọc')
+         AND hd.trang_thai::text IN ('Còn hạn', 'Đang thuê', 'Đã đặt cọc')
        ORDER BY hd.ngay_bd DESC NULLS LAST
        LIMIT 1
      ) h ON true
@@ -3104,7 +3112,7 @@ export async function getContractDetail(
               tien_coc_hoan_lai::text AS tien_coc_hoan_lai,
               tien_kh_tra_them::text AS tien_kh_tra_them,
               ghi_chu,
-              COALESCE(trang_thai, CASE
+              COALESCE(trang_thai::text, CASE
                 WHEN ghi_chu LIKE '%[Trạng thái: DA_DUYET]%' THEN 'DA_DUYET'
                 WHEN ghi_chu LIKE '%[Trạng thái: TU_CHOI]%' THEN 'TU_CHOI'
                 ELSE 'CHO_DUYET'

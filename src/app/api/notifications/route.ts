@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentAccount } from "@/lib/session";
+import { getCurrentAccount, getAccessScope } from "@/lib/session";
 import { getDbPool } from "@/lib/db";
 
 export type NotificationItem = {
@@ -19,6 +19,7 @@ export async function GET() {
 
   try {
     const pool = getDbPool();
+    const scope = getAccessScope(account);
 
     const [
       holdsResult,
@@ -43,8 +44,10 @@ export async function GET() {
          FROM public.giu_cho gc
          LEFT JOIN public.khach_thue k ON k.ma_khach = gc.ma_khach
          WHERE gc.trang_thai IN ('DangGiu', 'DaThanhToan', 'Đã thanh toán', 'Đang giữ')
+           AND ($1::boolean OR EXISTS (SELECT 1 FROM public.phong p_scope WHERE p_scope.ma_phong = gc.ma_phong AND p_scope.toa_nha = $2))
          ORDER BY gc.thoi_gian_giu_cho DESC
-         LIMIT 5`
+         LIMIT 5`,
+        [scope.allBuildings, scope.building]
       ),
 
       // 2. Sự cố báo hỏng chưa hoàn thành
@@ -60,8 +63,10 @@ export async function GET() {
                 sc.ngay_bao_cao::text AS ngay_bao_cao
          FROM public.su_co_bao_tri sc
          WHERE sc.trang_thai IS DISTINCT FROM 'Đã xử lý' AND sc.trang_thai IS DISTINCT FROM 'Đã hoàn thành'
+           AND ($1::boolean OR EXISTS (SELECT 1 FROM public.phong p_scope WHERE p_scope.ma_phong = sc.ma_phong AND p_scope.toa_nha = $2))
          ORDER BY sc.ngay_bao_cao DESC NULLS LAST
-         LIMIT 5`
+         LIMIT 5`,
+        [scope.allBuildings, scope.building]
       ),
 
       // 3. Hóa đơn chưa thanh toán
@@ -98,8 +103,10 @@ export async function GET() {
            da_thu::text AS da_thu
          FROM inv_calc
          WHERE (tong_tien - da_thu) > 0
+           AND ($1::boolean OR EXISTS (SELECT 1 FROM public.phong p_scope WHERE p_scope.ma_phong = inv_calc.ma_phong AND p_scope.toa_nha = $2))
          ORDER BY han_dong_tien ASC NULLS LAST
-         LIMIT 5`
+         LIMIT 5`,
+        [scope.allBuildings, scope.building]
       ),
 
       // 4. Yêu cầu đổi / chuyển phòng từ Mobile App
@@ -133,8 +140,10 @@ export async function GET() {
          LEFT JOIN public.khach_thue k ON k.ma_khach = hd.ma_khach_dai_dien
          WHERE y.trang_thai_tien_do::text IN ('Chờ duyệt', 'Đang xử lý', 'Chờ khách xác nhận', 'Đã kiểm tra', 'Khách đã xác nhận', 'Chờ chủ duyệt')
            AND hd.trang_thai IN ('Còn hạn', 'Đang thuê')
+           AND ($1::boolean OR EXISTS (SELECT 1 FROM public.phong p_scope WHERE p_scope.ma_phong = y.ma_phong_cu AND p_scope.toa_nha = $2))
          ORDER BY y.ngay_tao DESC
-         LIMIT 5`
+         LIMIT 5`,
+        [scope.allBuildings, scope.building]
       ),
 
       // 5. Yêu cầu trả phòng / thanh lý hợp đồng từ Mobile App
@@ -161,8 +170,10 @@ export async function GET() {
          LEFT JOIN public.khach_thue k ON k.ma_khach = hd.ma_khach_dai_dien
          WHERE hd.trang_thai IN ('Còn hạn', 'Đang thuê')
            AND (tl.trang_thai IN ('CHO_DUYET', 'ChoDuyet', 'Chờ duyệt', 'CHO DUYET') OR (tl.trang_thai IS NULL AND tl.ghi_chu LIKE '%[Trạng thái: CHO_DUYET]%'))
+           AND ($1::boolean OR EXISTS (SELECT 1 FROM public.phong p_scope WHERE p_scope.ma_phong = hd.ma_phong AND p_scope.toa_nha = $2))
          ORDER BY tl.ngay_tra_phong ASC
-         LIMIT 5`
+         LIMIT 5`,
+        [scope.allBuildings, scope.building]
       ),
 
       // 6. Số điện nước khách gửi lên chờ duyệt
@@ -192,8 +203,10 @@ export async function GET() {
          JOIN public.phong p ON p.ma_phong = hd.ma_phong
          LEFT JOIN public.khach_thue k ON k.ma_khach = hd.ma_khach_dai_dien
          WHERE cs.trang_thai_duyet = 'Chờ duyệt'
+           AND ($1::boolean OR EXISTS (SELECT 1 FROM public.phong p_scope WHERE p_scope.ma_phong = hd.ma_phong AND p_scope.toa_nha = $2))
          ORDER BY cs.ngay_ghi_nhan DESC NULLS LAST
-         LIMIT 5`
+         LIMIT 5`,
+        [scope.allBuildings, scope.building]
       ),
 
       // 7. Yêu cầu phụ lục gia hạn hợp đồng chờ duyệt
@@ -221,8 +234,10 @@ export async function GET() {
          JOIN public.phong p ON p.ma_phong = hd.ma_phong
          LEFT JOIN public.khach_thue k ON k.ma_khach = hd.ma_khach_dai_dien
          WHERE pl.trang_thai::text IN ('Chờ duyệt', 'Đang xử lý', 'ChoDuyet', 'CHO_DUYET')
+           AND ($1::boolean OR EXISTS (SELECT 1 FROM public.phong p_scope WHERE p_scope.ma_phong = hd.ma_phong AND p_scope.toa_nha = $2))
          ORDER BY pl.ngay_lap DESC NULLS LAST
-         LIMIT 5`
+         LIMIT 5`,
+        [scope.allBuildings, scope.building]
       ),
 
       // 8. Hợp đồng sắp hết hạn trong 30 ngày (cần liên hệ gia hạn)
@@ -247,8 +262,10 @@ export async function GET() {
          WHERE hd.trang_thai IN ('Còn hạn', 'Đang thuê')
            AND hd.ngay_kt <= CURRENT_DATE + interval '30 days'
            AND hd.ngay_kt >= CURRENT_DATE
+           AND ($1::boolean OR EXISTS (SELECT 1 FROM public.phong p_scope WHERE p_scope.ma_phong = hd.ma_phong AND p_scope.toa_nha = $2))
          ORDER BY hd.ngay_kt ASC
-         LIMIT 5`
+         LIMIT 5`,
+        [scope.allBuildings, scope.building]
       ),
     ]);
 

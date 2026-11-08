@@ -30,7 +30,7 @@ const STATUS_OPTIONS = [
   "All",
   "Còn hạn",
   "Đã đặt cọc",
-  "Đã kết thúc",
+  "Đã thanh lý",
 ];
 
 function formatDate(value: string | null) {

@@ -1,6 +1,7 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { getDbPool } from "@/lib/db";
 import {
   SESSION_COOKIE,
@@ -59,9 +60,10 @@ export async function clearSessionCookie() {
  * 3. Nếu token có stamp, mật khẩu hiện tại trong DB phải khớp stamp (thu hồi tức thì nếu đổi mật khẩu).
  */
 export async function getCurrentAccount(): Promise<AccountRow | null> {
+  await connection();
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   const secret = process.env.SESSION_SECRET;
-  const parsed = verifySessionToken(token, secret);
+  const parsed = verifySessionToken(token, secret, Date.now());
   if (!parsed) return null;
 
   const { rows } = await getDbPool().query<DbAccountRow>(
@@ -109,11 +111,11 @@ export type AccessScope = {
 
 /**
  * Phạm vi dữ liệu theo quy ước `co_so_van_hanh`:
- * vai trò Admin hoặc giá trị NULL = toàn quyền, ngược lại là quản lý đúng một tòa.
+ * Chỉ Admin có toàn quyền. Quản lý chưa được gán tòa không được truy cập dữ liệu.
  */
 export function getAccessScope(account: AccountRow): AccessScope {
   const building = account.co_so_van_hanh?.trim() || null;
-  const allBuildings = account.vai_tro === "Admin" || building === null;
+  const allBuildings = account.vai_tro === "Admin";
   return { allBuildings, building: allBuildings ? null : building };
 }
 

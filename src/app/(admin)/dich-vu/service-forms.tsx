@@ -2,14 +2,8 @@
 
 import { useActionState, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { LoaderCircle, X, Edit3 } from "lucide-react";
-import {
-  createService,
-  deleteService,
-  updateService,
-  toggleServiceStatus,
-  type ServiceFormState,
-} from "./actions";
+import { LoaderCircle, X } from "lucide-react";
+import { createService, deleteService, updateService, toggleServiceStatus, type ServiceFormState } from "./actions";
 import styles from "@/components/business.module.css";
 
 const initialState: ServiceFormState = { error: null, success: null };
@@ -360,11 +354,6 @@ export function ServiceEditorToggle({
   readOnly?: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -385,7 +374,7 @@ export function ServiceEditorToggle({
         Sửa
       </button>
 
-      {open && mounted && typeof document !== "undefined" && createPortal(
+      {open && typeof document !== "undefined" && createPortal(
         <div
           style={{
             position: "fixed",

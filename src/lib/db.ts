@@ -20,8 +20,10 @@ export function getDbPool(): Pool {
     const pool = new Pool({
       connectionString,
       ssl: { rejectUnauthorized: false },
-      max: 20,
-      idleTimeoutMillis: 60000,
+      // Chừa kết nối cho ứng dụng cư dân trong giới hạn Supabase session pool (15).
+      // pg tự xếp hàng các truy vấn vượt giới hạn thay vì mở thêm kết nối.
+      max: 5,
+      idleTimeoutMillis: 10000,
       connectionTimeoutMillis: 30000,
       keepAlive: true,
       keepAliveInitialDelayMillis: 10000,

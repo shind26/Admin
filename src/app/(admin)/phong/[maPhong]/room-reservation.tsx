@@ -1,35 +1,12 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  BookmarkCheck,
-  Lock,
-  Unlock,
-  AlertTriangle,
-  FileCheck,
-  CheckCircle2,
-  LoaderCircle,
-  X,
-  Copy,
-  Check,
-  Calendar,
-  DollarSign,
-  Users,
-  ShieldCheck,
-  ArrowRight,
-  UserX,
-  Smartphone,
-} from "lucide-react";
+import { BookmarkCheck, Lock, Unlock, AlertTriangle, FileCheck, CheckCircle2, LoaderCircle, X, Copy, Check, UserX, Smartphone } from "lucide-react";
 import type { RoomReservationDetail, TenantOption } from "@/lib/queries";
 import { HandoverItemsEditor } from "@/components/handover-items-editor";
-import {
-  reserveRoom,
-  cancelReservation,
-  convertReservationToContract,
-  type ReservationFormState,
-} from "../actions";
+import { reserveRoom, cancelReservation, convertReservationToContract, type ReservationFormState } from "../actions";
 import type { ContractFormState } from "@/app/(admin)/hop-dong/actions";
 
 const initialResState: ReservationFormState = { error: null, success: null };
@@ -65,7 +42,6 @@ export function RoomReservationManager({
   giaThueNiemYet,
   tienDatCocNiemYet,
   reservation,
-  tenants,
   noiThatSanCo,
 }: {
   maPhong: string;
@@ -127,7 +103,7 @@ export function RoomReservationManager({
 
   // Manual reserve state (dự phòng tại quầy)
   const [resState, resAction, resPending] = useActionState(reserveRoom, initialResState);
-  const [tenantMode, setTenantMode] = useState<"new" | "existing">("new");
+  const [tenantMode] = useState<"new" | "existing">("new");
   const [soTienTheChan, setSoTienTheChan] = useState<string>("100000");
   const [ngayHetHan, setNgayHetHan] = useState<string>(addDays(5));
 

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getDbPool } from "@/lib/db";
 import { getCurrentAccount, requireScope } from "@/lib/session";
 import { assertRoomInScope } from "@/lib/guards";
-import { hashPassword, DEFAULT_CUSTOMER_PASSWORD } from "@/lib/password";
+import { ensureResidentAccount } from "@/lib/resident-account";
 import { saveHandoverAssets } from "@/lib/handover";
 import type { ContractFormState } from "../hop-dong/actions";
 
@@ -87,6 +87,7 @@ export async function createRoom(
   const tienDatCoc = number(formData, "tienDatCoc") ?? 0;
   const chiSoDien = number(formData, "chiSoDien") ?? 0;
   const chiSoNuoc = number(formData, "chiSoNuoc") ?? 0;
+  if (tienDatCoc < 0 || chiSoDien < 0 || chiSoNuoc < 0) return { error: "Tiền cọc và chỉ số công tơ phải là số không âm.", success: null };
   // Phòng mới tạo luôn có trạng thái mặc định là "Trống"
   const trangThai = "Trống";
 
@@ -110,7 +111,7 @@ export async function createRoom(
         chi_so_dien, chi_so_nuoc
       ) VALUES (
         $1, $2, $3, $4, $5,
-        $6::trang_thai_phong_enum, $7, $8, $9,
+        $6, $7, $8, $9,
         $10, $11, $12,
         $13, $14
       )`,
@@ -166,6 +167,11 @@ export async function updateRoom(
 
   const chiSoDien = number(formData, "chiSoDien");
   const chiSoNuoc = number(formData, "chiSoNuoc");
+  const giaThue = number(formData, "giaThue");
+  const tienDatCoc = number(formData, "tienDatCoc");
+  if (giaThue === null || giaThue < 0 || (tienDatCoc !== null && tienDatCoc < 0) || (chiSoDien !== null && chiSoDien < 0) || (chiSoNuoc !== null && chiSoNuoc < 0)) {
+    return { error: "Giá thuê, tiền cọc và chỉ số công tơ phải là số không âm.", success: null };
+  }
 
   try {
     // Quản lý tòa chỉ được sửa phòng trong tòa của mình.
@@ -184,10 +190,10 @@ export async function updateRoom(
       [
         maPhong,
         text(formData, "tenHienThi") || maPhong,
-        number(formData, "giaThue"),
+        giaThue,
         trangThai,
         text(formData, "moTaNgan") || null,
-        number(formData, "tienDatCoc"),
+        tienDatCoc,
         lines(formData, "noiThat"),
         text(formData, "hinhAnh") || null,
         scope.allBuildings ? null : scope.building,
@@ -252,10 +258,6 @@ function newId(prefix: string) {
   );
 }
 
-function generateTempPassword() {
-  return DEFAULT_CUSTOMER_PASSWORD;
-}
-
 export type ReservationFormState = {
   error: string | null;
   success: string | null;
@@ -274,7 +276,8 @@ export async function reserveRoom(
   const { scope } = await requireScope();
 
   const maPhong = text(formData, "maPhong");
-  const soTienTheChan = number(formData, "soTienTheChan") || 100000;
+  const soTienTheChan = number(formData, "soTienTheChan") ?? 100000;
+  if (soTienTheChan <= 0) return { error: "Tiền cọc giữ chỗ phải lớn hơn 0.", success: null };
   const ngayHetHan = text(formData, "ngayHetHan") || new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString();
   const tenantMode = text(formData, "tenantMode") || "new";
   const ghiChu = text(formData, "ghiChu");
@@ -450,8 +453,8 @@ export async function confirmReservationPayment(
     }>(
       `SELECT trang_thai, expires_at::text AS expires_at
        FROM public.giu_cho
-       WHERE ma_giu_cho = $1 FOR UPDATE`,
-      [maGiuCho],
+       WHERE ma_giu_cho = $1 AND ma_phong = $2 FOR UPDATE`,
+      [maGiuCho, maPhong],
     );
 
     if (gcRows.length === 0) {
@@ -526,8 +529,8 @@ export async function expireOrCancelHold(
     await client.query("BEGIN");
 
     const { rows: gcRows } = await client.query<{ trang_thai: string }>(
-      `SELECT trang_thai FROM public.giu_cho WHERE ma_giu_cho = $1 FOR UPDATE`,
-      [maGiuCho],
+      `SELECT trang_thai FROM public.giu_cho WHERE ma_giu_cho = $1 AND ma_phong = $2 FOR UPDATE`,
+      [maGiuCho, maPhong],
     );
 
     const validHoldStatuses = [
@@ -603,13 +606,18 @@ export async function cancelReservation(
       trang_thai: string;
       so_tien_the_chan: string;
     }>(
-      "SELECT trang_thai, so_tien_the_chan::text AS so_tien_the_chan FROM public.giu_cho WHERE ma_giu_cho = $1 FOR UPDATE",
-      [maGiuCho],
+      "SELECT trang_thai, so_tien_the_chan::text AS so_tien_the_chan FROM public.giu_cho WHERE ma_giu_cho = $1 AND ma_phong = $2 FOR UPDATE",
+      [maGiuCho, maPhong],
     );
 
     if (gcRows.length === 0) {
       await client.query("ROLLBACK");
       return { error: "Phiếu giữ chỗ không tồn tại.", success: null };
+    }
+
+    if (!Number.isFinite(soTienHoanLai) || soTienHoanLai < 0 || soTienHoanLai > Number(gcRows[0].so_tien_the_chan)) {
+      await client.query("ROLLBACK");
+      return { error: "Số tiền hoàn phải từ 0 đến số tiền cọc đã nhận.", success: null };
     }
 
     const validCancelStatuses = [
@@ -725,8 +733,8 @@ export async function convertReservationToContract(
       trang_thai: string;
       so_tien_the_chan: string;
     }>(
-      "SELECT ma_khach, trang_thai, so_tien_the_chan::text AS so_tien_the_chan FROM public.giu_cho WHERE ma_giu_cho = $1 FOR UPDATE",
-      [maGiuCho],
+      "SELECT ma_khach, trang_thai, so_tien_the_chan::text AS so_tien_the_chan FROM public.giu_cho WHERE ma_giu_cho = $1 AND ma_phong = $2 FOR UPDATE",
+      [maGiuCho, maPhong],
     );
 
     if (gcRows.length === 0) {
@@ -776,44 +784,12 @@ export async function convertReservationToContract(
 
     tenantPhone = tenantRows[0].so_dt;
     finalTenantName = tenantRows[0].ho_ten_khach;
-    let finalAccountId = tenantRows[0].ma_tai_khoan;
 
-    // 4. Khởi tạo / cập nhật tài khoản khách hàng từ SĐT với mật khẩu mặc định 123456
-    tempPassCreated = DEFAULT_CUSTOMER_PASSWORD;
-    const hashed = await hashPassword(DEFAULT_CUSTOMER_PASSWORD);
-
-    const { rows: existingAcc } = await client.query<{ ma_tai_khoan: string }>(
-      "SELECT ma_tai_khoan FROM public.tai_khoan WHERE ten_dang_nhap = $1 LIMIT 1",
-      [tenantPhone],
-    );
-
-    if (existingAcc.length > 0) {
-      finalAccountId = existingAcc[0].ma_tai_khoan;
-      await client.query(
-        `UPDATE public.tai_khoan
-         SET mat_khau = $1,
-             vai_tro = 'KhachThue',
-             co_so_van_hanh = $2,
-             trang_thai = 'HoatDong',
-             da_doi_mat_khau = false,
-             ho_ten = COALESCE(NULLIF(ho_ten, ''), $3)
-         WHERE ma_tai_khoan = $4`,
-        [hashed, building, finalTenantName, finalAccountId],
-      );
-    } else {
-      finalAccountId = newId("TK");
-      await client.query(
-        `INSERT INTO public.tai_khoan
-          (ma_tai_khoan, ten_dang_nhap, mat_khau, vai_tro, co_so_van_hanh, trang_thai, da_doi_mat_khau, ho_ten)
-         VALUES ($1, $2, $3, 'KhachThue', $4, 'HoatDong', false, $5)`,
-        [finalAccountId, tenantPhone, hashed, building, finalTenantName],
-      );
-    }
-
-    await client.query(
-      "UPDATE public.khach_thue SET ma_tai_khoan = $1 WHERE ma_khach = $2",
-      [finalAccountId, maKhach],
-    );
+    const residentAccount = await ensureResidentAccount(client, {
+      accountId: tenantRows[0].ma_tai_khoan, phone: tenantPhone!, name: finalTenantName!, building,
+    });
+    tempPassCreated = residentAccount.tempPassword;
+    await client.query("UPDATE public.khach_thue SET ma_tai_khoan = $1 WHERE ma_khach = $2", [residentAccount.accountId, maKhach]);
 
     // 5. Tạo hợp đồng chính thức
     await client.query(
@@ -847,7 +823,7 @@ export async function convertReservationToContract(
     // 7. Cập nhật phiếu giữ chỗ -> 'DaChuyenHopDong'
     await client.query(
       `UPDATE public.giu_cho
-       SET trang_thai = 'DaChuyenHopDong',
+       SET trang_thai = 'DaDatCoc',
            ghi_chu = COALESCE(ghi_chu || ' - ', '') || $2
        WHERE ma_giu_cho = $1`,
       [maGiuCho, `Đã chuyển thành HĐ ${maHopDong}`],

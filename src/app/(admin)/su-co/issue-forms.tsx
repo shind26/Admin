@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useActionState, useState, useTransition } from "react";
 import {
   LoaderCircle,
@@ -394,7 +395,10 @@ export function IssueForm({
           <label>Hình ảnh hiện có ({issue.hinh_anh.length} ảnh)</label>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
             {issue.hinh_anh.map((img, idx) => (
-              <img
+              <Image
+                unoptimized
+                width={54}
+                height={54}
                 key={idx}
                 src={img}
                 alt={`Ảnh sự cố ${idx + 1}`}
