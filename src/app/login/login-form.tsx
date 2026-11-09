@@ -66,7 +66,6 @@ export function LoginForm() {
         <label className={styles.remember}>
           <input type="checkbox" name="remember" defaultChecked /> Ghi nhớ phiên làm việc
         </label>
-        <span className={styles.firstLoginTag}>Bắt buộc đổi MK lần đầu</span>
       </div>
 
       <button className={styles.submit} type="submit" disabled={pending}>

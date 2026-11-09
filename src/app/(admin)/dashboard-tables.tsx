@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { AlertTriangle, CheckCircle2, ArrowRight, CreditCard, ReceiptText } from "lucide-react";
 import type { FinancialDashboardData } from "@/lib/queries";
 import styles from "./dashboard.module.css";
 
@@ -22,15 +21,12 @@ export function UnpaidInvoicesTable({
     <div className={styles.tableCard}>
       <div className={styles.tableHeadRow}>
         <div className={styles.tableTitleGroup}>
-          <div className={styles.iconBadgeWarn}>
-            <AlertTriangle size={17} />
-          </div>
           <div>
             <h3 className={styles.tableTitle}>Hóa đơn chưa thanh toán</h3>
           </div>
         </div>
         <Link href="/hoa-don?status=ChuaThanhToan" className={styles.viewAllLink}>
-          Xem tất cả <ArrowRight size={13} />
+          Xem tất cả
         </Link>
       </div>
 
@@ -52,7 +48,7 @@ export function UnpaidInvoicesTable({
               <tr>
                 <td colSpan={7} className={styles.emptyCell}>
                   <div className={styles.emptyBanner}>
-                    <CheckCircle2 size={22} color="var(--status-success-text)" />
+
                     <span>Hiện tại không có hóa đơn nào nợ tiền.</span>
                   </div>
                 </td>
@@ -91,14 +87,14 @@ export function UnpaidInvoicesTable({
                         className={styles.btnQuickPay}
                         title="Tạo phiếu thu tiền"
                       >
-                        <CreditCard size={12} /> Thu tiền
+                        Thu tiền
                       </Link>
                       <Link
                         href={`/hoa-don?keyword=${inv.ma_hoa_don}`}
                         className={styles.btnViewInv}
                         title="Xem chi tiết hóa đơn"
                       >
-                        <ReceiptText size={12} /> Xem
+                        Xem
                       </Link>
                     </div>
                   </td>
@@ -121,15 +117,12 @@ export function RecentReceiptsTable({
     <div className={styles.tableCard}>
       <div className={styles.tableHeadRow}>
         <div className={styles.tableTitleGroup}>
-          <div className={styles.iconBadgeOk}>
-            <CheckCircle2 size={17} />
-          </div>
           <div>
             <h3 className={styles.tableTitle}>Phiếu thu gần đây</h3>
           </div>
         </div>
         <Link href="/phieu-thu" className={styles.viewAllLink}>
-          Xem tất cả <ArrowRight size={13} />
+          Xem tất cả
         </Link>
       </div>
 

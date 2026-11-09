@@ -1,19 +1,5 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import {
-  Wallet,
-  Receipt,
-  PiggyBank,
-  Bell,
-  DoorOpen,
-  Users,
-  TriangleAlert,
-  ArrowRight,
-  PlusCircle,
-  Zap,
-  FileSignature,
-  Building2,
-} from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
 import { AdminPageSkeleton } from "@/components/admin-skeleton";
 import { requireScope } from "@/lib/session";
@@ -63,16 +49,16 @@ async function DashboardContent({
 
           <div className={styles.dashQuickActions}>
             <Link href="/phieu-thu" className={styles.btnActionPrimary}>
-              <PlusCircle size={14} /> Ghi phiếu thu
+              Ghi phiếu thu
             </Link>
             <Link href="/dien-nuoc" className={styles.btnActionSecondary}>
-              <Zap size={14} /> Chốt điện nước
+              Chốt điện nước
             </Link>
             <Link href="/hop-dong" className={styles.btnActionSecondary}>
-              <FileSignature size={14} /> Lập hợp đồng
+              Lập hợp đồng
             </Link>
             <Link href="/phong" className={styles.btnActionSecondary}>
-              <Building2 size={14} /> Quản lý phòng
+              Quản lý phòng
             </Link>
           </div>
         </section>
@@ -81,25 +67,12 @@ async function DashboardContent({
         {kpi.pendingHoldCount > 0 && (
           <section className={styles.pendingQueueAlert}>
             <div className={styles.pendingAlertLeft}>
-              <div
-                style={{
-                  background: "var(--primary-subtle)",
-                  color: "var(--primary-text)",
-                  width: 36,
-                  height: 36,
-                  borderRadius: "var(--radius-md)",
-                  display: "grid",
-                  placeItems: "center",
-                }}
-              >
-                <Bell size={18} />
-              </div>
               <div className={styles.pendingAlertText}>
                 <h4>Có {kpi.pendingHoldCount} yêu cầu cọc giữ chỗ mới cần lập hợp đồng</h4>
               </div>
             </div>
             <Link href="/hop-dong" className={styles.btnAlertAction}>
-              Xem danh sách cọc <ArrowRight size={13} style={{ display: "inline", verticalAlign: "middle" }} />
+              Xem danh sách cọc
             </Link>
           </section>
         )}
@@ -110,9 +83,6 @@ async function DashboardContent({
           <article className={styles.kpiCard}>
             <div className={styles.kpiHead}>
               <span className={styles.kpiLabel}>Tiền đã thu tháng này</span>
-              <div className={styles.kpiIconBox} style={{ background: "var(--status-success-bg)", color: "var(--status-success-text)" }}>
-                <Wallet size={18} />
-              </div>
             </div>
             <div className={styles.kpiValue} style={{ whiteSpace: "nowrap" }}>
               {formatMoney(kpi.doanhThuThang)}
@@ -141,9 +111,6 @@ async function DashboardContent({
           <article className={styles.kpiCard}>
             <div className={styles.kpiHead}>
               <span className={styles.kpiLabel}>Tiền nợ chưa thu</span>
-              <div className={styles.kpiIconBox} style={{ background: "var(--status-danger-bg)", color: "var(--status-danger-text)" }}>
-                <Receipt size={18} />
-              </div>
             </div>
             <div className={styles.kpiValue} style={{ whiteSpace: "nowrap" }}>
               {formatMoney(kpi.tongNoTonDong)}
@@ -165,9 +132,6 @@ async function DashboardContent({
           <article className={styles.kpiCard}>
             <div className={styles.kpiHead}>
               <span className={styles.kpiLabel}>Tiền cọc đang giữ</span>
-              <div className={styles.kpiIconBox} style={{ background: "var(--primary-subtle)", color: "var(--primary)" }}>
-                <PiggyBank size={18} />
-              </div>
             </div>
             <div className={styles.kpiValue} style={{ whiteSpace: "nowrap" }}>
               {formatMoney(kpi.tongTienCoc)}
@@ -205,23 +169,17 @@ async function DashboardContent({
           <div className={styles.opPanelCard}>
             <div className={styles.tableHeadRow}>
               <div className={styles.tableTitleGroup}>
-                <div className={styles.iconBadgeBlue}>
-                  <Building2 size={17} />
-                </div>
                 <div>
                   <h3 className={styles.tableTitle}>Tình trạng vận hành</h3>
                 </div>
               </div>
               <Link href="/phong" className={styles.viewAllLink}>
-                Xem tất cả phòng <ArrowRight size={13} />
+                Xem tất cả phòng
               </Link>
             </div>
 
             <div className={styles.opMiniGrid}>
               <Link href="/phong" className={styles.opMiniCard}>
-                <div className={styles.opIconBox} style={{ background: "var(--primary-subtle)", color: "var(--primary-text)" }}>
-                  <DoorOpen size={18} />
-                </div>
                 <div className={styles.opMiniText}>
                   <span className={styles.opMiniLabel}>Phòng đang thuê</span>
                   <strong className={styles.opMiniValue}>{kpi.dangThue}/{kpi.tongPhong} phòng</strong>
@@ -229,9 +187,6 @@ async function DashboardContent({
               </Link>
 
               <Link href="/phong?status=Trong" className={styles.opMiniCard}>
-                <div className={styles.opIconBox} style={{ background: "var(--status-success-bg)", color: "var(--status-success-text)" }}>
-                  <Building2 size={18} />
-                </div>
                 <div className={styles.opMiniText}>
                   <span className={styles.opMiniLabel}>Phòng còn trống</span>
                   <strong className={styles.opMiniValue}>{kpi.phongTrong} phòng</strong>
@@ -239,9 +194,6 @@ async function DashboardContent({
               </Link>
 
               <Link href="/khach-thue" className={styles.opMiniCard}>
-                <div className={styles.opIconBox} style={{ background: "var(--bg-subtle)", color: "var(--text-main)" }}>
-                  <Users size={18} />
-                </div>
                 <div className={styles.opMiniText}>
                   <span className={styles.opMiniLabel}>Khách đang ở</span>
                   <strong className={styles.opMiniValue}>{kpi.soCuDan} người</strong>
@@ -249,9 +201,6 @@ async function DashboardContent({
               </Link>
 
               <Link href="/su-co" className={styles.opMiniCard}>
-                <div className={styles.opIconBox} style={{ background: "var(--status-warning-bg)", color: "var(--status-warning-text)" }}>
-                  <TriangleAlert size={18} />
-                </div>
                 <div className={styles.opMiniText}>
                   <span className={styles.opMiniLabel}>Báo hỏng / Sự cố</span>
                   <strong className={styles.opMiniValue} style={{ color: kpi.suCo > 0 ? "var(--status-danger-text)" : "var(--text-main)" }}>

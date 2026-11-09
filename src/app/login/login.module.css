@@ -65,11 +65,11 @@
 }
 
 .statusPill {
-  background: #e6f4ea;
-  color: #166534;
-  border: 1px solid #b8e2c8;
+  background: var(--primary-subtle);
+  color: var(--primary);
+  border: 1px solid var(--border-strong);
   border-radius: 999px;
-  padding: 6px 14px;
+  padding: 4px 10px;
   font-size: 12px;
   font-weight: 600;
 }
