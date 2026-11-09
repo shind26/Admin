@@ -3,11 +3,10 @@ import { Suspense } from "react";
 import { AdminShell } from "@/components/admin-shell";
 import { AdminPageSkeleton } from "@/components/admin-skeleton";
 import { requireScope } from "@/lib/session";
-import { getIssues, getRoomOptions, getTenantOptions } from "@/lib/queries";
+import { getIssues } from "@/lib/queries";
 import { ScopeQuery } from "@/lib/scope";
 import {
   DeleteIssueButton,
-  IssueForm,
   IssueImageGallery,
   IssueStatusSelect,
 } from "./issue-forms";
@@ -45,11 +44,7 @@ async function IssuesContent({ searchParams }: { searchParams: SearchParams }) {
   const status = params.status || "All";
   const keyword = params.keyword || "";
 
-  const [issues, rooms, tenants] = await Promise.all([
-    getIssues({ status, keyword }, scopeQuery),
-    getRoomOptions(scopeQuery),
-    getTenantOptions(scopeQuery),
-  ]);
+  const issues = await getIssues({ status, keyword }, scopeQuery);
 
   const open = issues.filter(
     (issue) =>
@@ -89,11 +84,6 @@ async function IssuesContent({ searchParams }: { searchParams: SearchParams }) {
           </div>
         </div>
       </section>
-
-      <details className={styles.createBox}>
-        <summary className={styles.createSummary}>+ Tạo phiếu sự cố</summary>
-        <IssueForm mode="create" rooms={rooms} tenants={tenants} />
-      </details>
 
       <form className={styles.filterCard} action="/su-co">
         <div className={styles.filterField}>

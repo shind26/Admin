@@ -41,12 +41,6 @@ function formatDate(value: string | null) {
   return new Date(value).toLocaleDateString("vi-VN");
 }
 
-function statusClass(status: string | null) {
-  if (status === "Đã thanh toán") return styles.badgeOk;
-  if (status === "Thanh toán một phần") return styles.badgeInfo;
-  return styles.badgeWarn;
-}
-
 async function InvoicesContent({
   searchParams,
 }: {
@@ -73,9 +67,6 @@ async function InvoicesContent({
     0,
   );
   const totalDebt = Math.max(0, total - collected);
-  const outstanding = invoices.filter(
-    (invoice) => Number(invoice.tong_tien ?? 0) > Number(invoice.da_thu ?? 0),
-  ).length;
 
   return (
     <AdminShell active="invoice">
@@ -98,10 +89,9 @@ async function InvoicesContent({
           <div className={styles.miniValue}>{formatMoney(String(total))}</div>
         </div>
         <div className={styles.miniCard}>
-          <div className={styles.miniLabel}>Công nợ còn lại ({outstanding} hóa đơn)</div>
+          <div className={styles.miniLabel} style={{ color: "var(--text-main)" }}>Công nợ còn lại</div>
           <div
             className={styles.miniValue}
-            style={{ color: totalDebt > 0 ? "var(--status-danger-text)" : "var(--status-success-text)", fontWeight: 700 }}
           >
             {formatMoney(String(totalDebt))}
           </div>
@@ -201,29 +191,8 @@ async function InvoicesContent({
                       </td>
                       <td>
                         <div>
-                          <span
-                            className={
-                              isPhatSinh ? styles.badgeWarn : styles.badgeMuted
-                            }
-                          >
-                            {isPhatSinh ? "Phát sinh" : "Định kỳ"}
-                          </span>
+                          {isPhatSinh ? "Phát sinh" : "Định kỳ"}
                         </div>
-                        {invoice.chi_tiet_khoan_thu ? (
-                          <div
-                            className={styles.muted}
-                            style={{
-                              marginTop: "4px",
-                              maxWidth: "200px",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                            }}
-                            title={invoice.chi_tiet_khoan_thu}
-                          >
-                            {invoice.chi_tiet_khoan_thu}
-                          </div>
-                        ) : null}
                       </td>
                       <td>
                         <div className={styles.strong}>{invoice.ma_phong}</div>
@@ -238,14 +207,8 @@ async function InvoicesContent({
                       <td>
                         <span
                           style={{
-                            display: "inline-block",
-                            padding: "2px 8px",
-                            borderRadius: "var(--radius-sm)",
-                            fontSize: 12.5,
                             fontWeight: 700,
-                            background: conNo > 0 ? "var(--status-danger-bg)" : "var(--status-success-bg)",
                             color: conNo > 0 ? "var(--status-danger-text)" : "var(--status-success-text)",
-                            border: `1px solid ${conNo > 0 ? "var(--status-danger-border)" : "var(--status-success-border)"}`,
                           }}
                         >
                           {formatMoney(String(conNo))}
@@ -254,7 +217,19 @@ async function InvoicesContent({
                       <td>{formatDate(invoice.ngay_lap)}</td>
                       <td>{formatDate(invoice.han_dong_tien)}</td>
                       <td>
-                        <span className={statusClass(invoice.trang_thai)}>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            padding: "4px 10px",
+                            borderRadius: 999,
+                            background: "var(--primary-subtle)",
+                            color: "var(--primary)",
+                            border: "1px solid var(--border-strong)",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
                           {invoice.trang_thai}
                         </span>
                       </td>

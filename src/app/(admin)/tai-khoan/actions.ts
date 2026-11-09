@@ -112,7 +112,7 @@ export async function createAccount(
   };
 }
 
-/** Cập nhật họ tên, tòa quản lý và trạng thái của một tài khoản. */
+/** Cập nhật tòa quản lý và trạng thái của một tài khoản. */
 export async function updateAccount(
   _previous: AccountFormState,
   formData: FormData,
@@ -121,13 +121,10 @@ export async function updateAccount(
   if ("error" in guard) return { error: guard.error, success: null };
 
   const maTaiKhoan = text(formData, "maTaiKhoan");
-  const hoTen = text(formData, "hoTen");
   const toaNha = text(formData, "toaNha");
   const trangThai = text(formData, "trangThai");
 
   if (!maTaiKhoan) return { error: "Thiếu mã tài khoản.", success: null };
-  if (!hoTen)
-    return { error: "Vui lòng nhập họ tên nhân viên.", success: null };
   if (!ACCOUNT_STATUSES.includes(trangThai as (typeof ACCOUNT_STATUSES)[number])) {
     return { error: "Trạng thái không hợp lệ.", success: null };
   }
@@ -171,9 +168,9 @@ export async function updateAccount(
 
     await getDbPool().query(
       `UPDATE public.tai_khoan
-       SET ho_ten = $2, co_so_van_hanh = $3, trang_thai = $4
+       SET co_so_van_hanh = $2, trang_thai = $3
        WHERE ma_tai_khoan = $1`,
-      [maTaiKhoan, hoTen, isAdmin ? null : toaNha || null, trangThai],
+      [maTaiKhoan, isAdmin ? null : toaNha || null, trangThai],
     );
   } catch {
     return {

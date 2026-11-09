@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Clock, FileText } from "lucide-react";
 import type { PendingLiquidationRequest } from "@/lib/queries";
 import { LiquidationDialog } from "./[maHopDong]/liquidation-dialog";
+import styles from "@/components/business.module.css";
 
 function money(num: number | string | null | undefined) {
   if (!num) return "0 đ";
@@ -65,145 +66,147 @@ export function PendingLiquidationQueue({
           <h2 style={{ fontSize: 14, fontWeight: 700, color: "var(--text-main)", margin: 0 }}>
             Yêu cầu trả phòng & Thanh lý hợp đồng
           </h2>
-          <span
-            style={{
-              background: "var(--primary-subtle)",
-              color: "var(--primary)",
-              fontSize: 12,
-              fontWeight: 600,
-              padding: "2px 8px",
-              borderRadius: 999,
-              border: "1px solid var(--primary-subtle)",
-            }}
-          >
-            {requests.length} yêu cầu cần duyệt
-          </span>
         </div>
+
+        <span
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            padding: "4px 10px",
+            borderRadius: 999,
+            background: "var(--primary-subtle)",
+            color: "var(--primary)",
+            border: "1px solid var(--border-strong)",
+          }}
+        >
+          {requests.length} yêu cầu cần duyệt
+        </span>
       </div>
 
-      {/* Rows */}
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        {requests.map((req, idx) => {
-          const isDungHan = req.hinh_thuc === "Đúng hạn";
-          return (
-            <div
-              key={req.ma_thanh_ly}
-              style={{
-                padding: "16px 18px",
-                borderTop: idx > 0 ? "1px solid var(--bg-subtle)" : "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                gap: 16,
-              }}
-            >
-              {/* Cột 1: Thông tin cư dân, phòng và ngày dọn */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1, minWidth: 300 }}>
-                {/* Dòng 1: Tên khách + SĐT + Phòng + HĐ */}
-                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", fontSize: 13 }}>
-                  <strong style={{ color: "var(--text-main)", fontSize: 14 }}>
-                    {req.ten_khach || "Cư dân"}
-                  </strong>
-                  {req.so_dt && (
-                    <span style={{ color: "var(--text-muted)" }}>{req.so_dt}</span>
-                  )}
-                  <span style={{ color: "var(--text-main)", fontWeight: 600 }}>
-                    Phòng {req.ten_phong || req.ma_phong} ({req.toa_nha || "Nhà trọ"})
-                  </span>
-                  <span style={{ color: "var(--text-muted)" }}>
-                    HĐ:{" "}
-                    <Link
-                      href={`/hop-dong/${encodeURIComponent(req.ma_hop_dong)}`}
-                      style={{ color: "var(--primary)", fontWeight: 600, textDecoration: "underline" }}
+      {/* Bảng danh sách yêu cầu trả phòng & thanh lý */}
+      <div className={styles.tableScroll}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Khách thuê</th>
+              <th>Phòng / Cơ sở</th>
+              <th>Hình thức</th>
+              <th>Dự kiến dọn đi</th>
+              <th>Tài chính</th>
+              <th>Ghi chú</th>
+              <th style={{ textAlign: "right" }}>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {requests.map((req) => {
+              const isDungHan = req.hinh_thuc === "Đúng hạn";
+              return (
+                <tr key={req.ma_thanh_ly}>
+                  <td>
+                    <div>
+                      <strong style={{ color: "var(--text-main)" }}>
+                        {req.ten_khach || "Cư dân"}
+                      </strong>
+                      {req.so_dt && (
+                        <div style={{ fontSize: 11.5, color: "var(--text-muted)", marginTop: 1 }}>
+                          {req.so_dt}
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <strong style={{ color: "var(--text-main)" }}>
+                        {req.ten_phong || req.ma_phong}
+                      </strong>
+                      <div style={{ fontSize: 11.5, color: "var(--text-muted)", marginTop: 2 }}>
+                        {req.toa_nha || "Nhà trọ"}
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 600,
+                        padding: "3px 9px",
+                        borderRadius: 999,
+                        background: isDungHan ? "var(--primary-subtle)" : "var(--status-warning-bg)",
+                        color: isDungHan ? "var(--primary)" : "var(--status-warning-text)",
+                        border: `1px solid ${isDungHan ? "var(--border-strong)" : "var(--status-warning-border)"}`,
+                        display: "inline-block",
+                        whiteSpace: "nowrap",
+                      }}
                     >
-                      {req.ma_hop_dong}
-                    </Link>
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 600,
-                      padding: "2px 6px",
-                      borderRadius: 4,
-                      background: isDungHan ? "var(--status-success-bg)" : "var(--status-warning-bg)",
-                      color: isDungHan ? "var(--status-success-text)" : "var(--status-warning-text)",
-                      border: `1px solid ${isDungHan ? "var(--status-success-border)" : "var(--status-warning-bg)"}`,
-                    }}
-                  >
-                    {req.hinh_thuc}
-                  </span>
-                </div>
-
-                {/* Dòng 2: Ngày trả phòng & Tiền cọc & Nợ */}
-                <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 12.5, color: "var(--text-muted)", flexWrap: "wrap" }}>
-                  <span>
-                    Dự kiến dọn đi: <strong style={{ color: "var(--text-main)" }}>{date(req.ngay_tra_phong)}</strong>
-                  </span>
-                  <span style={{ color: "var(--text-muted)" }}>
-                    Hạn HĐ: {date(req.ngay_kt_hop_dong)}
-                  </span>
-                  <span>
-                    Tiền cọc: <strong style={{ color: "var(--text-main)" }}>{money(req.tien_dat_coc)}</strong>
-                  </span>
-                  {req.unpaid_total > 0 ? (
-                    <span style={{ color: "var(--status-danger-text)", fontWeight: 600 }}>
-                      Còn nợ: {money(req.unpaid_total)}
+                      {req.hinh_thuc}
                     </span>
-                  ) : (
-                    <span style={{ color: "var(--status-success-text)" }}>Nợ cũ: 0 đ</span>
-                  )}
-                </div>
+                  </td>
+                  <td>
+                    <div>
+                      <strong style={{ color: "var(--text-main)" }}>
+                        {date(req.ngay_tra_phong)}
+                      </strong>
+                      <div style={{ fontSize: 11.5, color: "var(--text-muted)", marginTop: 2 }}>
+                        Hạn HĐ: {date(req.ngay_kt_hop_dong)}
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      Cọc: <strong>{money(req.tien_dat_coc)}</strong>
+                    </div>
+                    <div style={{ marginTop: 2 }}>
+                      Nợ cũ: <strong>{money(req.unpaid_total)}</strong>
+                    </div>
+                  </td>
+                  <td style={{ maxWidth: 220 }}>
+                    {req.ghi_chu || "—"}
+                  </td>
+                  <td style={{ textAlign: "right" }}>
+                    <div style={{ display: "inline-flex", gap: 6, alignItems: "center", justifyContent: "flex-end" }}>
+                      <Link
+                        href={`/hop-dong/${encodeURIComponent(req.ma_hop_dong)}`}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 4,
+                          padding: "6px 11px",
+                          borderRadius: 6,
+                          border: "1px solid var(--border)",
+                          background: "var(--bg-surface)",
+                          color: "var(--text-main)",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          textDecoration: "none",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        <FileText size={13} /> Chi tiết HĐ
+                      </Link>
 
-                {/* Dòng 3: Ghi chú nếu có */}
-                {req.ghi_chu && (
-                  <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                    Ghi chú: <span style={{ color: "var(--text-main)" }}>&ldquo;{req.ghi_chu}&rdquo;</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Cột 2: Nút thao tác */}
-              <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                <Link
-                  href={`/hop-dong/${encodeURIComponent(req.ma_hop_dong)}`}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 5,
-                    padding: "7px 13px",
-                    borderRadius: 6,
-                    border: "1px solid var(--border)",
-                    background: "var(--bg-surface)",
-                    color: "var(--text-main)",
-                    fontSize: 12.5,
-                    fontWeight: 600,
-                    textDecoration: "none",
-                  }}
-                >
-                  <FileText size={14} /> Chi tiết HĐ
-                </Link>
-
-                <LiquidationDialog
-                  maHopDong={req.ma_hop_dong}
-                  maPhong={req.ten_phong || req.ma_phong}
-                  tenKhach={req.ten_khach || "Cư dân"}
-                  tienDatCoc={Number(req.tien_dat_coc) || 0}
-                  chiSoDienCu={req.chi_so_dien_gan_nhat || 0}
-                  chiSoNuocCu={req.chi_so_nuoc_gan_nhat || 0}
-                  unpaidTotal={req.unpaid_total}
-                  ngayKtHopDong={req.ngay_kt_hop_dong}
-                  maThanhLy={req.ma_thanh_ly}
-                  ngayTraPhongDuKien={req.ngay_tra_phong}
-                  ghiChuYeuCau={req.ghi_chu}
-                  isPendingRequest={true}
-                  triggerButtonVariant="warning"
-                  triggerButtonText="Nghiệm thu & Thanh lý"
-                />
-              </div>
-            </div>
-          );
-        })}
+                      <LiquidationDialog
+                        maHopDong={req.ma_hop_dong}
+                        maPhong={req.ten_phong || req.ma_phong}
+                        tenKhach={req.ten_khach || "Cư dân"}
+                        tienDatCoc={Number(req.tien_dat_coc) || 0}
+                        chiSoDienCu={req.chi_so_dien_gan_nhat || 0}
+                        chiSoNuocCu={req.chi_so_nuoc_gan_nhat || 0}
+                        unpaidTotal={req.unpaid_total}
+                        ngayKtHopDong={req.ngay_kt_hop_dong}
+                        maThanhLy={req.ma_thanh_ly}
+                        ngayTraPhongDuKien={req.ngay_tra_phong}
+                        ghiChuYeuCau={req.ghi_chu}
+                        isPendingRequest={true}
+                        triggerButtonVariant="table"
+                        triggerButtonText="Nghiệm thu & Thanh lý"
+                      />
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </section>
   );

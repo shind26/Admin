@@ -72,8 +72,6 @@ export async function createTenant(
         })
       : null;
 
-  const capTaiKhoanApp = formData.get("capTaiKhoanApp") === "on";
-
   if (!hoTen || !soDt || !cccd || !diaChi) {
     return {
       error: "Vui lòng nhập đầy đủ họ tên, số điện thoại, CCCD và địa chỉ thường trú.",
@@ -95,7 +93,7 @@ export async function createTenant(
 
     let maTaiKhoan: string | null = null;
 
-    if (capTaiKhoanApp) {
+    {
       // Kiểm tra xem SĐT đã có tài khoản trong tai_khoan chưa
       const { rows: existingAcc } = await client.query<{ ma_tai_khoan: string; vai_tro: string }>(
         `SELECT ma_tai_khoan, vai_tro FROM public.tai_khoan WHERE ten_dang_nhap = $1 LIMIT 1`,

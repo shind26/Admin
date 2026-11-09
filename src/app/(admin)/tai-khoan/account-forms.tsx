@@ -1,5 +1,8 @@
 "use client";
 
+import { Modal } from "@/components/modal";
+import accountStyles from "./account-forms.module.css";
+
 import { useActionState, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import {
@@ -8,7 +11,7 @@ import {
   updateAccount,
   type AccountFormState,
 } from "./actions";
-import { ACCOUNT_STATUSES, DEFAULT_PASSWORD } from "./constants";
+import { ACCOUNT_STATUSES } from "./constants";
 import styles from "@/components/business.module.css";
 const initialState: AccountFormState = { error: null, success: null };
 
@@ -21,7 +24,7 @@ export function AccountForm({ buildings }: { buildings: string[] }) {
   return (
     <form action={formAction} className={styles.formGrid}>
       <div className={styles.formField}>
-        <label htmlFor="tenDangNhap">Tên đăng nhập *</label>
+        <label htmlFor="tenDangNhap">Tên đăng nhập</label>
         <input
           id="tenDangNhap"
           name="tenDangNhap"
@@ -32,7 +35,7 @@ export function AccountForm({ buildings }: { buildings: string[] }) {
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="hoTen">Họ tên nhân viên *</label>
+        <label htmlFor="hoTen">Họ tên nhân viên</label>
         <input
           id="hoTen"
           name="hoTen"
@@ -50,7 +53,7 @@ export function AccountForm({ buildings }: { buildings: string[] }) {
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="toaNha">Tòa nhà quản lý *</label>
+        <label htmlFor="toaNha">Tòa nhà quản lý</label>
         <select id="toaNha" name="toaNha" defaultValue="" required>
           <option value="">-- Chọn tòa nhà --</option>
           {buildings.map((building) => (
@@ -60,10 +63,6 @@ export function AccountForm({ buildings }: { buildings: string[] }) {
           ))}
         </select>
       </div>
-
-      <p className={`${styles.formMessage} ${styles.formHint}`}>
-        Tài khoản mới dùng mật khẩu mặc định <strong>{DEFAULT_PASSWORD}</strong> và bắt buộc đổi ở lần đăng nhập đầu tiên. Nhân viên chỉ thấy dữ liệu thuộc tòa được gán.
-      </p>
 
       {state.error && (
         <p className={`${styles.formMessage} ${styles.formError}`} role="alert">
@@ -104,7 +103,6 @@ export function EditAccountToggle({
 }: {
   account: {
     maTaiKhoan: string;
-    hoTen: string;
     coSo: string;
     trangThai: string;
     vaiTro: string;
@@ -128,20 +126,9 @@ export function EditAccountToggle({
         {open ? "Đóng" : "Sửa"}
       </button>
       {open && (
-        <div className={styles.inlineEditor}>
-          <form action={formAction} className={styles.formGrid}>
+        <Modal open={open} title="Sửa tài khoản" onClose={() => setOpen(false)} dismissible={!pending} size="md">
+          <form action={formAction} className={accountStyles.editForm}>
             <input type="hidden" name="maTaiKhoan" value={account.maTaiKhoan} />
-
-            <div className={styles.formField}>
-              <label htmlFor={`hoTen-${account.maTaiKhoan}`}>Họ tên *</label>
-              <input
-                id={`hoTen-${account.maTaiKhoan}`}
-                name="hoTen"
-                defaultValue={account.hoTen}
-                required
-                maxLength={150}
-              />
-            </div>
 
             <div className={styles.formField}>
               <label htmlFor={`toaNha-${account.maTaiKhoan}`}>
@@ -177,9 +164,7 @@ export function EditAccountToggle({
               >
                 {ACCOUNT_STATUSES.map((status) => (
                   <option key={status} value={status}>
-                    {status === "HoatDong"
-                      ? "HoatDong — đang hoạt động"
-                      : "Khoa — bị khóa"}
+                    {status === "HoatDong" ? "Hoạt động" : "Khóa"}
                   </option>
                 ))}
               </select>
@@ -219,7 +204,7 @@ export function EditAccountToggle({
               </button>
             </div>
           </form>
-        </div>
+        </Modal>
       )}
     </>
   );

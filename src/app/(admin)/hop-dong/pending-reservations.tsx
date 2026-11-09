@@ -7,6 +7,7 @@ import { FileCheck, UserX, X, AlertTriangle, LoaderCircle, Copy, Check, Unlock }
 import type { PaidReservationRow } from "@/lib/queries";
 import { convertReservationToContract, cancelReservation, type ReservationFormState } from "@/app/(admin)/phong/actions";
 import type { ContractFormState } from "./actions";
+import styles from "@/components/business.module.css";
 
 const initialContractState: ContractFormState = { error: null, success: null };
 const initialResState: ReservationFormState = { error: null, success: null };
@@ -131,11 +132,8 @@ export function PendingReservationsQueue({
             </div>
             <div>
               <h2 style={{ fontSize: 15, fontWeight: 700, color: "var(--text-main)", margin: 0 }}>
-                Khách đặt cọc giữ chỗ chờ lập hợp đồng ({reservations.length})
+                Khách đặt cọc giữ chỗ chờ lập hợp đồng
               </h2>
-              <p style={{ fontSize: 12.5, color: "var(--text-muted)", margin: "3px 0 0" }}>
-                Danh sách khách đã đặt cọc giữ phòng — bấm &quot;Tạo hợp đồng&quot; để bàn giao và kích hoạt phòng
-              </p>
             </div>
           </div>
 
@@ -154,141 +152,115 @@ export function PendingReservationsQueue({
           </span>
         </div>
 
-        {/* Danh sách các phiếu cọc chờ lập HĐ */}
-        <div style={{ padding: "16px 20px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 14 }}>
-          {reservations.map((res) => {
-            const cocGiu = Number(res.so_tien_the_chan || 0);
-            const tongCoc = res.tien_dat_coc ? Number(res.tien_dat_coc) : 0;
-            const conLai = Math.max(0, tongCoc - cocGiu);
+        {/* Bảng danh sách các phiếu cọc chờ lập HĐ */}
+        <div className={styles.tableScroll}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Phòng</th>
+                <th>Khách thuê</th>
+                <th>Hẹn nhận phòng</th>
+                <th>Số người</th>
+                <th>Tiền đã cọc</th>
+                <th>Cần thu thêm</th>
+                <th style={{ textAlign: "right" }}>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reservations.map((res) => {
+                const cocGiu = Number(res.so_tien_the_chan || 0);
+                const tongCoc = res.tien_dat_coc ? Number(res.tien_dat_coc) : 0;
+                const conLai = Math.max(0, tongCoc - cocGiu);
 
-            const rawName = (res.ten_phong || res.ma_phong || "").trim();
-            const roomTitle = rawName.toLowerCase().startsWith("phòng") ? rawName : `Phòng ${rawName}`;
+                const rawName = (res.ten_phong || res.ma_phong || "").trim();
+                const roomTitle = rawName.toLowerCase().startsWith("phòng") ? rawName : `Phòng ${rawName}`;
 
-            return (
-              <div
-                key={res.ma_giu_cho}
-                style={{
-                  background: "var(--bg-surface)",
-                  borderRadius: 12,
-                  padding: "16px",
-                  border: "1px solid var(--border)",
-                  boxShadow: "0 1px 4px rgba(66, 91, 107, 0.04)",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  gap: 12,
-                }}
-              >
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 10 }}>
-                    <div>
-                      <strong style={{ fontSize: 15, fontWeight: 700, color: "var(--text-main)" }}>
+                return (
+                  <tr key={res.ma_giu_cho}>
+                    <td>
+                      <strong style={{ color: "var(--text-main)", fontWeight: 700 }}>
                         {roomTitle}
                       </strong>
-                      <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 2 }}>
-                        {res.toa_nha || "Cơ sở"} {res.tang !== null ? `  Tầng ${res.tang}` : ""}   Mã: {res.ma_giu_cho}
+                    </td>
+                    <td>
+                      <div>
+                        <strong style={{ color: "var(--text-main)" }}>
+                          {res.ho_ten_khach || "—"}
+                        </strong>
+                        {res.so_dt && (
+                          <div style={{ fontSize: 11.5, color: "var(--text-muted)", marginTop: 1 }}>
+                            {res.so_dt}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    <span
-                      style={{
-                        fontSize: 11.5,
-                        fontWeight: 700,
-                        padding: "3px 8px",
-                        borderRadius: 999,
-                        background: "var(--status-success-bg)",
-                        color: "var(--status-success-text)",
-                        border: "1px solid var(--status-success-border)",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      Đã cọc: {money(res.so_tien_the_chan)}
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      background: "var(--bg-subtle)",
-                      border: "1px solid var(--border)",
-                      padding: "10px 12px",
-                      borderRadius: 8,
-                      fontSize: 12.5,
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 6,
-                      color: "var(--text-muted)",
-                    }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span>Khách thuê:</span>
-                      <strong style={{ color: "var(--text-main)" }}>
-                        {res.ho_ten_khach || "—"} {res.so_dt ? `(${res.so_dt})` : ""}
-                      </strong>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span>Hẹn nhận phòng:</span>
-                      <strong style={{ color: "var(--text-main)" }}>
+                    </td>
+                    <td>
+                      <span style={{ fontWeight: 600, color: "var(--text-main)" }}>
                         {date(res.ngay_du_kien_o || res.ngay_het_han)}
+                      </span>
+                    </td>
+                    <td>
+                      <span>{res.so_nguoi_o || 1} người</span>
+                    </td>
+                    <td>
+                      <strong style={{ color: "var(--text-main)", fontWeight: 700 }}>
+                        {money(res.so_tien_the_chan)}
                       </strong>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span>Số người ở:</span>
-                      <strong>{res.so_nguoi_o || 1} người</strong>
-                    </div>
-                    {conLai > 0 && (
-                      <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 4, borderTop: "1px dashed var(--border)" }}>
-                        <span>Cần thu thêm:</span>
-                        <strong style={{ color: "var(--primary)" }}>{money(conLai)}</strong>
+                    </td>
+                    <td>
+                      <strong style={{ color: "var(--text-main)", fontWeight: 700 }}>
+                        {money(conLai)}
+                      </strong>
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      <div style={{ display: "inline-flex", gap: 6, alignItems: "center", justifyContent: "flex-end" }}>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenConvert(res)}
+                          style={{
+                            background: "var(--primary)",
+                            color: "var(--bg-surface)",
+                            border: "none",
+                            borderRadius: 6,
+                            padding: "6px 12px",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 5,
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          <FileCheck size={13} /> Tạo hợp đồng
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCancelRes(res);
+                            setSoTienHoanLai(0);
+                          }}
+                          style={{
+                            background: "var(--bg-surface)",
+                            color: "var(--status-danger-text)",
+                            border: "1px solid var(--status-danger-border)",
+                            borderRadius: 6,
+                            padding: "6px 10px",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Hủy cọc
+                        </button>
                       </div>
-                    )}
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", gap: 8, marginTop: "auto" }}>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenConvert(res)}
-                    style={{
-                      flex: 1,
-                      background: "var(--primary)",
-                      color: "var(--bg-surface)",
-                      border: "none",
-                      borderRadius: 8,
-                      padding: "8px 14px",
-                      fontSize: 12.5,
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 6,
-                    }}
-                  >
-                    <FileCheck size={14} /> Tạo hợp đồng
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCancelRes(res);
-                      setSoTienHoanLai(0);
-                    }}
-                    style={{
-                      background: "var(--bg-surface)",
-                      color: "var(--status-danger-text)",
-                      border: "1px solid var(--status-danger-border)",
-                      borderRadius: 8,
-                      padding: "8px 12px",
-                      fontSize: 12,
-                      fontWeight: 600,
-                      cursor: "pointer",
-                    }}
-                  >
-                    Hủy cọc
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -454,7 +426,7 @@ export function PendingReservationsQueue({
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                    Giá thuê thỏa thuận (đ/tháng) *
+                    Giá thuê thỏa thuận (đ/tháng)
                   </label>
                   <input
                     type="number"
@@ -467,7 +439,7 @@ export function PendingReservationsQueue({
 
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                    Tổng tiền cọc hợp đồng (VNĐ) *
+                    Tổng tiền cọc hợp đồng (VNĐ)
                   </label>
                   <input
                     type="number"
@@ -482,7 +454,7 @@ export function PendingReservationsQueue({
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                    Ngày bắt đầu ở (Tự động điền ngày hẹn) *
+                    Ngày bắt đầu ở (Tự động điền ngày hẹn)
                   </label>
                   <input
                     type="date"
@@ -496,7 +468,7 @@ export function PendingReservationsQueue({
 
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                    Ngày kết thúc hợp đồng *
+                    Ngày kết thúc hợp đồng
                   </label>
                   <input
                     type="date"
@@ -690,7 +662,7 @@ export function PendingReservationsQueue({
 
               <div style={{ marginBottom: 14 }}>
                 <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "var(--text-main)", marginBottom: 6 }}>
-                  Phương án xử lý tiền cọc ({money(cancelRes.so_tien_the_chan)}) *
+                  Phương án xử lý tiền cọc ({money(cancelRes.so_tien_the_chan)})
                 </label>
                 <div style={{ display: "flex", gap: 10 }}>
                   <label

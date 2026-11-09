@@ -5,12 +5,11 @@ import { LoaderCircle } from "lucide-react";
 import {
   createReceipt,
   deleteReceipt,
-  updateReceipt,
   quickApproveReceipt,
   quickRejectReceipt,
   type ReceiptFormState,
 } from "./actions";
-import type { InvoiceRow, ReceiptRow } from "@/lib/queries";
+import type { InvoiceRow } from "@/lib/queries";
 import styles from "@/components/business.module.css";
 import receiptStyles from "./receipt-detail.module.css";
 
@@ -35,71 +34,34 @@ function remaining(invoice: InvoiceRow) {
 }
 
 export function ReceiptForm({
-  mode,
-  receipt,
   invoices,
   presetInvoiceId,
 }: {
-  mode: "create" | "edit";
-  receipt?: ReceiptRow;
   invoices: InvoiceRow[];
   presetInvoiceId?: string;
 }) {
-  const action = mode === "create" ? createReceipt : updateReceipt;
-  const [state, formAction, pending] = useActionState(action, initialState);
+  const mode = "create";
+  const [state, formAction, pending] = useActionState(createReceipt, initialState);
 
   const [selectedInvoiceId, setSelectedInvoiceId] = useState(
-    presetInvoiceId ?? receipt?.ma_hoa_don ?? ""
+    presetInvoiceId ?? ""
   );
 
-  const isConfirmed =
-    mode === "edit" &&
-    (receipt?.trang_thai === "Đã xác nhận" || receipt?.trang_thai === "Đã khớp lệnh");
-
-  const [soTienThu, setSoTienThu] = useState<string>(
-    receipt?.so_tien_thu ? String(Number(receipt.so_tien_thu)) : ""
-  );
+  const [soTienThu, setSoTienThu] = useState("");
 
   const handleInvoiceChange = (id: string) => {
     setSelectedInvoiceId(id);
-    if (mode === "create") {
-      const inv = invoices.find((i) => i.ma_hoa_don === id);
-      if (inv) {
-        const rem = remaining(inv);
-        if (rem > 0) setSoTienThu(String(rem));
-      }
+    const inv = invoices.find((i) => i.ma_hoa_don === id);
+    if (inv) {
+      const rem = remaining(inv);
+      if (rem > 0) setSoTienThu(String(rem));
     }
   };
 
   return (
     <form action={formAction} className={styles.formGrid}>
-      {mode === "edit" && (
-        <input
-          type="hidden"
-          name="maPhieuThu"
-          value={receipt?.ma_phieu_thu ?? ""}
-        />
-      )}
-
-      {isConfirmed && (
-        <div
-          style={{
-            gridColumn: "1 / -1",
-            background: "var(--bg-subtle)",
-            padding: "8px 12px",
-            borderRadius: "var(--radius-sm)",
-            border: "1px solid var(--border)",
-            fontSize: 12.5,
-            color: "var(--text-muted)",
-          }}
-        >
-          Phiếu thu đã xác nhận không thể sửa đổi số tiền.
-        </div>
-      )}
-
       <div className={`${styles.formField} ${styles.formFieldWide}`}>
-        <label htmlFor={`maHoaDon-${mode}`}>Hóa đơn thanh toán *</label>
-        {mode === "create" ? (
+        <label htmlFor={`maHoaDon-${mode}`}>Hóa đơn thanh toán</label>
           <select
             id={`maHoaDon-${mode}`}
             name="maHoaDon"
@@ -117,18 +79,10 @@ export function ReceiptForm({
               );
             })}
           </select>
-        ) : (
-          <input
-            id={`maHoaDon-${mode}`}
-            name="maHoaDon"
-            value={receipt?.ma_hoa_don ?? ""}
-            readOnly
-          />
-        )}
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`soTienThu-${mode}`}>Số tiền thu (đ) *</label>
+        <label htmlFor={`soTienThu-${mode}`}>Số tiền thu (đ)</label>
         <input
           id={`soTienThu-${mode}`}
           name="soTienThu"
@@ -139,33 +93,26 @@ export function ReceiptForm({
           onChange={(e) => setSoTienThu(e.target.value)}
           placeholder="Nhập số tiền..."
           required
-          disabled={isConfirmed}
         />
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`ngayThu-${mode}`}>Ngày thu *</label>
+        <label htmlFor={`ngayThu-${mode}`}>Ngày thu</label>
         <input
           id={`ngayThu-${mode}`}
           name="ngayThu"
           type="date"
-          defaultValue={
-            receipt?.ngay_thu
-              ? new Date(receipt.ngay_thu).toISOString().slice(0, 10)
-              : today()
-          }
+          defaultValue={today()}
           required
-          disabled={isConfirmed}
         />
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`hinhThuc-${mode}`}>Hình thức thanh toán *</label>
+        <label htmlFor={`hinhThuc-${mode}`}>Hình thức thanh toán</label>
         <select
           id={`hinhThuc-${mode}`}
           name="hinhThuc"
-          defaultValue={receipt?.hinh_thuc ?? "Chuyển khoản"}
-          disabled={isConfirmed}
+          defaultValue="Chuyển khoản"
         >
           {PAYMENT_METHODS.map((method) => (
             <option key={method} value={method}>
@@ -176,12 +123,11 @@ export function ReceiptForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`trangThai-${mode}`}>Trạng thái *</label>
+        <label htmlFor={`trangThai-${mode}`}>Trạng thái</label>
         <select
           id={`trangThai-${mode}`}
           name="trangThai"
-          defaultValue={receipt?.trang_thai ?? "Đã xác nhận"}
-          disabled={isConfirmed}
+          defaultValue="Đã xác nhận"
         >
           {RECEIPT_STATUSES.map((status) => (
             <option key={status} value={status}>
@@ -199,7 +145,6 @@ export function ReceiptForm({
           defaultValue=""
           placeholder="Ví dụ: Đóng tiền phòng đợt 1, thanh toán qua ngân hàng..."
           maxLength={255}
-          disabled={isConfirmed}
         />
       </div>
 
@@ -208,10 +153,9 @@ export function ReceiptForm({
         <input
           id={`maTraCuu-${mode}`}
           name="maTraCuu"
-          defaultValue={receipt?.ma_tra_cuu ?? ""}
+          defaultValue=""
           placeholder="Mã giao dịch VietQR, số UNC..."
           maxLength={50}
-          disabled={isConfirmed}
         />
       </div>
 
@@ -229,7 +173,6 @@ export function ReceiptForm({
         </p>
       )}
 
-      {!isConfirmed && (
         <div className={styles.formActions}>
           <button
             className={styles.primaryButton}
@@ -240,14 +183,11 @@ export function ReceiptForm({
               <>
                 <LoaderCircle size={15} className={styles.spinner} /> Đang lưu...
               </>
-            ) : mode === "create" ? (
-              "Ghi nhận phiếu thu"
             ) : (
-              "Lưu thay đổi"
+              "Ghi nhận phiếu thu"
             )}
           </button>
         </div>
-      )}
     </form>
   );
 }
@@ -274,38 +214,6 @@ export function DeleteReceiptButton({ maPhieuThu }: { maPhieuThu: string }) {
       </form>
       {state.error && <span className={styles.rowError}>{state.error}</span>}
     </span>
-  );
-}
-
-export function ReceiptEditorToggle({
-  receipt,
-  invoices,
-}: {
-  receipt: ReceiptRow;
-  invoices: InvoiceRow[];
-}) {
-  const [open, setOpen] = useState(false);
-
-  if (receipt.trang_thai === "Đã xác nhận" || receipt.trang_thai === "Đã khớp lệnh") {
-    return null;
-  }
-
-  return (
-    <>
-      <button
-        className={styles.linkButton}
-        type="button"
-        onClick={() => setOpen((value) => !value)}
-        title="Chỉnh sửa thông tin phiếu thu đang chờ duyệt"
-      >
-        {open ? "Đóng" : "Sửa"}
-      </button>
-      {open && (
-        <div className={styles.inlineEditor}>
-          <ReceiptForm mode="edit" receipt={receipt} invoices={invoices} />
-        </div>
-      )}
-    </>
   );
 }
 

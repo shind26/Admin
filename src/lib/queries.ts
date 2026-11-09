@@ -2107,7 +2107,7 @@ export type ManagedAccountRow = {
 export async function getManagedAccounts(
   keyword: string,
 ): Promise<ManagedAccountRow[]> {
-  const conditions = [`vai_tro IN ('Admin', 'QuanLy')`];
+  const conditions = [`vai_tro = 'QuanLy'`];
   const params: string[] = [];
 
   if (keyword.trim()) {

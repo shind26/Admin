@@ -3,7 +3,13 @@
 import { useActionState, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { LoaderCircle, X } from "lucide-react";
-import { createService, deleteService, updateService, toggleServiceStatus, type ServiceFormState } from "./actions";
+import {
+  createService,
+  deleteService,
+  updateService,
+  toggleServiceStatus,
+  type ServiceFormState,
+} from "./actions";
 import styles from "@/components/business.module.css";
 
 const initialState: ServiceFormState = { error: null, success: null };
@@ -69,7 +75,7 @@ export function ServiceForm({
           htmlFor={`tenDichVu-${mode}`}
           style={{ fontSize: 12.5, fontWeight: 700, color: "var(--text-main)" }}
         >
-          Tên dịch vụ *
+          Tên dịch vụ
         </label>
         <input
           id={`tenDichVu-${mode}`}
@@ -96,7 +102,7 @@ export function ServiceForm({
           htmlFor={`donGia-${mode}`}
           style={{ fontSize: 12.5, fontWeight: 700, color: "var(--text-main)" }}
         >
-          Đơn giá (đ) *
+          Đơn giá (đ)
         </label>
         <input
           id={`donGia-${mode}`}
@@ -105,7 +111,9 @@ export function ServiceForm({
           min={0}
           step={step}
           placeholder={isDien ? "3500, 3600..." : "50000, 100000..."}
-          defaultValue={service?.donGia ? Math.round(Number(service.donGia)) : ""}
+          defaultValue={
+            service?.donGia ? Math.round(Number(service.donGia)) : ""
+          }
           required
           style={{
             height: 40,
@@ -117,11 +125,6 @@ export function ServiceForm({
             background: "var(--bg-surface)",
           }}
         />
-        <span style={{ fontSize: 11.5, color: "var(--text-muted)" }}>
-          {isDien
-            ? "Mỗi nấc tăng / giảm: 100 đ (3.500, 3.600, 3.700...)"
-            : "Mỗi nấc tăng / giảm: 1.000 đ"}
-        </span>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -129,7 +132,7 @@ export function ServiceForm({
           htmlFor={`donViTinh-${mode}`}
           style={{ fontSize: 12.5, fontWeight: 700, color: "var(--text-main)" }}
         >
-          Đơn vị tính *
+          Đơn vị tính
         </label>
         <input
           id={`donViTinh-${mode}`}
@@ -156,7 +159,7 @@ export function ServiceForm({
           htmlFor={`dangApDung-${mode}`}
           style={{ fontSize: 12.5, fontWeight: 700, color: "var(--text-main)" }}
         >
-          Trạng thái áp dụng *
+          Trạng thái áp dụng
         </label>
         <select
           id={`dangApDung-${mode}`}
@@ -173,11 +176,18 @@ export function ServiceForm({
           }}
         >
           <option value="true">Đang áp dụng</option>
-          <option value="false">Tạm ngưng (Không áp dụng)</option>
+          <option value="false">Không áp dụng</option>
         </select>
       </div>
 
-      <div style={{ gridColumn: "1 / -1", display: "flex", flexDirection: "column", gap: 6 }}>
+      <div
+        style={{
+          gridColumn: "1 / -1",
+          display: "flex",
+          flexDirection: "column",
+          gap: 6,
+        }}
+      >
         <label
           htmlFor={`ghiChu-${mode}`}
           style={{ fontSize: 12.5, fontWeight: 700, color: "var(--text-main)" }}
@@ -281,7 +291,9 @@ export function ServiceForm({
             gap: 6,
             boxShadow: "0 2px 6px rgba(24, 119, 242, 0.35)",
           }}
-          title={readOnly ? "Bạn không có quyền sửa bảng giá dịch vụ" : undefined}
+          title={
+            readOnly ? "Bạn không có quyền sửa bảng giá dịch vụ" : undefined
+          }
         >
           {pending ? (
             <>
@@ -319,7 +331,7 @@ export function DeleteServiceButton({
         onSubmit={(event) => {
           if (
             !confirm(
-              `Bạn có chắc chắn muốn xóa dịch vụ "${tenDichVu}"?\nThao tác này không thể hoàn tác.`
+              `Bạn có chắc chắn muốn xóa dịch vụ "${tenDichVu}"?\nThao tác này không thể hoàn tác.`,
             )
           ) {
             event.preventDefault();
@@ -374,88 +386,105 @@ export function ServiceEditorToggle({
         Sửa
       </button>
 
-      {open && typeof document !== "undefined" && createPortal(
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 99999,
-            background: "rgba(15, 23, 42, 0.45)",
-            backdropFilter: "blur(3px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 16,
-          }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setOpen(false);
-          }}
-        >
+      {open &&
+        typeof document !== "undefined" &&
+        createPortal(
           <div
             style={{
-              background: "var(--bg-surface)",
-              borderRadius: 18,
-              maxWidth: 580,
-              width: "100%",
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              border: "1px solid var(--border)",
-              overflow: "hidden",
+              position: "fixed",
+              inset: 0,
+              zIndex: 99999,
+              background: "rgba(15, 23, 42, 0.45)",
+              backdropFilter: "blur(3px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 16,
+            }}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setOpen(false);
             }}
           >
-            {/* Header */}
             <div
               style={{
-                padding: "16px 20px",
-                borderBottom: "1px solid var(--bg-subtle)",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                background: "var(--primary)",
-                color: "var(--bg-surface)",
+                background: "var(--bg-surface)",
+                borderRadius: 18,
+                maxWidth: 580,
+                width: "100%",
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+                border: "1px solid var(--border)",
+                overflow: "hidden",
               }}
             >
-              <div>
-                <h3 style={{ fontSize: 16, fontWeight: 800, margin: 0, color: "var(--bg-surface)" }}>
-                  Chỉnh sửa dịch vụ
-                </h3>
-                <p style={{ fontSize: 12, margin: "2px 0 0", color: "var(--primary-subtle)", display: "flex", gap: 14 }}>
-                  <span>Mã: {service.maDichVu}</span>
-                  <span>{service.tenDichVu}</span>
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
+              {/* Header */}
+              <div
                 style={{
-                  background: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "var(--bg-surface)",
-                  opacity: 0.85,
-                  padding: 4,
+                  padding: "16px 20px",
+                  borderBottom: "1px solid var(--bg-subtle)",
                   display: "flex",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  justifyContent: "center",
+                  background: "var(--primary)",
+                  color: "var(--bg-surface)",
                 }}
               >
-                <X size={20} />
-              </button>
-            </div>
+                <div>
+                  <h3
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 800,
+                      margin: 0,
+                      color: "var(--bg-surface)",
+                    }}
+                  >
+                    Chỉnh sửa dịch vụ
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: 12,
+                      margin: "2px 0 0",
+                      color: "var(--primary-subtle)",
+                      display: "flex",
+                      gap: 14,
+                    }}
+                  >
+                    <span>Mã: {service.maDichVu}</span>
+                    <span>{service.tenDichVu}</span>
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "var(--bg-surface)",
+                    opacity: 0.85,
+                    padding: 4,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <X size={20} />
+                </button>
+              </div>
 
-            {/* Form Body */}
-            <div style={{ padding: 22 }}>
-              <ServiceForm
-                mode="edit"
-                service={service}
-                readOnly={readOnly}
-                onSuccess={() => setOpen(false)}
-                onCancel={() => setOpen(false)}
-              />
+              {/* Form Body */}
+              <div style={{ padding: 22 }}>
+                <ServiceForm
+                  mode="edit"
+                  service={service}
+                  readOnly={readOnly}
+                  onSuccess={() => setOpen(false)}
+                  onCancel={() => setOpen(false)}
+                />
+              </div>
             </div>
-          </div>
-        </div>,
-        document.body,
-      )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
@@ -497,26 +526,22 @@ export function ServiceStatusToggle({
         display: "inline-flex",
         alignItems: "center",
         gap: 6,
-        padding: "5px 12px",
+        padding: "4px 10px",
         borderRadius: 999,
         fontSize: 12,
-        fontWeight: 700,
+        fontWeight: 600,
         cursor: readOnly || pending ? "default" : "pointer",
-        background: active ? "var(--status-success-bg)" : "var(--bg-subtle)",
-        color: active ? "var(--status-success-text)" : "var(--text-muted)",
-        border: `1px solid ${active ? "var(--status-success-border)" : "var(--border)"}`,
+        background: "var(--primary-subtle)",
+        color: "var(--primary)",
+        border: "1px solid var(--border-strong)",
         transition: "all 0.2s ease",
       }}
-      title={readOnly ? "Bạn không có quyền đổi trạng thái" : "Bấm để bật / tắt áp dụng dịch vụ này"}
+      title={
+        readOnly
+          ? "Bạn không có quyền đổi trạng thái"
+          : "Bấm để bật / tắt áp dụng dịch vụ này"
+      }
     >
-      <span
-        style={{
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          background: active ? "var(--status-success-text)" : "var(--text-muted)",
-        }}
-      />
       {pending ? "Đang đổi..." : active ? "Đang áp dụng" : "Không áp dụng"}
     </button>
   );

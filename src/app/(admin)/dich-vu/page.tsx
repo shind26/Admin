@@ -72,14 +72,13 @@ async function ServicesContent() {
                 <th>Đơn vị tính</th>
                 <th>Ghi chú</th>
                 <th>Trạng thái</th>
-                <th>Đã dùng</th>
                 <th>Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {services.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className={styles.empty}>
+                  <td colSpan={7} className={styles.empty}>
                     Chưa có dịch vụ nào trong bảng giá.
                   </td>
                 </tr>
@@ -99,15 +98,6 @@ async function ServicesContent() {
                         dangApDung={service.dang_ap_dung}
                         readOnly={!canManage}
                       />
-                    </td>
-                    <td>
-                      {service.so_lan_ap_dung > 0 ? (
-                        <span className={styles.badgeInfo}>
-                          {service.so_lan_ap_dung} kỳ
-                        </span>
-                      ) : (
-                        <span className={styles.badgeMuted}>Chưa dùng</span>
-                      )}
                     </td>
                     <td>
                       <div className={styles.actionCell}>

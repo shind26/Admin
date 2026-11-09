@@ -139,7 +139,7 @@ export function ContractForm({
       )}
 
       <div className={styles.formField}>
-        <label htmlFor={`maPhong-${mode}`}>Phòng *</label>
+        <label htmlFor={`maPhong-${mode}`}>Phòng</label>
         <select
           id={`maPhong-${mode}`}
           name="maPhong"
@@ -159,49 +159,46 @@ export function ContractForm({
             </option>
           ))}
         </select>
-        {mode === "create" && availableRooms.length === 0 && (
-          <span className={styles.fieldHint} style={{ color: "var(--status-danger-text)" }}>
-            Tất cả các phòng thuộc cơ sở bạn quản lý hiện đều đang có khách thuê hoặc đang giữ chỗ.
-          </span>
-        )}
       </div>
 
       {mode === "create" ? (
         <div className={styles.formField} style={{ gridColumn: "1 / -1" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, flexWrap: "wrap", gap: 8 }}>
-            <label style={{ fontWeight: 600, margin: 0 }}>Khách đại diện (Bên B) *</label>
+            <label style={{ fontWeight: 600, margin: 0 }}>Khách đại diện (Bên B)</label>
             <div style={{ display: "flex", gap: 6 }}>
               <button
                 type="button"
                 onClick={() => setTenantMode("new")}
+                aria-pressed={tenantMode === "new"}
                 style={{
-                  padding: "5px 12px",
-                  borderRadius: 6,
-                  border: tenantMode === "new" ? "2px solid var(--status-success-text)" : "1px solid var(--border)",
-                  background: tenantMode === "new" ? "var(--status-success-bg)" : "var(--bg-surface)",
-                  color: tenantMode === "new" ? "var(--status-success-text)" : "var(--text-muted)",
+                  padding: "4px 10px",
+                  borderRadius: 999,
+                  border: tenantMode === "new" ? "1px solid var(--border-strong)" : "1px solid var(--border)",
+                  background: tenantMode === "new" ? "var(--primary-subtle)" : "var(--bg-surface)",
+                  color: tenantMode === "new" ? "var(--primary)" : "var(--text-muted)",
                   fontWeight: 600,
                   fontSize: 12,
                   cursor: "pointer",
                 }}
               >
-                ✨ Nhập khách mới
+                Nhập khách mới
               </button>
               <button
                 type="button"
                 onClick={() => setTenantMode("existing")}
+                aria-pressed={tenantMode === "existing"}
                 style={{
-                  padding: "5px 12px",
-                  borderRadius: 6,
-                  border: tenantMode === "existing" ? "2px solid var(--status-success-text)" : "1px solid var(--border)",
-                  background: tenantMode === "existing" ? "var(--status-success-bg)" : "var(--bg-surface)",
-                  color: tenantMode === "existing" ? "var(--status-success-text)" : "var(--text-muted)",
+                  padding: "4px 10px",
+                  borderRadius: 999,
+                  border: tenantMode === "existing" ? "1px solid var(--border-strong)" : "1px solid var(--border)",
+                  background: tenantMode === "existing" ? "var(--primary-subtle)" : "var(--bg-surface)",
+                  color: tenantMode === "existing" ? "var(--primary)" : "var(--text-muted)",
                   fontWeight: 600,
                   fontSize: 12,
                   cursor: "pointer",
                 }}
               >
-                👥 Chọn khách cũ ({tenants.length})
+                Chọn khách cũ
               </button>
             </div>
           </div>
@@ -221,7 +218,7 @@ export function ContractForm({
             >
               <div>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                  Họ và tên khách *
+                  Họ và tên khách
                 </label>
                 <input
                   type="text"
@@ -234,7 +231,7 @@ export function ContractForm({
 
               <div>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                  Số điện thoại (Tên đăng nhập App) *
+                  Số điện thoại (Tên đăng nhập App)
                 </label>
                 <input
                   type="tel"
@@ -247,7 +244,7 @@ export function ContractForm({
 
               <div>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                  Số CCCD / CMND *
+                  Số CCCD / CMND
                 </label>
                 <input
                   type="text"
@@ -270,9 +267,6 @@ export function ContractForm({
                 />
               </div>
 
-              <div style={{ gridColumn: "1 / -1", fontSize: 12, color: "var(--status-success-text)", display: "flex", alignItems: "center", gap: 6 }}>
-                <ShieldCheck size={14} /> Hệ thống sẽ tự động tạo hồ sơ khách thuê và cấp tài khoản Mobile App với mật khẩu ngẫu nhiên 6 số.
-              </div>
             </div>
           ) : (
             <select
@@ -293,7 +287,7 @@ export function ContractForm({
         </div>
       ) : (
         <div className={styles.formField}>
-          <label htmlFor={`maKhachDaiDien-${mode}`}>Khách đại diện (Bên B) *</label>
+          <label htmlFor={`maKhachDaiDien-${mode}`}>Khách đại diện (Bên B)</label>
           <select
             id={`maKhachDaiDien-${mode}`}
             name="maKhachDaiDien"
@@ -310,22 +304,9 @@ export function ContractForm({
         </div>
       )}
 
-      <div className={styles.formField}>
-        <label htmlFor={`trangThai-${mode}`}>Trạng thái hợp đồng</label>
-        {mode === "create" ? (
-          <>
-            <input type="hidden" name="trangThai" value="Còn hạn" />
-            <input
-              id={`trangThai-${mode}`}
-              value="Còn hạn"
-              readOnly
-              style={{ background: "var(--bg-subtle)", color: "var(--status-success-text)", fontWeight: 700 }}
-            />
-            <span className={styles.fieldHint}>
-              Hợp đồng mới tạo luôn ở trạng thái Còn hạn (mặc định)
-            </span>
-          </>
-        ) : (
+      {mode === "edit" && (
+        <div className={styles.formField}>
+          <label htmlFor={`trangThai-${mode}`}>Trạng thái hợp đồng</label>
           <select
             id={`trangThai-${mode}`}
             name="trangThai"
@@ -337,9 +318,20 @@ export function ContractForm({
               </option>
             ))}
           </select>
-        )}
-      </div>
+        </div>
+      )}
 
+      {mode === "edit" && (
+        <>
+          <input type="hidden" name="ngayKy" value={contract?.ngay_ky?.slice(0, 10) ?? ""} />
+          <input type="hidden" name="ngayBd" value={contract?.ngay_bd?.slice(0, 10) ?? ""} />
+          <input type="hidden" name="tienDatCoc" value={contract?.tien_dat_coc ?? ""} />
+          <input type="hidden" name="chuKyThuTien" value={contract?.chu_ky_thu_tien ?? ""} />
+        </>
+      )}
+
+      {mode === "create" && (
+        <>
       <div className={styles.formField}>
         <label htmlFor={`ngayKy-${mode}`}>Ngày ký hợp đồng</label>
         <input
@@ -350,13 +342,10 @@ export function ContractForm({
           max={ngayBdVal || undefined}
           onChange={(e) => setNgayKyVal(e.target.value)}
         />
-        <span className={styles.fieldHint}>
-          Ký trước hoặc vào ngày bắt đầu vào ở ({ngayBdVal || "—"})
-        </span>
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`ngayBd-${mode}`}>Ngày bắt đầu vào ở *</label>
+        <label htmlFor={`ngayBd-${mode}`}>Ngày bắt đầu vào ở</label>
         <input
           id={`ngayBd-${mode}`}
           name="ngayBd"
@@ -366,13 +355,12 @@ export function ContractForm({
           onChange={handleNgayBdChange}
           required
         />
-        <span className={styles.fieldHint}>
-          Thời điểm bắt đầu tính tiền thuê và bàn giao phòng
-        </span>
       </div>
+        </>
+      )}
 
       <div className={styles.formField}>
-        <label htmlFor={`ngayKt-${mode}`}>Ngày kết thúc hợp đồng *</label>
+        <label htmlFor={`ngayKt-${mode}`}>Ngày kết thúc hợp đồng</label>
         <input
           id={`ngayKt-${mode}`}
           name="ngayKt"
@@ -382,12 +370,12 @@ export function ContractForm({
           onChange={(e) => setNgayKtVal(e.target.value)}
           required
         />
-        <span className={styles.fieldHint}>
-          Phải sau ngày bắt đầu vào ở (thời hạn hợp đồng thuê)
-        </span>
       </div>
 
-      <div className={styles.formField}>
+      <div
+        className={styles.formField}
+        style={mode === "edit" ? { alignSelf: "end" } : undefined}
+      >
         <label htmlFor={`giaThueThoaThuan-${mode}`}>
           Giá thuê thỏa thuận (đ)
         </label>
@@ -402,6 +390,8 @@ export function ContractForm({
         />
       </div>
 
+      {mode === "create" && (
+        <>
       <div className={styles.formField}>
         <label htmlFor={`tienDatCoc-${mode}`}>Tiền đặt cọc (đ)</label>
         <input
@@ -425,6 +415,8 @@ export function ContractForm({
           defaultValue={contract?.chu_ky_thu_tien ?? 1}
         />
       </div>
+        </>
+      )}
 
       {mode === "create" && (
         <div style={{ gridColumn: "1 / -1" }}>
@@ -752,7 +744,7 @@ export function AddOccupantForm({
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
               <div>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "var(--text-main)", marginBottom: 4 }}>
-                  Họ và tên bạn ở cùng *
+                  Họ và tên bạn ở cùng
                 </label>
                 <input
                   type="text"
@@ -772,7 +764,7 @@ export function AddOccupantForm({
               </div>
               <div>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "var(--text-main)", marginBottom: 4 }}>
-                  Số điện thoại *
+                  Số điện thoại
                 </label>
                 <input
                   type="tel"
@@ -794,7 +786,7 @@ export function AddOccupantForm({
           ) : (
             <div style={{ marginBottom: 10 }}>
               <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "var(--text-main)", marginBottom: 4 }}>
-                Chọn khách ở cùng *
+                Chọn khách ở cùng
               </label>
               <select
                 value={maKhach}

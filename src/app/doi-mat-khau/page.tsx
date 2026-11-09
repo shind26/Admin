@@ -5,6 +5,7 @@ import { AdminPageSkeleton } from "@/components/admin-skeleton";
 import { requireScope } from "@/lib/session";
 import { ChangePasswordForm } from "./change-password-form";
 import styles from "@/components/business.module.css";
+import passwordStyles from "./change-password.module.css";
 
 export const metadata = { title: "Đổi mật khẩu | Kiêu Giang Boarding" };
 
@@ -24,10 +25,10 @@ async function ChangePasswordContent() {
         </div>
       </div>
 
-      <div className={styles.createBox}>
-        <ChangePasswordForm
-          username={account.ten_dang_nhap || account.ma_tai_khoan}
-        />
+      <div className={passwordStyles.container}>
+        <div className={passwordStyles.card}>
+          <ChangePasswordForm />
+        </div>
       </div>
     </AdminShell>
   );

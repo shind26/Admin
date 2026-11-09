@@ -174,7 +174,7 @@ export function IssueForm({
                 whiteSpace: "nowrap",
               }}
             >
-              Cập nhật trạng thái tiến trình *
+              Cập nhật trạng thái tiến trình
             </label>
             <span
               style={{
@@ -294,7 +294,7 @@ export function IssueForm({
       )}
 
       <div className={styles.formField}>
-        <label htmlFor={`maPhong-${mode}`}>Phòng *</label>
+        <label htmlFor={`maPhong-${mode}`}>Phòng</label>
         <select
           id={`maPhong-${mode}`}
           name="maPhong"
@@ -323,7 +323,7 @@ export function IssueForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`danhMuc-${mode}`}>Danh mục *</label>
+        <label htmlFor={`danhMuc-${mode}`}>Danh mục</label>
         <input
           id={`danhMuc-${mode}`}
           name="danhMuc"
@@ -421,7 +421,7 @@ export function IssueForm({
       )}
 
       <div className={`${styles.formField} ${styles.formFieldWide}`}>
-        <label htmlFor={`noiDung-${mode}`}>Mô tả sự cố *</label>
+        <label htmlFor={`noiDung-${mode}`}>Mô tả sự cố</label>
         <textarea
           id={`noiDung-${mode}`}
           name="noiDung"

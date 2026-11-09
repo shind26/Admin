@@ -39,7 +39,7 @@ export function StayForm({
       )}
 
       <div className={styles.formField}>
-        <label htmlFor={`maHopDong-${mode}`}>Hợp đồng *</label>
+        <label htmlFor={`maHopDong-${mode}`}>Hợp đồng</label>
         <select
           id={`maHopDong-${mode}`}
           name="maHopDong"
@@ -56,7 +56,7 @@ export function StayForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`hoTenKhachNgoai-${mode}`}>Tên khách ngoài *</label>
+        <label htmlFor={`hoTenKhachNgoai-${mode}`}>Tên khách ngoài</label>
         <input
           id={`hoTenKhachNgoai-${mode}`}
           name="hoTenKhachNgoai"
@@ -67,7 +67,7 @@ export function StayForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`cccdKhachNgoai-${mode}`}>CCCD khách ngoài *</label>
+        <label htmlFor={`cccdKhachNgoai-${mode}`}>CCCD khách ngoài</label>
         <input
           id={`cccdKhachNgoai-${mode}`}
           name="cccdKhachNgoai"
@@ -78,7 +78,7 @@ export function StayForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`tuNgay-${mode}`}>Từ ngày *</label>
+        <label htmlFor={`tuNgay-${mode}`}>Từ ngày</label>
         <input
           id={`tuNgay-${mode}`}
           name="tuNgay"
@@ -89,7 +89,7 @@ export function StayForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`denNgay-${mode}`}>Đến ngày *</label>
+        <label htmlFor={`denNgay-${mode}`}>Đến ngày</label>
         <input
           id={`denNgay-${mode}`}
           name="denNgay"

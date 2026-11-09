@@ -7,7 +7,6 @@ import { getInvoices, getReceipts } from "@/lib/queries";
 import { ScopeQuery } from "@/lib/scope";
 import {
   DeleteReceiptButton,
-  ReceiptEditorToggle,
   ReceiptForm,
   QuickApproveReceiptButton,
   QuickRejectReceiptButton,
@@ -38,12 +37,6 @@ function formatMoney(value: string | null) {
 function formatDate(value: string | null) {
   if (!value) return "-";
   return new Date(value).toLocaleDateString("vi-VN");
-}
-
-function statusClass(status: string | null) {
-  if (status === "Đã xác nhận" || status === "Đã khớp lệnh" || status === "Đã thanh toán") return styles.badgeOk;
-  if (status === "Đã hủy") return styles.badgeMuted;
-  return styles.badgeWarn;
 }
 
 async function ReceiptsContent({
@@ -117,7 +110,6 @@ async function ReceiptsContent({
       <details className={styles.createBox}>
         <summary className={styles.createSummary}>+ Ghi nhận phiếu thu mới</summary>
         <ReceiptForm
-          mode="create"
           invoices={unpaidInvoices}
           presetInvoiceId={invoiceId}
         />
@@ -213,11 +205,6 @@ async function ReceiptsContent({
                       <div className={styles.strong}>
                         {receipt.ma_hoa_don || "—"}
                       </div>
-                      {receipt.tong_tien_hoa_don && (
-                        <div className={styles.muted} style={{ fontSize: "11px" }}>
-                          Tổng: {formatMoney(receipt.tong_tien_hoa_don)}
-                        </div>
-                      )}
                     </td>
                     <td className={styles.strong} style={{ color: "var(--status-success-text)" }}>
                       {formatMoney(receipt.so_tien_thu)}
@@ -227,7 +214,19 @@ async function ReceiptsContent({
                       <div>{receipt.hinh_thuc || "—"}</div>
                     </td>
                     <td>
-                      <span className={statusClass(receipt.trang_thai)}>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          padding: "4px 10px",
+                          borderRadius: 999,
+                          background: "var(--primary-subtle)",
+                          color: "var(--primary)",
+                          border: "1px solid var(--border-strong)",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
                         {receipt.trang_thai}
                       </span>
                     </td>
@@ -253,11 +252,6 @@ async function ReceiptsContent({
                             />
                           </>
                         )}
-
-                        <ReceiptEditorToggle
-                          receipt={receipt}
-                          invoices={invoices}
-                        />
 
                         <DeleteReceiptButton
                           maPhieuThu={receipt.ma_phieu_thu}

@@ -506,7 +506,7 @@ export function RoomReservationManager({
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                    Giá thuê thỏa thuận (đ/tháng) *
+                    Giá thuê thỏa thuận (đ/tháng)
                   </label>
                   <input
                     type="number"
@@ -519,7 +519,7 @@ export function RoomReservationManager({
 
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                    Tổng tiền cọc hợp đồng (VNĐ) *
+                    Tổng tiền cọc hợp đồng (VNĐ)
                   </label>
                   <input
                     type="number"
@@ -549,7 +549,7 @@ export function RoomReservationManager({
 
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                    Ngày bắt đầu ở *
+                    Ngày bắt đầu ở
                   </label>
                   <input
                     type="date"
@@ -565,7 +565,7 @@ export function RoomReservationManager({
 
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                    Ngày kết thúc HĐ *
+                    Ngày kết thúc HĐ
                   </label>
                   <input
                     type="date"
@@ -768,7 +768,7 @@ export function RoomReservationManager({
 
               <div style={{ marginBottom: 14 }}>
                 <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "var(--text-main)", marginBottom: 6 }}>
-                  Phương án xử lý tiền cọc ({money(reservation.so_tien_the_chan)}) *
+                  Phương án xử lý tiền cọc ({money(reservation.so_tien_the_chan)})
                 </label>
                 <div style={{ display: "flex", gap: 10 }}>
                   <label
@@ -985,7 +985,7 @@ export function RoomReservationManager({
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                    Họ và tên khách *
+                    Họ và tên khách
                   </label>
                   <input
                     type="text"
@@ -997,7 +997,7 @@ export function RoomReservationManager({
                 </div>
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                    Số điện thoại *
+                    Số điện thoại
                   </label>
                   <input
                     type="tel"
@@ -1012,7 +1012,7 @@ export function RoomReservationManager({
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                    Số tiền cọc thu (VNĐ) *
+                    Số tiền cọc thu (VNĐ)
                   </label>
                   <input
                     type="number"
@@ -1025,7 +1025,7 @@ export function RoomReservationManager({
                 </div>
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                    Hạn hẹn nhận phòng *
+                    Hạn hẹn nhận phòng
                   </label>
                   <input
                     type="date"

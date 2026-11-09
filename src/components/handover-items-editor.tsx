@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2, PackageCheck } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 
 export type HandoverItem = {
   id: string;
@@ -119,20 +119,7 @@ export function HandoverItemsEditor({
               color: "var(--text-main)",
             }}
           >
-            <PackageCheck size={18} style={{ color: "var(--status-success-text)" }} />
             <span>{title}</span>
-            <span
-              style={{
-                fontSize: 11,
-                background: "var(--status-success-bg)",
-                color: "var(--status-success-text)",
-                padding: "1px 8px",
-                borderRadius: 999,
-                fontWeight: 600,
-              }}
-            >
-              {items.length} món
-            </span>
           </div>
           {hint && (
             <p style={{ margin: "3px 0 0", fontSize: 12, color: "var(--text-muted)" }}>
@@ -150,11 +137,11 @@ export function HandoverItemsEditor({
             gap: 5,
             fontSize: 12,
             fontWeight: 600,
-            padding: "5px 11px",
-            borderRadius: 6,
-            background: "var(--status-success-bg)",
-            color: "var(--status-success-text)",
-            border: "1px solid var(--status-success-border)",
+            padding: "4px 10px",
+            borderRadius: 999,
+            background: "var(--primary-subtle)",
+            color: "var(--primary)",
+            border: "1px solid var(--border-strong)",
             cursor: "pointer",
           }}
           title="Thêm một món đồ bàn giao mới hoặc đồ khách thuê thêm"
@@ -189,9 +176,9 @@ export function HandoverItemsEditor({
             <thead>
               <tr style={{ borderBottom: "1px solid var(--border)", textAlign: "left", color: "var(--text-muted)" }}>
                 <th style={{ padding: "6px 8px", width: 35, textAlign: "center" }}>#</th>
-                <th style={{ padding: "6px 8px" }}>Tên thiết bị / Nội thất *</th>
-                <th style={{ padding: "6px 8px", width: 70 }}>SL *</th>
-                <th style={{ padding: "6px 8px", width: 170 }}>Tình trạng nhận phòng *</th>
+                <th style={{ padding: "6px 8px" }}>Tên thiết bị / Nội thất</th>
+                <th style={{ padding: "6px 8px", width: 70 }}>SL</th>
+                <th style={{ padding: "6px 8px", width: 170 }}>Tình trạng nhận phòng</th>
                 <th style={{ padding: "6px 8px" }}>Ghi chú / Nhãn hiệu / Thuê thêm</th>
                 <th style={{ padding: "6px 8px", width: 40, textAlign: "center" }}></th>
               </tr>
@@ -202,7 +189,7 @@ export function HandoverItemsEditor({
                   key={it.id}
                   style={{
                     borderBottom: "1px solid var(--bg-subtle)",
-                    background: idx % 2 === 0 ? "var(--bg-surface)" : "var(--bg-subtle)",
+                    background: "var(--bg-surface)",
                   }}
                 >
                   <td style={{ padding: "6px 8px", textAlign: "center", color: "var(--text-muted)", fontWeight: 600 }}>
@@ -251,18 +238,8 @@ export function HandoverItemsEditor({
                         fontSize: 12.5,
                         borderRadius: 6,
                         border: "1px solid var(--border)",
-                        background:
-                          it.tinhTrang === "Hoạt động tốt" || it.tinhTrang === "Mới 100%"
-                            ? "var(--status-success-bg)"
-                            : it.tinhTrang.includes("Hỏng")
-                              ? "var(--status-danger-bg)"
-                              : "var(--bg-surface)",
-                        color:
-                          it.tinhTrang === "Hoạt động tốt" || it.tinhTrang === "Mới 100%"
-                            ? "var(--status-success-text)"
-                            : it.tinhTrang.includes("Hỏng")
-                              ? "var(--status-danger-text)"
-                              : "var(--text-main)",
+                        background: "var(--bg-surface)",
+                        color: "var(--text-main)",
                         fontWeight: 500,
                       }}
                     >

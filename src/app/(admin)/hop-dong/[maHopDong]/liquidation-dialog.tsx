@@ -25,7 +25,7 @@ export type LiquidationDialogProps = {
   ghiChuYeuCau?: string | null;
   isPendingRequest?: boolean;
   triggerButtonText?: string;
-  triggerButtonVariant?: "danger" | "warning" | "primary" | "compact";
+  triggerButtonVariant?: "danger" | "warning" | "primary" | "compact" | "table";
   openInitially?: boolean;
 };
 
@@ -124,6 +124,33 @@ export function LiquidationDialog({
 
   // Nút kích hoạt bên ngoài
   const renderTriggerButton = () => {
+    if (triggerButtonVariant === "table") {
+      return (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 5,
+            background: "var(--primary)",
+            color: "var(--bg-surface)",
+            border: "none",
+            borderRadius: 6,
+            padding: "6px 12px",
+            fontSize: 12,
+            fontWeight: 600,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+            transition: "background 0.15s ease",
+          }}
+        >
+          <FileCheck size={13} />
+          {triggerButtonText || (isPendingRequest ? "Duyệt thanh lý" : "Thanh lý")}
+        </button>
+      );
+    }
+
     if (triggerButtonVariant === "compact") {
       return (
         <button
@@ -505,7 +532,7 @@ export function LiquidationDialog({
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 12 }}>
                   <div>
                     <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "var(--text-muted)", marginBottom: 5 }}>
-                      Ngày trả phòng & bàn giao *
+                      Ngày trả phòng & bàn giao
                     </label>
                     <input
                       type="date"
@@ -641,7 +668,7 @@ export function LiquidationDialog({
                       </div>
                       <div>
                         <label style={{ display: "block", fontSize: 11, color: "var(--text-muted)", marginBottom: 3 }}>
-                          Số cuối (kWh) *
+                          Số cuối (kWh)
                         </label>
                         <input
                           type="number"
@@ -690,7 +717,7 @@ export function LiquidationDialog({
                       </div>
                       <div>
                         <label style={{ display: "block", fontSize: 11, color: "var(--text-muted)", marginBottom: 3 }}>
-                          Số cuối (m³) *
+                          Số cuối (m³)
                         </label>
                         <input
                           type="number"

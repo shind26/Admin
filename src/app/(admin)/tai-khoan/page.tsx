@@ -27,10 +27,6 @@ function roleLabel(role: string | null) {
   return role ?? "-";
 }
 
-function statusClass(status: string | null) {
-  return status === "HoatDong" ? styles.badgeOk : styles.badgeMuted;
-}
-
 async function AccountsContent({
   searchParams,
 }: {
@@ -181,8 +177,20 @@ async function AccountsContent({
                         : item.co_so_van_hanh || "Chưa gán"}
                     </td>
                     <td>
-                      <span className={statusClass(item.trang_thai)}>
-                        {item.trang_thai}
+                      <span
+                        style={{
+                          display: "inline-block",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          padding: "4px 10px",
+                          borderRadius: 999,
+                          background: "var(--primary-subtle)",
+                          color: "var(--primary)",
+                          border: "1px solid var(--border-strong)",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {item.trang_thai === "HoatDong" ? "Hoạt động" : item.trang_thai === "Khoa" ? "Khóa" : item.trang_thai}
                       </span>
                     </td>
                     <td>{formatDateTime(item.ngay_tao)}</td>
@@ -191,7 +199,6 @@ async function AccountsContent({
                         <EditAccountToggle
                           account={{
                             maTaiKhoan: item.ma_tai_khoan,
-                            hoTen: item.ho_ten ?? "",
                             coSo: item.co_so_van_hanh ?? "",
                             trangThai: item.trang_thai ?? "HoatDong",
                             vaiTro: item.vai_tro ?? "QuanLy",

@@ -2,8 +2,12 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Eye, Smartphone, ShieldCheck, Car, DoorOpen, UserCheck, AlertCircle, LoaderCircle } from "lucide-react";
-import type { TenantRow, VehicleRow, TenantContractHistoryRow } from "@/lib/queries";
+import { LoaderCircle } from "lucide-react";
+import type {
+  TenantRow,
+  VehicleRow,
+  TenantContractHistoryRow,
+} from "@/lib/queries";
 import { getResidentDetails } from "./actions";
 import { ResidentDrawer } from "./resident-drawer";
 import { TenantEditorToggle, DeleteTenantButton } from "./tenant-forms";
@@ -12,7 +16,9 @@ import styles from "@/components/business.module.css";
 export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
   const [selectedTenant, setSelectedTenant] = useState<TenantRow | null>(null);
   const [residentVehicles, setResidentVehicles] = useState<VehicleRow[]>([]);
-  const [residentContracts, setResidentContracts] = useState<TenantContractHistoryRow[]>([]);
+  const [residentContracts, setResidentContracts] = useState<
+    TenantContractHistoryRow[]
+  >([]);
   const [loadingDetails, setLoadingDetails] = useState<string | null>(null);
   const [, startTransition] = useTransition();
 
@@ -35,10 +41,10 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
             <thead>
               <tr>
                 <th>Khách thuê &amp; Vai trò</th>
-                <th>Liên hệ &amp; CCCD</th>
+                <th>Liên hệ</th>
+                <th>CCCD</th>
                 <th>Phòng hiện tại</th>
                 <th>Tài khoản App</th>
-                <th>CCCD &amp; Xe máy</th>
                 <th style={{ textAlign: "right" }}>Thao tác</th>
               </tr>
             </thead>
@@ -54,7 +60,13 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                   <tr key={t.ma_khach}>
                     {/* Cư dân & Vai trò */}
                     <td>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
+                        }}
+                      >
                         <div
                           style={{
                             width: 38,
@@ -64,9 +76,12 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                               t.trang_thai_cu_dan === "DangO"
                                 ? "linear-gradient(135deg, var(--primary), var(--primary))"
                                 : t.trang_thai_cu_dan === "CuuCuDan"
+                                  ? "var(--text-muted)"
+                                  : "var(--border)",
+                            color:
+                              t.trang_thai_cu_dan === "ChuaThue"
                                 ? "var(--text-muted)"
-                                : "var(--border)",
-                            color: t.trang_thai_cu_dan === "ChuaThue" ? "var(--text-muted)" : "var(--bg-surface)",
+                                : "var(--bg-surface)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -100,9 +115,6 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                               marginTop: 2,
                             }}
                           >
-                            <span style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "monospace" }}>
-                              {t.ma_khach}
-                            </span>
                             {t.vai_tro_phong && (
                               <span
                                 style={{
@@ -114,14 +126,14 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                                     t.vai_tro_phong === "Đại diện HĐ"
                                       ? "var(--primary-subtle)"
                                       : t.vai_tro_phong === "Người ở cùng"
-                                      ? "var(--status-success-bg)"
-                                      : "var(--bg-subtle)",
+                                        ? "var(--status-success-bg)"
+                                        : "var(--bg-subtle)",
                                   color:
                                     t.vai_tro_phong === "Đại diện HĐ"
                                       ? "var(--primary)"
                                       : t.vai_tro_phong === "Người ở cùng"
-                                      ? "var(--status-success-text)"
-                                      : "var(--text-muted)",
+                                        ? "var(--status-success-text)"
+                                        : "var(--text-muted)",
                                 }}
                               >
                                 {t.vai_tro_phong}
@@ -132,147 +144,65 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                       </div>
                     </td>
 
-                    {/* Liên hệ & CCCD */}
+                    {/* Liên hệ */}
                     <td>
-                      <div style={{ fontWeight: 600, color: "var(--text-main)" }}>{t.so_dt}</div>
-                      <div style={{ fontSize: 11.5, color: "var(--text-muted)" }}>CCCD: {t.cccd}</div>
+                      <div
+                        style={{ fontWeight: 600, color: "var(--text-main)" }}
+                      >
+                        {t.so_dt}
+                      </div>
+                    </td>
+
+                    {/* CCCD */}
+                    <td style={{ color: "var(--text-main)", fontWeight: 600 }}>
+                      {t.cccd || ""}
                     </td>
 
                     {/* Phòng hiện tại */}
-                    <td>
+                    <td style={{ color: "var(--text-main)" }}>
                       {t.ma_phong_hien_tai ? (
                         <Link
                           href={`/phong/${t.ma_phong_hien_tai}`}
                           style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 4,
-                            background: "var(--status-success-bg)",
-                            color: "var(--status-success-text)",
-                            border: "1px solid var(--status-success-border)",
-                            padding: "3px 8px",
-                            borderRadius: 6,
-                            fontSize: 12,
-                            fontWeight: 700,
+                            color: "inherit",
                             textDecoration: "none",
+                            fontWeight: 600,
                           }}
                         >
-                          <DoorOpen size={13} /> {t.ma_phong_hien_tai}
+                          {t.ma_phong_hien_tai}
                         </Link>
                       ) : t.trang_thai_cu_dan === "CuuCuDan" ? (
-                        <span style={{ fontSize: 12, color: "var(--text-muted)" }}>Cựu cư dân</span>
+                        "Cựu cư dân"
                       ) : (
-                        <span style={{ fontSize: 12, color: "var(--text-muted)" }}>Chưa có phòng</span>
+                        "Chưa có phòng"
                       )}
                     </td>
 
                     {/* Tài khoản Mobile App */}
-                    <td>
-                      {t.ma_tai_khoan ? (
-                        <div>
-                          {!t.da_doi_mat_khau ? (
-                            <span
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 4,
-                                padding: "2px 7px",
-                                borderRadius: 6,
-                                background: "var(--status-warning-bg)",
-                                color: "var(--status-warning-text)",
-                                border: "1px solid var(--status-warning-border)",
-                                fontSize: 11,
-                                fontWeight: 600,
-                              }}
-                            >
-                              <Smartphone size={11} /> Chờ đổi MK
-                            </span>
-                          ) : (
-                            <span
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 4,
-                                padding: "2px 7px",
-                                borderRadius: 6,
-                                background: "var(--status-success-bg)",
-                                color: "var(--status-success-text)",
-                                border: "1px solid var(--status-success-border)",
-                                fontSize: 11,
-                                fontWeight: 600,
-                              }}
-                            >
-                              <UserCheck size={11} /> Đã kích hoạt
-                            </span>
-                          )}
-                        </div>
-                      ) : (
-                        <span style={{ fontSize: 11.5, color: "var(--text-muted)" }}>Chưa cấp App</span>
+                    <td style={{ color: "var(--text-main)" }}>
+                      {t.ma_tai_khoan && (
+                        <span
+                          style={{
+                            display: "inline-block",
+                            padding: "4px 10px",
+                            borderRadius: 999,
+                            fontSize: 12,
+                            fontWeight: 600,
+                            background: t.da_doi_mat_khau
+                              ? "var(--primary-subtle)"
+                              : "var(--status-warning-bg)",
+                            color: t.da_doi_mat_khau
+                              ? "var(--primary)"
+                              : "var(--status-warning-text)",
+                            border: `1px solid ${t.da_doi_mat_khau
+                              ? "var(--border-strong)"
+                              : "var(--status-warning-border)"}`,
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {t.da_doi_mat_khau ? "Đã kích hoạt" : "Chờ đổi mật khẩu"}
+                        </span>
                       )}
-                    </td>
-
-                    {/* eKYC & Xe */}
-                    <td>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        <div>
-                          {t.trang_thai_ekyc === "DaXacThuc" ? (
-                            <span
-                              style={{
-                                fontSize: 11,
-                                fontWeight: 600,
-                                color: "var(--status-success-text)",
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 3,
-                              }}
-                            >
-                              <ShieldCheck size={12} /> Đã duyệt CCCD
-                            </span>
-                          ) : t.trang_thai_ekyc === "ChoDuyet" ? (
-                            <span
-                              style={{
-                                fontSize: 11,
-                                fontWeight: 600,
-                                color: "var(--status-warning-text)",
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 3,
-                              }}
-                            >
-                              <AlertCircle size={12} /> Chờ duyệt CCCD
-                            </span>
-                          ) : (
-                            <span style={{ fontSize: 11, color: "var(--text-muted)" }}>Chưa có CCCD</span>
-                          )}
-                        </div>
-                        {t.so_phuong_tien > 0 && (
-                          <div
-                            style={{
-                              fontSize: 11,
-                              color: t.so_xe_cho_duyet > 0 ? "var(--status-warning-text)" : "var(--primary)",
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 3,
-                              fontWeight: 600,
-                            }}
-                          >
-                            <Car size={11} /> {t.so_phuong_tien} xe
-                            {t.so_xe_cho_duyet > 0 && (
-                              <span
-                                style={{
-                                  background: "var(--status-warning-bg)",
-                                  color: "var(--status-warning-text)",
-                                  padding: "0 4px",
-                                  borderRadius: 4,
-                                  fontSize: 10,
-                                }}
-                              >
-                                ({t.so_xe_cho_duyet} chờ duyệt)
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
                     </td>
 
                     {/* Thao tác */}
@@ -303,13 +233,11 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                             cursor: "pointer",
                           }}
                         >
-                          {loadingDetails === t.ma_khach ? (
+                          {loadingDetails === t.ma_khach && (
                             <LoaderCircle
                               size={13}
                               style={{ animation: "spin 1s linear infinite" }}
                             />
-                          ) : (
-                            <Eye size={13} />
                           )}
                           Hồ sơ
                         </button>
@@ -325,9 +253,11 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
                             gioiTinh: t.gioi_tinh,
                             ngayCapCccd: t.ngay_cap_cccd,
                             noiCapCccd: t.noi_cap_cccd,
-                            tenNguoiThan: t.nguoi_lien_he_khan_cap?.ho_ten ?? "",
+                            tenNguoiThan:
+                              t.nguoi_lien_he_khan_cap?.ho_ten ?? "",
                             sdtNguoiThan: t.nguoi_lien_he_khan_cap?.so_dt ?? "",
-                            moiQuanHe: t.nguoi_lien_he_khan_cap?.moi_quan_he ?? "",
+                            moiQuanHe:
+                              t.nguoi_lien_he_khan_cap?.moi_quan_he ?? "",
                             ghiChuNoiBo: t.ghi_chu_noi_bo ?? "",
                           }}
                         />
@@ -359,4 +289,3 @@ export function ResidentTableView({ tenants }: { tenants: TenantRow[] }) {
     </>
   );
 }
-

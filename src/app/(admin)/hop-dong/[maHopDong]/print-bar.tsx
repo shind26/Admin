@@ -9,7 +9,7 @@ import styles from "./contract-detail.module.css";
  * Thanh công cụ xuất hợp đồng:
  * - "Xem bản in": Bật/tắt bản xem trước A4 trực quan ngay trên trang.
  * - "In hợp đồng": Gọi hộp thoại in của hệ thống (chỉ in nội dung hợp đồng, ẩn toàn bộ admin shell).
- * - "Tải PDF (Miễn phí)": Tự động kết xuất và tải về tệp PDF chuẩn nét cao hoàn toàn miễn phí.
+ * - "Tải PDF": Tự động kết xuất và tải về tệp PDF chuẩn nét cao.
  */
 export function ContractPrintBar({
   children,
@@ -88,7 +88,7 @@ export function ContractPrintBar({
           className={`${styles.printButton} ${styles.printButtonPdf}`}
           onClick={handleDownloadPdf}
           disabled={isExporting}
-          title="Tải trực tiếp tệp PDF về máy (100% miễn phí)"
+          title="Tải trực tiếp tệp PDF về máy"
         >
           {isExporting ? (
             <>
@@ -100,7 +100,7 @@ export function ContractPrintBar({
             </>
           ) : (
             <>
-              <Download size={14} /> Tải PDF (Miễn phí)
+              <Download size={14} /> Tải PDF
             </>
           )}
         </button>

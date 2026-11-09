@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Eye, X, LoaderCircle } from "lucide-react";
+import { X, LoaderCircle } from "lucide-react";
 import type { InvoiceDetail } from "@/lib/queries";
 import { getInvoiceDetailAction } from "./actions";
 import { InvoiceDetailView } from "./invoice-detail-view";
@@ -49,7 +49,6 @@ export function InvoiceDetailTrigger({
           className={styles.btnDetailRow}
           title="Xem chi tiết hóa đơn"
         >
-          <Eye size={13} />
           {children || "Chi tiết"}
         </button>
       ) : (

@@ -1,0 +1,12 @@
+.editForm {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  text-align: left;
+}
+
+@media (max-width: 480px) {
+  .editForm {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

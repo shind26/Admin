@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Printer, Download, Loader2, Check, Eye, X } from "lucide-react";
+import { Printer, Download, Loader2, Check, X } from "lucide-react";
 import type { ReceiptRow } from "@/lib/queries";
 import { readVietnameseCurrency } from "@/lib/number-to-words";
 import { exportElementToPdf } from "@/lib/export-pdf";
 import styles from "./receipt-detail.module.css";
-import busStyles from "@/components/business.module.css";
 
 function formatMoney(value: string | number | null | undefined) {
   if (value === null || value === undefined || value === "") return "0 đ";
@@ -16,16 +15,14 @@ function formatMoney(value: string | number | null | undefined) {
 function parseDateComponents(dateStr: string | null | undefined) {
   if (!dateStr) {
     const now = new Date();
-    return { day: now.getDate(), month: now.getMonth() + 1, year: now.getFullYear() };
+    return {
+      day: now.getDate(),
+      month: now.getMonth() + 1,
+      year: now.getFullYear(),
+    };
   }
   const d = new Date(dateStr);
   return { day: d.getDate(), month: d.getMonth() + 1, year: d.getFullYear() };
-}
-
-function statusBadgeClass(status: string | null) {
-  if (status === "Đã xác nhận" || status === "Đã khớp lệnh") return busStyles.badgeOk;
-  if (status === "Đã hủy") return busStyles.badgeMuted;
-  return busStyles.badgeWarn;
 }
 
 export function ReceiptDetailTrigger({
@@ -52,13 +49,15 @@ export function ReceiptDetailTrigger({
       setIsExporting(true);
       await exportElementToPdf(
         `receipt-print-${receipt.ma_phieu_thu}`,
-        `PhieuThu_${receipt.ma_phieu_thu}`
+        `PhieuThu_${receipt.ma_phieu_thu}`,
       );
       setExportSuccess(true);
       setTimeout(() => setExportSuccess(false), 3000);
     } catch (err) {
       console.error("Lỗi xuất PDF phiếu thu:", err);
-      alert("Không thể tạo file PDF. Vui lòng bấm 'In phiếu thu' và chọn 'Save as PDF'.");
+      alert(
+        "Không thể tạo file PDF. Vui lòng bấm 'In phiếu thu' và chọn 'Save as PDF'.",
+      );
     } finally {
       setIsExporting(false);
     }
@@ -73,7 +72,7 @@ export function ReceiptDetailTrigger({
           className={`${styles.btnAction} ${styles.btnDetail}`}
           title="Xem &amp; In phiếu thu"
         >
-          <Eye size={13} /> {children || "In / Xem"}
+          {children || "Xem"}
         </button>
       ) : (
         <button
@@ -109,7 +108,19 @@ export function ReceiptDetailTrigger({
                 <h3 className={styles.modalTitle}>
                   Biên lai phiếu thu {receipt.ma_phieu_thu}
                 </h3>
-                <span className={statusBadgeClass(receipt.trang_thai)}>
+                <span
+                  style={{
+                    display: "inline-block",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    padding: "4px 10px",
+                    borderRadius: 999,
+                    background: "var(--primary-subtle)",
+                    color: "var(--primary)",
+                    border: "1px solid var(--border-strong)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   {receipt.trang_thai}
                 </span>
               </div>
@@ -118,7 +129,10 @@ export function ReceiptDetailTrigger({
                   type="button"
                   onClick={handlePrint}
                   className={`${styles.btnAction}`}
-                  style={{ background: "var(--btn-primary-bg)", color: "var(--btn-primary-text)" }}
+                  style={{
+                    background: "var(--btn-primary-bg)",
+                    color: "var(--btn-primary-text)",
+                  }}
                   title="In biên lai hoặc lưu PDF qua trình duyệt"
                 >
                   <Printer size={13} /> In phiếu thu
@@ -128,7 +142,7 @@ export function ReceiptDetailTrigger({
                   onClick={handleDownloadPdf}
                   disabled={isExporting}
                   className={`${styles.btnAction} ${styles.btnActionPdf}`}
-                  title="Tải trực tiếp tệp PDF miễn phí"
+                  title="Tải trực tiếp tệp PDF"
                 >
                   {isExporting ? (
                     <>
@@ -136,11 +150,12 @@ export function ReceiptDetailTrigger({
                     </>
                   ) : exportSuccess ? (
                     <>
-                      <Check size={13} color="var(--status-success-text)" /> Đã tải xong
+                      <Check size={13} color="var(--status-success-text)" /> Đã
+                      tải xong
                     </>
                   ) : (
                     <>
-                      <Download size={13} /> Tải PDF (Miễn phí)
+                      <Download size={13} /> Tải PDF
                     </>
                   )}
                 </button>
@@ -157,12 +172,20 @@ export function ReceiptDetailTrigger({
 
             <div className={styles.modalBody}>
               {/* Printable Receipt Paper */}
-              <div className={styles.receiptPaper} id={`receipt-print-${receipt.ma_phieu_thu}`}>
+              <div
+                className={styles.receiptPaper}
+                id={`receipt-print-${receipt.ma_phieu_thu}`}
+              >
                 {/* Header */}
                 <div className={styles.docHeader}>
                   <div className={styles.unitInfo}>
-                    <div className={styles.unitName}>HỆ THỐNG CĂN HỘ KIỀU GIANG</div>
-                    <div>Cơ sở: <strong>{receipt.toa_nha || "Toàn hệ thống"}</strong></div>
+                    <div className={styles.unitName}>
+                      HỆ THỐNG CĂN HỘ KIỀU GIANG
+                    </div>
+                    <div>
+                      Cơ sở:{" "}
+                      <strong>{receipt.toa_nha || "Toàn hệ thống"}</strong>
+                    </div>
                     <div>Hotline: 0903 111 222</div>
                   </div>
                   <div className={styles.formTemplateInfo}>
@@ -181,30 +204,43 @@ export function ReceiptDetailTrigger({
                     Ngày {day} tháng {month} năm {year}
                   </div>
                   <div className={styles.receiptMeta}>
-                    <span>Hóa đơn: <strong>{receipt.ma_hoa_don || "—"}</strong></span>
-                    <span>Phòng: <strong>{receipt.ma_phong || "—"}</strong></span>
+                    <span>
+                      Hóa đơn: <strong>{receipt.ma_hoa_don || "—"}</strong>
+                    </span>
+                    <span>
+                      Phòng: <strong>{receipt.ma_phong || "—"}</strong>
+                    </span>
                   </div>
                 </div>
 
                 {/* Form fields */}
                 <div style={{ margin: "20px 0" }}>
                   <div className={styles.fieldRow}>
-                    <span className={styles.fieldLabel}>Họ và tên người nộp tiền:</span>
-                    <span className={styles.fieldVal}>{receipt.ten_khach || "—"}</span>
+                    <span className={styles.fieldLabel}>
+                      Họ và tên người nộp tiền:
+                    </span>
+                    <span className={styles.fieldVal}>
+                      {receipt.ten_khach || "—"}
+                    </span>
                     <span className={styles.fieldDots} />
                   </div>
 
                   <div className={styles.fieldRow}>
-                    <span className={styles.fieldLabel}>Địa chỉ / Phòng thuê:</span>
+                    <span className={styles.fieldLabel}>
+                      Địa chỉ / Phòng thuê:
+                    </span>
                     <span className={styles.fieldVal}>
-                      Phòng {receipt.ma_phong || "—"} {receipt.toa_nha ? `(${receipt.toa_nha})` : ""}
+                      Phòng {receipt.ma_phong || "—"}{" "}
+                      {receipt.toa_nha ? `(${receipt.toa_nha})` : ""}
                     </span>
                     <span className={styles.fieldDots} />
                   </div>
 
                   {receipt.so_dt && (
                     <div className={styles.fieldRow}>
-                      <span className={styles.fieldLabel}>Số điện thoại liên hệ:</span>
+                      <span className={styles.fieldLabel}>
+                        Số điện thoại liên hệ:
+                      </span>
                       <span className={styles.fieldVal}>{receipt.so_dt}</span>
                       <span className={styles.fieldDots} />
                     </div>
@@ -213,15 +249,20 @@ export function ReceiptDetailTrigger({
                   <div className={styles.fieldRow}>
                     <span className={styles.fieldLabel}>Lý do nộp:</span>
                     <span className={styles.fieldVal}>
-                      Thanh toán tiền phòng &amp; dịch vụ theo hóa đơn {receipt.ma_hoa_don}{" "}
-                      {receipt.ma_hop_dong ? `(Hợp đồng: ${receipt.ma_hop_dong})` : ""}
+                      Thanh toán tiền phòng &amp; dịch vụ theo hóa đơn{" "}
+                      {receipt.ma_hoa_don}{" "}
+                      {receipt.ma_hop_dong
+                        ? `(Hợp đồng: ${receipt.ma_hop_dong})`
+                        : ""}
                     </span>
                     <span className={styles.fieldDots} />
                   </div>
 
                   <div className={styles.fieldRow}>
                     <span className={styles.fieldLabel}>Số tiền thu:</span>
-                    <span className={`${styles.fieldVal} ${styles.moneyHighlight}`}>
+                    <span
+                      className={`${styles.fieldVal} ${styles.moneyHighlight}`}
+                    >
                       {formatMoney(receipt.so_tien_thu)}
                     </span>
                     <span className={styles.fieldDots} />
@@ -229,18 +270,27 @@ export function ReceiptDetailTrigger({
 
                   <div className={styles.fieldRow}>
                     <span className={styles.fieldLabel}>Viết bằng chữ:</span>
-                    <span className={`${styles.fieldVal} ${styles.wordsHighlight}`}>
+                    <span
+                      className={`${styles.fieldVal} ${styles.wordsHighlight}`}
+                    >
                       {moneyInWords}
                     </span>
                     <span className={styles.fieldDots} />
                   </div>
 
                   <div className={styles.fieldRow}>
-                    <span className={styles.fieldLabel}>Hình thức nộp tiền:</span>
-                    <span className={styles.fieldVal}>{receipt.hinh_thuc || "Chuyển khoản"}</span>
+                    <span className={styles.fieldLabel}>
+                      Hình thức nộp tiền:
+                    </span>
+                    <span className={styles.fieldVal}>
+                      {receipt.hinh_thuc || "Chuyển khoản"}
+                    </span>
                     {receipt.ma_tra_cuu && (
-                      <span style={{ marginLeft: 8, color: "var(--text-muted)" }}>
-                        (Mã tra cứu / ủy nhiệm chi: <strong>{receipt.ma_tra_cuu}</strong>)
+                      <span
+                        style={{ marginLeft: 8, color: "var(--text-muted)" }}
+                      >
+                        (Mã tra cứu / ủy nhiệm chi:{" "}
+                        <strong>{receipt.ma_tra_cuu}</strong>)
                       </span>
                     )}
                     <span className={styles.fieldDots} />
@@ -252,7 +302,9 @@ export function ReceiptDetailTrigger({
                   <div>
                     <div className={styles.signTitle}>Người nộp tiền</div>
                     <div className={styles.signSub}>(Ký, ghi rõ họ tên)</div>
-                    <div className={styles.signName}>{receipt.ten_khach || "—"}</div>
+                    <div className={styles.signName}>
+                      {receipt.ten_khach || "—"}
+                    </div>
                   </div>
                   <div>
                     <div className={styles.signTitle}>Người lập phiếu</div>
@@ -275,7 +327,8 @@ export function ReceiptDetailTrigger({
                     fontStyle: "italic",
                   }}
                 >
-                  Phiếu thu điện tử xuất ngày {new Date().toLocaleDateString("vi-VN")}
+                  Phiếu thu điện tử xuất ngày{" "}
+                  {new Date().toLocaleDateString("vi-VN")}
                 </div>
               </div>
             </div>
@@ -285,4 +338,3 @@ export function ReceiptDetailTrigger({
     </>
   );
 }
-

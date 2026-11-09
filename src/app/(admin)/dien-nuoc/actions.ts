@@ -89,7 +89,13 @@ async function saveMeterReading(formData: FormData, editing: boolean): Promise<M
     const meterGuard = await assertMeterInScope(maKy, scope);
     if (meterGuard) return { error: meterGuard, success: null };
   }
-  const rawPeriod = text(formData, "thangNam");
+  const recordedAt = text(formData, "ngayGhiNhan") || (editing ? new Date().toISOString() : "");
+  if (!editing && (
+    !/^\d{4}-\d{2}-\d{2}$/.test(recordedAt) ||
+    !Number.isFinite(Date.parse(`${recordedAt}T00:00:00Z`)) ||
+    new Date(`${recordedAt}T00:00:00Z`).toISOString().slice(0, 10) !== recordedAt
+  )) return { error: "Ngày ghi nhận không hợp lệ.", success: null };
+  const rawPeriod = editing ? text(formData, "thangNam") : recordedAt.slice(0, 7);
   const thangNam = /^\d{2}\/\d{4}$/.test(rawPeriod) ? rawPeriod.slice(3) + "-" + rawPeriod.slice(0, 2) : rawPeriod;
   if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(thangNam)) return { error: "Kỳ ghi chỉ số phải theo dạng YYYY-MM hoặc MM/YYYY hợp lệ.", success: null };
   const client = await getDbPool().connect();
@@ -99,7 +105,7 @@ async function saveMeterReading(formData: FormData, editing: boolean): Promise<M
     await client.query("SELECT ma_hop_dong FROM public.hop_dong WHERE ma_hop_dong = $1 FOR UPDATE", [maHopDong]);
     let oldDien = number(formData, "chiSoDienCu");
     let oldNuoc = number(formData, "chiSoNuocCu");
-    let status = text(formData, "trangThai") || "Chờ duyệt";
+    let status = editing ? text(formData, "trangThai") || "Chờ duyệt" : "Đã duyệt";
     if (editing) {
       const { rows } = await client.query<{
         trang_thai_duyet: string; chi_so_dien_cu: string; chi_so_nuoc_cu: string; ma_hop_dong: string; thang_nam: string;
@@ -118,7 +124,6 @@ async function saveMeterReading(formData: FormData, editing: boolean): Promise<M
     const newNuoc = number(formData, "chiSoNuocMoi");
     const problem = await validate(maHopDong, thangNam, oldDien, newDien, oldNuoc, newNuoc, status, editing ? maKy : undefined, client);
     if (problem) throw new MeterInputError(problem);
-    const recordedAt = text(formData, "ngayGhiNhan") || new Date().toISOString();
     const anhDien = text(formData, "anhDien") || text(formData, "anhCongToDien") || null;
     const anhNuoc = text(formData, "anhNuoc") || text(formData, "anhCongToNuoc") || null;
     if (editing) {

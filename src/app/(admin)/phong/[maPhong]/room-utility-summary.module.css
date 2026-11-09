@@ -36,10 +36,10 @@
   margin: 0;
 }
 
-/* ── Lưới 2 cột: Hóa đơn & Điện nước ── */
+/* ── Khung bảng chốt điện nước ── */
 .cardsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 14px;
 }
 
@@ -181,27 +181,28 @@
 }
 
 .table th {
-  background: #4599ff;
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 11px;
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 11.5px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  padding: 7px 8px;
-  border-bottom: 1px solid #68a5c7;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
 
-.table tbody tr:nth-child(even) {
+.table tbody tr {
+  background: var(--bg-surface);
+  transition: background-color 0.15s ease;
+}
+
+.table tbody tr:hover {
   background: var(--bg-subtle);
 }
 
-.table tbody tr:nth-child(odd) {
-  background: var(--bg-surface);
-}
-
 .table td {
-  padding: 8px 8px;
+  padding: 9px 10px;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
   color: var(--text-muted);
@@ -223,25 +224,11 @@
   white-space: nowrap;
 }
 
-.usagePill {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 11.5px;
-  font-weight: 700;
+.usageVal {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
   white-space: nowrap;
-}
-
-.usageElectric {
-  background: var(--status-warning-bg);
-  color: var(--status-warning-text);
-}
-
-.usageWater {
-  background: var(--primary-subtle);
-  color: var(--primary-text);
 }
 
 /* ── Badges ── */

@@ -96,7 +96,7 @@ export function RoomForm({
       <div className={styles.formSection}>Thông tin định danh</div>
 
       <div className={styles.formField}>
-        <label htmlFor={`maPhong-${mode}`}>Mã phòng *</label>
+        <label htmlFor={`maPhong-${mode}`}>Mã phòng</label>
         <input
           id="maPhong"
           name="maPhong"
@@ -129,7 +129,7 @@ export function RoomForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="toaNha">Cơ sở / Tòa nhà *</label>
+        <label htmlFor="toaNha">Cơ sở / Tòa nhà</label>
         {mode === "edit" ? (
           <input
             id="toaNha"
@@ -167,7 +167,7 @@ export function RoomForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="tang">Tầng *</label>
+        <label htmlFor="tang">Tầng</label>
         <input
           id="tang"
           name="tang"
@@ -189,7 +189,7 @@ export function RoomForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="maLoaiPhong">Loại phòng *</label>
+        <label htmlFor="maLoaiPhong">Loại phòng</label>
         {mode === "edit" ? (
           <>
             <input type="hidden" name="maLoaiPhong" value={selectedType} />
@@ -225,7 +225,7 @@ export function RoomForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="trangThai">Trạng thái *</label>
+        <label htmlFor="trangThai">Trạng thái</label>
         {mode === "create" ? (
           <input
             id="trangThai"
@@ -269,7 +269,7 @@ export function RoomForm({
       <div className={styles.formSection}>Giá &amp; diện tích</div>
 
       <div className={styles.formField}>
-        <label htmlFor="dienTich">Diện tích (m²) *</label>
+        <label htmlFor="dienTich">Diện tích (m²)</label>
         <input
           id="dienTich"
           name="dienTich"
@@ -293,7 +293,7 @@ export function RoomForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="giaThue">Giá thuê niêm yết (đ) *</label>
+        <label htmlFor="giaThue">Giá thuê niêm yết (đ)</label>
         <input
           id="giaThue"
           name="giaThue"
@@ -332,7 +332,7 @@ export function RoomForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="chiSoDien">Chỉ số điện (kWh) *</label>
+        <label htmlFor="chiSoDien">Chỉ số điện (kWh)</label>
         <input
           id="chiSoDien"
           name="chiSoDien"
@@ -346,7 +346,7 @@ export function RoomForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="chiSoNuoc">Chỉ số nước (m³) *</label>
+        <label htmlFor="chiSoNuoc">Chỉ số nước (m³)</label>
         <input
           id="chiSoNuoc"
           name="chiSoNuoc"

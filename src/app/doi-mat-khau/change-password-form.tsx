@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import { changePassword, type PasswordState } from "./actions";
 import styles from "@/components/business.module.css";
+import passwordStyles from "./change-password.module.css";
 
 const initialState: PasswordState = { error: null, success: null };
 
@@ -11,7 +12,7 @@ const initialState: PasswordState = { error: null, success: null };
  * Đổi mật khẩu tự nguyện — tương ứng ChangePassword của SupabaseApp.
  * Nằm trong khung quản trị; đổi thành công sẽ đăng xuất và yêu cầu đăng nhập lại.
  */
-export function ChangePasswordForm({ username }: { username: string }) {
+export function ChangePasswordForm() {
   const [state, formAction, pending] = useActionState(
     changePassword,
     initialState,
@@ -33,18 +34,12 @@ export function ChangePasswordForm({ username }: { username: string }) {
   ];
 
   return (
-    <form action={formAction} className={styles.formGrid}>
+    <form action={formAction} className={passwordStyles.form}>
       {state.error && (
         <p className={`${styles.formMessage} ${styles.formError}`} role="alert">
           {state.error}
         </p>
       )}
-
-      <p className={`${styles.formMessage} ${styles.formHint}`}>
-        Đang đổi mật khẩu cho tài khoản <strong>{username}</strong>. Sau khi đổi
-        thành công, bạn sẽ được đưa về trang đăng nhập để đăng nhập lại bằng mật
-        khẩu mới.
-      </p>
 
       <div className={styles.formField}>
         <label htmlFor="currentPassword">Mật khẩu hiện tại</label>

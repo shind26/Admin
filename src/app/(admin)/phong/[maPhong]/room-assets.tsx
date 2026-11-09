@@ -184,7 +184,7 @@ function AssetModal({
             )}
 
             <div className={styles.formField}>
-              <label htmlFor="tenTaiSan">Tên thiết bị / tài sản *</label>
+              <label htmlFor="tenTaiSan">Tên thiết bị / tài sản</label>
               <input
                 id="tenTaiSan"
                 name="tenTaiSan"
@@ -198,7 +198,7 @@ function AssetModal({
             </div>
 
             <div className={styles.formField}>
-              <label htmlFor="soLuong">Số lượng *</label>
+              <label htmlFor="soLuong">Số lượng</label>
               <input
                 id="soLuong"
                 name="soLuong"
@@ -211,7 +211,7 @@ function AssetModal({
             </div>
 
             <div className={styles.formField}>
-              <label htmlFor="tinhTrang">Tình trạng *</label>
+              <label htmlFor="tinhTrang">Tình trạng</label>
               <select
                 id="tinhTrang"
                 name="tinhTrang"
@@ -395,7 +395,7 @@ function HandoverPrintModal({
               className={styles.btnSecondary}
               onClick={handleDownloadPdf}
               disabled={isExporting}
-              title="Tải trực tiếp tệp PDF miễn phí"
+              title="Tải trực tiếp tệp PDF"
             >
               {isExporting ? (
                 <>
@@ -407,7 +407,7 @@ function HandoverPrintModal({
                 </>
               ) : (
                 <>
-                  <Download size={14} /> Tải PDF (Miễn phí)
+                  <Download size={14} /> Tải PDF
                 </>
               )}
             </button>

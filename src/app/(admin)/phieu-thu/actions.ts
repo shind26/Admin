@@ -120,21 +120,6 @@ export async function createReceipt(_previous: ReceiptFormState, form: FormData)
   });
 }
 
-export async function updateReceipt(_previous: ReceiptFormState, form: FormData): Promise<ReceiptFormState> {
-  return transaction(async (client, scope) => {
-    const receipt = await lockReceipt(client, text(form,"maPhieuThu"), scope);
-    if (PAID.includes(receipt.trang_thai)) throw new ReceiptInputError("Phiếu thu đã được xác nhận không thể chỉnh sửa. Hãy xóa và tạo lại nếu có sai sót.");
-    const { amount, method, status } = payment(form);
-    const invoice = await lockInvoice(client, receipt.ma_hoa_don, scope);
-    await checkBalance(client, invoice, amount, status, receipt.ma_phieu_thu);
-    await client.query("UPDATE public.phieu_thu SET so_tien_thu=$2,ngay_thu=$3,hinh_thuc=$4,ma_tra_cuu=$5,trang_thai=$6 WHERE ma_phieu_thu=$1",
-      [receipt.ma_phieu_thu, amount, text(form,"ngayThu") || receipt.ngay_thu, method, text(form,"maTraCuu") || receipt.ma_tra_cuu || receipt.ma_phieu_thu, status]);
-    await refreshInvoice(client, invoice);
-    if (PAID.includes(status)) await notifyPayment(client, invoice.ma_hoa_don, receipt.ma_phieu_thu, amount, method);
-    return "Cập nhật phiếu thu thành công.";
-  });
-}
-
 export async function quickApproveReceipt(_previous: ReceiptFormState, form: FormData): Promise<ReceiptFormState> {
   return transaction(async (client, scope) => {
     const receipt = await lockReceipt(client, text(form,"maPhieuThu"), scope);

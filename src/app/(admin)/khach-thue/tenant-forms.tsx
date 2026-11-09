@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { LoaderCircle, Copy, Check, Smartphone, ShieldCheck } from "lucide-react";
+import { LoaderCircle, Copy, Check, ShieldCheck } from "lucide-react";
 import {
   createTenant,
   deleteTenant,
@@ -134,7 +134,7 @@ export function TenantForm({
     <form action={formAction} className={styles.formGrid}>
       {/* Thông tin cơ bản */}
       <div className={styles.formField}>
-        <label htmlFor={`hoTenKhach-${mode}`}>Họ tên khách *</label>
+        <label htmlFor={`hoTenKhach-${mode}`}>Họ tên khách</label>
         <input
           id={`hoTenKhach-${mode}`}
           name="hoTenKhach"
@@ -145,7 +145,7 @@ export function TenantForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`soDt-${mode}`}>Số điện thoại (dùng đăng nhập App) *</label>
+        <label htmlFor={`soDt-${mode}`}>Số điện thoại (dùng đăng nhập App)</label>
         <input
           id={`soDt-${mode}`}
           name="soDt"
@@ -156,7 +156,7 @@ export function TenantForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor={`cccd-${mode}`}>Số CCCD / CMND *</label>
+        <label htmlFor={`cccd-${mode}`}>Số CCCD / CMND</label>
         <input
           id={`cccd-${mode}`}
           name="cccd"
@@ -197,7 +197,7 @@ export function TenantForm({
       </div>
 
       <div className={`${styles.formField} ${styles.formFieldWide}`}>
-        <label htmlFor={`diaChiThuongTru-${mode}`}>Địa chỉ thường trú *</label>
+        <label htmlFor={`diaChiThuongTru-${mode}`}>Địa chỉ thường trú</label>
         <input
           id={`diaChiThuongTru-${mode}`}
           name="diaChiThuongTru"
@@ -233,28 +233,6 @@ export function TenantForm({
           name="moiQuanHe"
           placeholder="Bố / Mẹ / Vợ / Chồng / Anh chị"
         />
-      </div>
-
-      {/* Tùy chọn cấp tài khoản Mobile App */}
-      <div className={`${styles.formField} ${styles.formFieldWide}`}>
-        <label
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            cursor: "pointer",
-            fontWeight: 600,
-            color: "var(--primary)",
-          }}
-        >
-          <input
-            type="checkbox"
-            name="capTaiKhoanApp"
-            defaultChecked
-            style={{ width: 18, height: 18, accentColor: "var(--primary)" }}
-          />
-          <Smartphone size={16} /> Tự động cấp tài khoản Mobile App ngay khi tạo (Username = SĐT, Mật khẩu tạm 6 số)
-        </label>
       </div>
 
       {state.error && (

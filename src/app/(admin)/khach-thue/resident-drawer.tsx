@@ -5,10 +5,7 @@ import Link from "next/link";
 import {
   X,
   ShieldCheck,
-  Smartphone,
   Car,
-  FileText,
-  User,
   KeyRound,
   CheckCircle2,
   AlertCircle,
@@ -18,11 +15,13 @@ import {
   Trash2,
   Calendar,
   ExternalLink,
-  PhoneCall,
   LoaderCircle,
-  Eye,
 } from "lucide-react";
-import type { TenantRow, VehicleRow, TenantContractHistoryRow } from "@/lib/queries";
+import type {
+  TenantRow,
+  VehicleRow,
+  TenantContractHistoryRow,
+} from "@/lib/queries";
 import {
   verifyTenantEkyc,
   resetTenantPassword,
@@ -44,9 +43,13 @@ export function ResidentDrawer({
   contracts: TenantContractHistoryRow[];
   onClose: () => void;
 }) {
-  const [tab, setTab] = useState<"info" | "vehicles" | "account" | "contracts">("info");
+  const [tab, setTab] = useState<"info" | "vehicles" | "account" | "contracts">(
+    "info",
+  );
   const [vehicles, setVehicles] = useState<VehicleRow[]>(initialVehicles);
-  const [ekycStatus, setEkycStatus] = useState(tenant.trang_thai_ekyc || "ChuaXacThuc");
+  const [ekycStatus, setEkycStatus] = useState(
+    tenant.trang_thai_ekyc || "ChuaXacThuc",
+  );
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const [cccdImages, setCccdImages] = useState<{
     truoc: string | null;
@@ -60,7 +63,11 @@ export function ResidentDrawer({
     }
     return null;
   });
-  const [loadingCccd, setLoadingCccd] = useState(Boolean((tenant.co_anh_cccd_truoc || tenant.co_anh_cccd_sau) && !cccdImages));
+  const [loadingCccd, setLoadingCccd] = useState(
+    Boolean(
+      (tenant.co_anh_cccd_truoc || tenant.co_anh_cccd_sau) && !cccdImages,
+    ),
+  );
 
   useEffect(() => {
     // Tải ảnh CCCD theo nhu cầu khi mở Drawer mà chưa có ảnh
@@ -106,7 +113,10 @@ export function ResidentDrawer({
   } | null>(null);
   const [copied, setCopied] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const [actionMessage, setActionMessage] = useState<{ text: string; ok: boolean } | null>(null);
+  const [actionMessage, setActionMessage] = useState<{
+    text: string;
+    ok: boolean;
+  } | null>(null);
 
   // Form thêm xe
   const [showAddVehicle, setShowAddVehicle] = useState(false);
@@ -123,13 +133,20 @@ export function ResidentDrawer({
         setActionMessage({ text: res.error, ok: false });
       } else {
         setEkycStatus(newStatus);
-        setActionMessage({ text: res.success || "Cập nhật thành công", ok: true });
+        setActionMessage({
+          text: res.success || "Cập nhật thành công",
+          ok: true,
+        });
       }
     });
   };
 
   const handleResetPassword = () => {
-    if (!window.confirm(`Bạn có chắc muốn cấp lại mật khẩu Mobile App cho khách ${tenant.ho_ten_khach}?`)) {
+    if (
+      !window.confirm(
+        `Bạn có chắc muốn cấp lại mật khẩu Mobile App cho khách ${tenant.ho_ten_khach}?`,
+      )
+    ) {
       return;
     }
     startTransition(async () => {
@@ -141,7 +158,10 @@ export function ResidentDrawer({
           username: res.username,
           tempPassword: res.tempPassword,
         });
-        setActionMessage({ text: "Đã cấp mật khẩu mặc định thành công!", ok: true });
+        setActionMessage({
+          text: "Đã cấp mật khẩu mặc định thành công!",
+          ok: true,
+        });
       }
     });
   };
@@ -201,7 +221,9 @@ export function ResidentDrawer({
       } else {
         setVehicles(
           vehicles.map((v) =>
-            v.ma_phuong_tien === maPhuongTien ? { ...v, trang_thai: "HoatDong" } : v,
+            v.ma_phuong_tien === maPhuongTien
+              ? { ...v, trang_thai: "HoatDong" }
+              : v,
           ),
         );
         setActionMessage({ text: "Đã duyệt phương tiện thành công", ok: true });
@@ -224,7 +246,10 @@ export function ResidentDrawer({
 
   return (
     <div className={styles.drawerOverlay} onClick={onClose}>
-      <div className={styles.drawerContent} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={styles.drawerContent}
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className={styles.drawerHeader}>
           <div className={styles.residentCardHead}>
@@ -236,26 +261,6 @@ export function ResidentDrawer({
                 {tenant.ho_ten_khach}
                 <span className={styles.residentCode}>#{tenant.ma_khach}</span>
               </h2>
-              <div className={styles.residentBadges}>
-                {tenant.trang_thai_cu_dan === "DangO" ? (
-                  <span className={`${styles.badgePill} ${styles.badgeGreen}`}>
-                    ● Đang ở {tenant.ma_phong_hien_tai} ({tenant.toa_nha_hien_tai || "Tòa"})
-                  </span>
-                ) : tenant.trang_thai_cu_dan === "CuuCuDan" ? (
-                  <span className={`${styles.badgePill} ${styles.badgeGray}`}>
-                    Cựu cư dân (Đã rời đi)
-                  </span>
-                ) : (
-                  <span className={`${styles.badgePill} ${styles.badgeYellow}`}>
-                    Chưa thuê phòng
-                  </span>
-                )}
-                {tenant.vai_tro_phong && (
-                  <span className={`${styles.badgePill} ${styles.badgeBlue}`}>
-                    {tenant.vai_tro_phong}
-                  </span>
-                )}
-              </div>
             </div>
           </div>
           <button className={styles.closeButton} onClick={onClose} title="Đóng">
@@ -273,13 +278,23 @@ export function ResidentDrawer({
               display: "flex",
               alignItems: "center",
               gap: 8,
-              background: actionMessage.ok ? "var(--status-success-bg)" : "var(--status-danger-bg)",
-              color: actionMessage.ok ? "var(--status-success-text)" : "var(--status-danger-text)",
+              background: actionMessage.ok
+                ? "var(--status-success-bg)"
+                : "var(--status-danger-bg)",
+              color: actionMessage.ok
+                ? "var(--status-success-text)"
+                : "var(--status-danger-text)",
               borderBottom: "1px solid",
-              borderColor: actionMessage.ok ? "var(--status-success-border)" : "var(--status-danger-border)",
+              borderColor: actionMessage.ok
+                ? "var(--status-success-border)"
+                : "var(--status-danger-border)",
             }}
           >
-            {actionMessage.ok ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+            {actionMessage.ok ? (
+              <CheckCircle2 size={16} />
+            ) : (
+              <AlertCircle size={16} />
+            )}
             {actionMessage.text}
           </div>
         )}
@@ -290,25 +305,25 @@ export function ResidentDrawer({
             className={`${styles.drawerTab} ${tab === "info" ? styles.drawerTabActive : ""}`}
             onClick={() => setTab("info")}
           >
-            <User size={15} /> Hồ sơ &amp; CCCD
+            Hồ sơ &amp; CCCD
           </button>
           <button
             className={`${styles.drawerTab} ${tab === "vehicles" ? styles.drawerTabActive : ""}`}
             onClick={() => setTab("vehicles")}
           >
-            <Car size={15} /> Phương tiện ({vehicles.length})
+            Phương tiện
           </button>
           <button
             className={`${styles.drawerTab} ${tab === "account" ? styles.drawerTabActive : ""}`}
             onClick={() => setTab("account")}
           >
-            <Smartphone size={15} /> Mobile App
+            Mobile App
           </button>
           <button
             className={`${styles.drawerTab} ${tab === "contracts" ? styles.drawerTabActive : ""}`}
             onClick={() => setTab("contracts")}
           >
-            <FileText size={15} /> Lịch sử HĐ ({contracts.length})
+            Lịch sử HĐ
           </button>
         </div>
 
@@ -320,19 +335,24 @@ export function ResidentDrawer({
               {/* Định danh CCCD */}
               <div className={styles.sectionBox}>
                 <h3 className={styles.sectionTitle}>
-                  <ShieldCheck size={16} color="var(--primary)" /> Thông tin Định danh &amp; CCCD
+                  Thông tin Định danh &amp; CCCD
                 </h3>
                 <div className={styles.infoGrid}>
                   <div className={styles.infoField}>
                     <span className={styles.infoLabel}>Số CCCD / CMND</span>
-                    <span className={styles.infoValue}>{tenant.cccd || "—"}</span>
+                    <span className={styles.infoValue}>
+                      {tenant.cccd || "—"}
+                    </span>
                   </div>
                   <div className={styles.infoField}>
                     <span className={styles.infoLabel}>Số điện thoại</span>
                     <span className={styles.infoValue}>
                       <a
                         href={`tel:${tenant.so_dt}`}
-                        style={{ color: "var(--primary)", textDecoration: "none" }}
+                        style={{
+                          color: "var(--primary)",
+                          textDecoration: "none",
+                        }}
                       >
                         {tenant.so_dt || "—"}
                       </a>
@@ -348,23 +368,31 @@ export function ResidentDrawer({
                   </div>
                   <div className={styles.infoField}>
                     <span className={styles.infoLabel}>Giới tính</span>
-                    <span className={styles.infoValue}>{tenant.gioi_tinh || "—"}</span>
+                    <span className={styles.infoValue}>
+                      {tenant.gioi_tinh || "—"}
+                    </span>
                   </div>
                   <div className={styles.infoField}>
                     <span className={styles.infoLabel}>Ngày cấp</span>
                     <span className={styles.infoValue}>
                       {tenant.ngay_cap_cccd
-                        ? new Date(tenant.ngay_cap_cccd).toLocaleDateString("vi-VN")
+                        ? new Date(tenant.ngay_cap_cccd).toLocaleDateString(
+                            "vi-VN",
+                          )
                         : "—"}
                     </span>
                   </div>
                   <div className={styles.infoField}>
                     <span className={styles.infoLabel}>Nơi cấp</span>
-                    <span className={styles.infoValue}>{tenant.noi_cap_cccd || "—"}</span>
+                    <span className={styles.infoValue}>
+                      {tenant.noi_cap_cccd || "—"}
+                    </span>
                   </div>
                   <div className={`${styles.infoField} ${styles.fullWidth}`}>
                     <span className={styles.infoLabel}>Địa chỉ thường trú</span>
-                    <span className={styles.infoValue}>{tenant.dia_chi_thuong_tru || "—"}</span>
+                    <span className={styles.infoValue}>
+                      {tenant.dia_chi_thuong_tru || "—"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -380,23 +408,31 @@ export function ResidentDrawer({
                   }}
                 >
                   <h3 className={styles.sectionTitle} style={{ margin: 0 }}>
-                    <Eye size={16} color="var(--primary)" /> Xác thực ảnh CCCD (Mobile App)
+                    Xác thực ảnh CCCD
                   </h3>
                   <div>
                     {ekycStatus === "DaXacThuc" ? (
-                      <span className={`${styles.badgePill} ${styles.badgeGreen}`}>
-                        <CheckCircle2 size={12} /> Đã xác thực
+                      <span
+                        className={styles.badgePill}
+                      >
+                        Đã xác thực
                       </span>
                     ) : ekycStatus === "ChoDuyet" ? (
-                      <span className={`${styles.badgePill} ${styles.badgeYellow}`}>
-                        ● Chờ Admin duyệt
+                      <span
+                        className={styles.badgePill}
+                      >
+                        Chờ Admin duyệt
                       </span>
                     ) : ekycStatus === "TuChoi" ? (
-                      <span className={`${styles.badgePill} ${styles.badgeRed}`}>
+                      <span
+                        className={styles.badgePill}
+                      >
                         Đã từ chối (Chụp lại)
                       </span>
                     ) : (
-                      <span className={`${styles.badgePill} ${styles.badgeGray}`}>
+                      <span
+                        className={styles.badgePill}
+                      >
                         Chưa nộp ảnh
                       </span>
                     )}
@@ -477,25 +513,34 @@ export function ResidentDrawer({
 
               {/* Người liên hệ khẩn cấp */}
               <div className={styles.sectionBox}>
-                <h3 className={styles.sectionTitle}>
-                  <PhoneCall size={16} color="var(--status-danger-text)" /> Người liên hệ khẩn cấp
-                </h3>
+                <h3 className={styles.sectionTitle}>Người liên hệ khẩn cấp</h3>
                 {emergency?.ho_ten || emergency?.so_dt ? (
                   <div className={styles.infoGrid}>
                     <div className={styles.infoField}>
-                      <span className={styles.infoLabel}>Họ tên người thân</span>
-                      <span className={styles.infoValue}>{emergency.ho_ten || "—"}</span>
+                      <span className={styles.infoLabel}>
+                        Họ tên người thân
+                      </span>
+                      <span className={styles.infoValue}>
+                        {emergency.ho_ten || "—"}
+                      </span>
                     </div>
                     <div className={styles.infoField}>
                       <span className={styles.infoLabel}>Mối quan hệ</span>
-                      <span className={styles.infoValue}>{emergency.moi_quan_he || "—"}</span>
+                      <span className={styles.infoValue}>
+                        {emergency.moi_quan_he || "—"}
+                      </span>
                     </div>
                     <div className={`${styles.infoField} ${styles.fullWidth}`}>
-                      <span className={styles.infoLabel}>Số điện thoại khẩn cấp</span>
+                      <span className={styles.infoLabel}>
+                        Số điện thoại khẩn cấp
+                      </span>
                       <span className={styles.infoValue}>
                         <a
                           href={`tel:${emergency.so_dt}`}
-                          style={{ color: "var(--status-danger-text)", fontWeight: 700 }}
+                          style={{
+                            color: "var(--status-danger-text)",
+                            fontWeight: 700,
+                          }}
                         >
                           {emergency.so_dt}
                         </a>
@@ -503,7 +548,13 @@ export function ResidentDrawer({
                     </div>
                   </div>
                 ) : (
-                  <p style={{ margin: 0, fontSize: 13, color: "var(--text-muted)" }}>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: 13,
+                      color: "var(--text-muted)",
+                    }}
+                  >
                     Khách chưa khai báo người liên hệ khẩn cấp.
                   </p>
                 )}
@@ -512,7 +563,9 @@ export function ResidentDrawer({
               {/* Ghi chú nội bộ */}
               {tenant.ghi_chu_noi_bo && (
                 <div className={styles.sectionBox}>
-                  <h3 className={styles.sectionTitle}>Ghi chú nội bộ của Quản lý</h3>
+                  <h3 className={styles.sectionTitle}>
+                    Ghi chú nội bộ của Quản lý
+                  </h3>
                   <p
                     style={{
                       margin: 0,
@@ -540,7 +593,7 @@ export function ResidentDrawer({
                 }}
               >
                 <h3 className={styles.sectionTitle} style={{ margin: 0 }}>
-                  <Car size={16} color="var(--primary)" /> Danh sách xe gửi tại tòa nhà ({vehicles.length})
+                  Danh sách xe gửi tại tòa nhà
                 </h3>
                 <button
                   type="button"
@@ -575,7 +628,13 @@ export function ResidentDrawer({
                     marginBottom: 14,
                   }}
                 >
-                  <h4 style={{ margin: "0 0 10px", fontSize: 13, color: "var(--text-main)" }}>
+                  <h4
+                    style={{
+                      margin: "0 0 10px",
+                      fontSize: 13,
+                      color: "var(--text-main)",
+                    }}
+                  >
                     Đăng ký phương tiện mới
                   </h4>
                   <div
@@ -587,7 +646,13 @@ export function ResidentDrawer({
                     }}
                   >
                     <div>
-                      <label style={{ display: "block", fontSize: 11.5, color: "var(--text-muted)" }}>
+                      <label
+                        style={{
+                          display: "block",
+                          fontSize: 11.5,
+                          color: "var(--text-muted)",
+                        }}
+                      >
                         Loại xe
                       </label>
                       <select
@@ -611,8 +676,14 @@ export function ResidentDrawer({
                       </select>
                     </div>
                     <div>
-                      <label style={{ display: "block", fontSize: 11.5, color: "var(--text-muted)" }}>
-                        Biển số xe *
+                      <label
+                        style={{
+                          display: "block",
+                          fontSize: 11.5,
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        Biển số xe
                       </label>
                       <input
                         type="text"
@@ -628,12 +699,17 @@ export function ResidentDrawer({
                           fontSize: 13,
                           padding: "0 8px",
                         }}
-                      >
-                      </input>
+                      ></input>
                     </div>
                   </div>
                   <div style={{ marginBottom: 12 }}>
-                    <label style={{ display: "block", fontSize: 11.5, color: "var(--text-muted)" }}>
+                    <label
+                      style={{
+                        display: "block",
+                        fontSize: 11.5,
+                        color: "var(--text-muted)",
+                      }}
+                    >
                       Mã thẻ từ thang máy / gửi xe (nếu có)
                     </label>
                     <input
@@ -649,10 +725,15 @@ export function ResidentDrawer({
                         fontSize: 13,
                         padding: "0 8px",
                       }}
-                    >
-                    </input>
+                    ></input>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      gap: 8,
+                    }}
+                  >
                     <button
                       type="button"
                       onClick={() => setShowAddVehicle(false)}
@@ -707,17 +788,38 @@ export function ResidentDrawer({
                     {vehicles.map((v) => (
                       <tr key={v.ma_phuong_tien}>
                         <td style={{ fontWeight: 600 }}>{v.loai_xe}</td>
-                        <td style={{ fontFamily: "monospace", fontSize: 14, fontWeight: 700 }}>
+                        <td
+                          style={{
+                            fontFamily: "monospace",
+                            fontSize: 14,
+                            fontWeight: 700,
+                          }}
+                        >
                           {v.bien_so_xe}
                         </td>
-                        <td>{v.ma_the_xe || <span style={{ color: "var(--text-muted)" }}>Chưa gán</span>}</td>
                         <td>
-                          {["HoatDong", "Đang sử dụng", "Hoạt động", "Đã duyệt"].includes(v.trang_thai) ? (
-                            <span className={`${styles.badgePill} ${styles.badgeGreen}`}>
+                          {v.ma_the_xe || (
+                            <span style={{ color: "var(--text-muted)" }}>
+                              Chưa gán
+                            </span>
+                          )}
+                        </td>
+                        <td>
+                          {[
+                            "HoatDong",
+                            "Đang sử dụng",
+                            "Hoạt động",
+                            "Đã duyệt",
+                          ].includes(v.trang_thai) ? (
+                            <span
+                              className={styles.badgePill}
+                            >
                               Đã duyệt
                             </span>
                           ) : (
-                            <span className={`${styles.badgePill} ${styles.badgeYellow}`}>
+                            <span
+                              className={styles.badgePill}
+                            >
                               Chờ duyệt
                             </span>
                           )}
@@ -730,13 +832,18 @@ export function ResidentDrawer({
                               alignItems: "center",
                             }}
                           >
-                            {["ChoDuyet", "Chờ duyệt"].includes(v.trang_thai) && (
+                            {["ChoDuyet", "Chờ duyệt"].includes(
+                              v.trang_thai,
+                            ) && (
                               <button
                                 type="button"
-                                onClick={() => handleApproveVehicle(v.ma_phuong_tien)}
+                                onClick={() =>
+                                  handleApproveVehicle(v.ma_phuong_tien)
+                                }
                                 style={{
                                   background: "var(--status-success-bg)",
-                                  border: "1px solid var(--status-success-border)",
+                                  border:
+                                    "1px solid var(--status-success-border)",
                                   color: "var(--status-success-text)",
                                   padding: "3px 8px",
                                   borderRadius: 4,
@@ -749,7 +856,12 @@ export function ResidentDrawer({
                             )}
                             <button
                               type="button"
-                              onClick={() => handleDeleteVehicle(v.ma_phuong_tien, v.bien_so_xe)}
+                              onClick={() =>
+                                handleDeleteVehicle(
+                                  v.ma_phuong_tien,
+                                  v.bien_so_xe,
+                                )
+                              }
                               style={{
                                 background: "none",
                                 border: "none",
@@ -775,11 +887,13 @@ export function ResidentDrawer({
           {tab === "account" && (
             <div className={styles.sectionBox}>
               <h3 className={styles.sectionTitle}>
-                <Smartphone size={16} color="var(--primary)" /> Trạng thái Tài khoản Mobile App Cư dân
+                Trạng thái Tài khoản Mobile App Cư dân
               </h3>
               <div className={styles.infoGrid} style={{ marginBottom: 16 }}>
                 <div className={styles.infoField}>
-                  <span className={styles.infoLabel}>Tên đăng nhập (Username)</span>
+                  <span className={styles.infoLabel}>
+                    Tên đăng nhập (Username)
+                  </span>
                   <span
                     className={styles.infoValue}
                     style={{ fontFamily: "monospace", fontSize: 15 }}
@@ -791,11 +905,15 @@ export function ResidentDrawer({
                   <span className={styles.infoLabel}>Trạng thái tài khoản</span>
                   <span className={styles.infoValue}>
                     {tenant.ma_tai_khoan ? (
-                      <span className={`${styles.badgePill} ${styles.badgeGreen}`}>
-                        ● Đang hoạt động
+                      <span
+                        className={styles.badgePill}
+                      >
+                        Đang hoạt động
                       </span>
                     ) : (
-                      <span className={`${styles.badgePill} ${styles.badgeGray}`}>
+                      <span
+                        className={styles.badgePill}
+                      >
                         Chưa cấp tài khoản
                       </span>
                     )}
@@ -805,12 +923,13 @@ export function ResidentDrawer({
                   <span className={styles.infoLabel}>Tình trạng mật khẩu</span>
                   <span className={styles.infoValue}>
                     {!tenant.da_doi_mat_khau ? (
-                      <span style={{ color: "var(--status-warning-text)" }}>
-                        ⚠️ Chưa đổi mật khẩu lần đầu (Đang dùng mật khẩu mặc định 123456)
+                      <span className={styles.badgePill} style={{ whiteSpace: "normal" }}>
+                        Chưa đổi mật khẩu lần đầu (Đang dùng mật khẩu mặc
+                        định 123456)
                       </span>
                     ) : (
-                      <span style={{ color: "var(--status-success-text)" }}>
-                        ✓ Khách đã tự đổi mật khẩu riêng an toàn
+                      <span className={styles.badgePill} style={{ whiteSpace: "normal" }}>
+                        Khách đã tự đổi mật khẩu riêng an toàn
                       </span>
                     )}
                   </span>
@@ -838,7 +957,10 @@ export function ResidentDrawer({
                   }}
                 >
                   {isPending ? (
-                    <LoaderCircle size={15} style={{ animation: "spin 1s linear infinite" }} />
+                    <LoaderCircle
+                      size={15}
+                      style={{ animation: "spin 1s linear infinite" }}
+                    />
                   ) : (
                     <KeyRound size={16} />
                   )}
@@ -854,18 +976,30 @@ export function ResidentDrawer({
                   <h4 className={styles.credentialTitle}>
                     🎉 Tài khoản Mobile App đã sẵn sàng!
                   </h4>
-                  <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "var(--text-muted)" }}>
-                    Gửi thông tin bên dưới cho khách thuê để họ tải App và đăng nhập lần đầu:
+                  <p
+                    style={{
+                      margin: "0 0 10px",
+                      fontSize: 12.5,
+                      color: "var(--text-muted)",
+                    }}
+                  >
+                    Gửi thông tin bên dưới cho khách thuê để họ tải App và đăng
+                    nhập lần đầu:
                   </p>
                   <div className={styles.credentialRow}>
                     <span>Tên đăng nhập (SĐT):</span>
-                    <span className={styles.credentialCode}>{resetAccount.username}</span>
+                    <span className={styles.credentialCode}>
+                      {resetAccount.username}
+                    </span>
                   </div>
                   <div className={styles.credentialRow}>
                     <span>Mật khẩu mặc định:</span>
                     <span
                       className={styles.credentialCode}
-                      style={{ color: "var(--status-danger-text)", letterSpacing: 2 }}
+                      style={{
+                        color: "var(--status-danger-text)",
+                        letterSpacing: 2,
+                      }}
                     >
                       {resetAccount.tempPassword}
                     </span>
@@ -876,7 +1010,9 @@ export function ResidentDrawer({
                     onClick={handleCopyCredentials}
                   >
                     {copied ? <Check size={16} /> : <Copy size={16} />}
-                    {copied ? "Đã sao chép vào bộ nhớ tạm!" : "Sao chép tin nhắn Zalo/SMS gửi khách"}
+                    {copied
+                      ? "Đã sao chép vào bộ nhớ tạm!"
+                      : "Sao chép tin nhắn Zalo/SMS gửi khách"}
                   </button>
                 </div>
               )}
@@ -887,12 +1023,14 @@ export function ResidentDrawer({
           {tab === "contracts" && (
             <div className={styles.sectionBox}>
               <h3 className={styles.sectionTitle}>
-                <FileText size={16} color="var(--primary)" /> Lịch sử Hợp đồng thuê phòng ({contracts.length})
+                Lịch sử Hợp đồng thuê phòng
               </h3>
               {contracts.length === 0 ? (
                 <div className={styles.emptyBox}>
                   <Calendar size={32} />
-                  <span>Khách chưa từng ký kết hợp đồng nào trong hệ thống.</span>
+                  <span>
+                    Khách chưa từng ký kết hợp đồng nào trong hệ thống.
+                  </span>
                 </div>
               ) : (
                 <table className={styles.vehicleTable}>
@@ -931,12 +1069,17 @@ export function ResidentDrawer({
                           {c.ngay_bd?.slice(0, 10)} → {c.ngay_kt?.slice(0, 10)}
                         </td>
                         <td>
-                          {c.trang_thai === "Còn hạn" || c.trang_thai === "Đang thuê" ? (
-                            <span className={`${styles.badgePill} ${styles.badgeGreen}`}>
+                          {c.trang_thai === "Còn hạn" ||
+                          c.trang_thai === "Đang thuê" ? (
+                            <span
+                              className={styles.badgePill}
+                            >
                               {c.trang_thai}
                             </span>
                           ) : (
-                            <span className={`${styles.badgePill} ${styles.badgeGray}`}>
+                            <span
+                              className={styles.badgePill}
+                            >
                               {c.trang_thai}
                             </span>
                           )}
@@ -952,13 +1095,19 @@ export function ResidentDrawer({
 
         {/* Lightbox zoom ảnh CCCD */}
         {lightboxUrl && (
-          <div className={styles.lightboxOverlay} onClick={() => setLightboxUrl(null)}>
+          <div
+            className={styles.lightboxOverlay}
+            onClick={() => setLightboxUrl(null)}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={lightboxUrl} alt="Phóng to ảnh CCCD" className={styles.lightboxImg} />
+            <img
+              src={lightboxUrl}
+              alt="Phóng to ảnh CCCD"
+              className={styles.lightboxImg}
+            />
           </div>
         )}
       </div>
     </div>
   );
 }
-

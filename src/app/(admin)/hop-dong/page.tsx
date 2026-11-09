@@ -43,12 +43,6 @@ function formatMoney(value: string | null) {
   return `${Number(value).toLocaleString("vi-VN")} đ`;
 }
 
-function statusClass(status: string | null) {
-  if (status === "Còn hạn" || status === "Đang thuê") return styles.badgeOk;
-  if (status === "Đã đặt cọc") return styles.badgeInfo;
-  return styles.badgeMuted;
-}
-
 async function ContractsContent({
   searchParams,
 }: {
@@ -190,53 +184,21 @@ async function ContractsContent({
                     <td>{formatMoney(contract.gia_thue_thoa_thuan)}</td>
                     <td>{formatMoney(contract.tien_dat_coc)}</td>
                     <td>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start" }}>
-                        <span className={statusClass(contract.trang_thai)}>
-                          {contract.trang_thai}
-                        </span>
-                        {contract.co_yeu_cau_thanh_ly && (
-                          <Link
-                            href={`/hop-dong/${encodeURIComponent(contract.ma_hop_dong)}`}
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 3,
-                              background: "var(--status-warning-bg)",
-                              color: "var(--status-warning-text)",
-                              border: "1px solid var(--status-warning-border)",
-                              borderRadius: "var(--radius-sm)",
-                              padding: "2px 6px",
-                              fontSize: 11,
-                              fontWeight: 700,
-                              textDecoration: "none",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            Yêu cầu trả phòng
-                          </Link>
-                        )}
-                        {contract.co_yeu_cau_doi_phong && (
-                          <Link
-                            href={`/hop-dong/${encodeURIComponent(contract.ma_hop_dong)}`}
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 3,
-                              background: "var(--status-info-bg)",
-                              color: "var(--status-info-text)",
-                              border: "1px solid var(--status-info-border)",
-                              borderRadius: "var(--radius-sm)",
-                              padding: "2px 6px",
-                              fontSize: 11,
-                              fontWeight: 700,
-                              textDecoration: "none",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            Yêu cầu đổi phòng
-                          </Link>
-                        )}
-                      </div>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          padding: "4px 10px",
+                          borderRadius: 999,
+                          background: "var(--primary-subtle)",
+                          color: "var(--primary)",
+                          border: "1px solid var(--border-strong)",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {contract.trang_thai === "Đang thuê" ? "Còn hạn" : contract.trang_thai}
+                      </span>
                     </td>
                     <td>
                       <div className={styles.actionCell}>

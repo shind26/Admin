@@ -33,7 +33,7 @@ export function InvoiceForm({
   return (
     <form action={formAction} className={styles.formGrid}>
       <div className={`${styles.formField} ${styles.formFieldWide}`}>
-        <label htmlFor="maHopDong">Hợp đồng / Phòng thuê *</label>
+        <label htmlFor="maHopDong">Hợp đồng / Phòng thuê</label>
         <select
           id="maHopDong"
           name="maHopDong"
@@ -50,7 +50,7 @@ export function InvoiceForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="loaiPhatSinh">Phân loại phát sinh *</label>
+        <label htmlFor="loaiPhatSinh">Phân loại phát sinh</label>
         <select
           id="loaiPhatSinh"
           name="loaiPhatSinh"
@@ -66,7 +66,7 @@ export function InvoiceForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="tenKhoanThu">Tên khoản thu / Diễn giải *</label>
+        <label htmlFor="tenKhoanThu">Tên khoản thu / Diễn giải</label>
         <input
           id="tenKhoanThu"
           name="tenKhoanThu"
@@ -77,7 +77,7 @@ export function InvoiceForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="soTien">Số tiền phát sinh (đ) *</label>
+        <label htmlFor="soTien">Số tiền phát sinh (đ)</label>
         <input
           id="soTien"
           name="soTien"
@@ -100,7 +100,7 @@ export function InvoiceForm({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="hanDongTien">Hạn đóng tiền *</label>
+        <label htmlFor="hanDongTien">Hạn đóng tiền</label>
         <input
           id="hanDongTien"
           name="hanDongTien"

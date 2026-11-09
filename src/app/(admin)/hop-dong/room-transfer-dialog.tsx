@@ -58,7 +58,7 @@ export type RoomTransferDialogProps = {
   lyDoChuyen?: string | null;
   isFromMobileRequest?: boolean;
   triggerButtonText?: string;
-  triggerButtonVariant?: "primary" | "warning" | "compact";
+  triggerButtonVariant?: "primary" | "warning" | "compact" | "table";
   openInitially?: boolean;
 };
 
@@ -115,6 +115,33 @@ export function RoomTransferDialog({
   const [ghiChu, setGhiChu] = useState<string>("");
 
   const renderTriggerButton = () => {
+    if (triggerButtonVariant === "table") {
+      return (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 5,
+            background: "var(--primary)",
+            color: "var(--bg-surface)",
+            border: "none",
+            borderRadius: 6,
+            padding: "6px 12px",
+            fontSize: 12,
+            fontWeight: 600,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+            transition: "background 0.15s ease",
+          }}
+        >
+          <ArrowRightLeft size={13} />
+          {triggerButtonText || (isFromMobileRequest ? "Nghiệm thu & Duyệt" : "Đổi phòng")}
+        </button>
+      );
+    }
+
     if (triggerButtonVariant === "compact") {
       return (
         <button
@@ -508,7 +535,7 @@ export function RoomTransferDialog({
                   }}
                 >
                   <div style={{ fontSize: 11.5, fontWeight: 700, color: "var(--primary)", marginBottom: 6, textTransform: "uppercase" }}>
-                    Phòng mới chuyển đến *
+                    Phòng mới chuyển đến
                   </div>
                   <select
                     value={selectedRoomCode}
@@ -547,7 +574,7 @@ export function RoomTransferDialog({
               {/* Ngày chuyển phòng */}
               <div style={{ marginBottom: 16 }}>
                 <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "var(--text-main)", marginBottom: 5 }}>
-                  Ngày hẹn dọn sang phòng mới *
+                  Ngày hẹn dọn sang phòng mới
                 </label>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <input
